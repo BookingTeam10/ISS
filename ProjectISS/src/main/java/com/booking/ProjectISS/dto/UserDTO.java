@@ -1,10 +1,12 @@
 package com.booking.ProjectISS.dto;
 
-import com.booking.ProjectISS.model.Owner;
+import com.booking.ProjectISS.model.Guest;
+import com.booking.ProjectISS.model.User;
 
 import java.io.Serializable;
 
-public class OwnerDTO implements Serializable {
+public class UserDTO implements Serializable {
+
     private static final Long serialVersionUID = -8178366724097283480L;
     private Long id;
     private String email;
@@ -13,10 +15,10 @@ public class OwnerDTO implements Serializable {
     private String surname;
 
 
-    public OwnerDTO() {
+    public UserDTO() {
     }
 
-    public OwnerDTO(Long id,String email, String name, String surname) {
+    public UserDTO(Long id,String email, String name, String surname) {
         this();
         this.id=id;
         this.email = email;
@@ -24,12 +26,12 @@ public class OwnerDTO implements Serializable {
         this.surname = surname;
     }
 
-    public OwnerDTO(Owner o) {
+    public UserDTO(User u) {
         this();
-        this.id=o.getId();
-        this.email = o.getEmail();
-        this.name = o.getName();
-        this.surname = o.getSurname();
+        this.id=u.getId();
+        this.email = u.getEmail();
+        this.name = u.getName();
+        this.surname = u.getSurname();
     }
 
     public Long getId() {
@@ -64,7 +66,7 @@ public class OwnerDTO implements Serializable {
     }
     @Override
     public String toString() {
-        return "OwnerDTO{" +
+        return "UserDTO{" +
                 "email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
