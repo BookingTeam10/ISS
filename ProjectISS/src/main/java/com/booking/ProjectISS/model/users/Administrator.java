@@ -1,4 +1,6 @@
-package com.booking.ProjectISS.model;
+package com.booking.ProjectISS.model.users;
+
+import com.booking.ProjectISS.model.accomodations.Accomodation;
 
 import java.util.ArrayList;
 import java.util.List;

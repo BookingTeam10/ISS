@@ -1,6 +1,7 @@
-package com.booking.ProjectISS.model;
+package com.booking.ProjectISS.model.users;
+
 //@Entity
-public class Owner extends User{
+public class Owner extends User {
 
     private double totalPrice;
     private double rating;

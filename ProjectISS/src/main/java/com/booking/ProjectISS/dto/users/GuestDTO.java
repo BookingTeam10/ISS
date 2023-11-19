@@ -1,13 +1,13 @@
-package com.booking.ProjectISS.dto;
+package com.booking.ProjectISS.dto.users;
 
-import com.booking.ProjectISS.model.Guest;
-import com.booking.ProjectISS.model.User;
+import com.booking.ProjectISS.model.users.Guest;
 
 import java.io.Serializable;
 
-public class UserDTO implements Serializable {
+public class GuestDTO implements Serializable {
 
     private static final Long serialVersionUID = -8178366724097283480L;
+
     private Long id;
     private String email;
 
@@ -15,10 +15,10 @@ public class UserDTO implements Serializable {
     private String surname;
 
 
-    public UserDTO() {
+    public GuestDTO() {
     }
 
-    public UserDTO(Long id,String email, String name, String surname) {
+    public GuestDTO(Long id,String email, String name, String surname) {
         this();
         this.id=id;
         this.email = email;
@@ -26,14 +26,13 @@ public class UserDTO implements Serializable {
         this.surname = surname;
     }
 
-    public UserDTO(User u) {
+    public GuestDTO(Guest g) {
         this();
-        this.id=u.getId();
-        this.email = u.getEmail();
-        this.name = u.getName();
-        this.surname = u.getSurname();
+        this.id=g.getId();
+        this.email = g.getEmail();
+        this.name = g.getName();
+        this.surname = g.getSurname();
     }
-
     public Long getId() {
         return id;
     }
@@ -66,7 +65,8 @@ public class UserDTO implements Serializable {
     }
     @Override
     public String toString() {
-        return "UserDTO{" +
+        return "GuestDTO{" +
+                "id='" + id + '\'' +
                 "email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +

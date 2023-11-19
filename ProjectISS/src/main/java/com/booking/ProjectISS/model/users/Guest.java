@@ -1,6 +1,7 @@
-package com.booking.ProjectISS.model;
+package com.booking.ProjectISS.model.users;
+
 //@Entity
-public class Guest extends User{
+public class Guest extends User {
     private int numberCanceledReservation;
     private boolean turnOnNotification;
     public Guest(Long id,String email, String password, String name, String surname, String phone, String address) {
