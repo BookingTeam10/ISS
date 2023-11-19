@@ -1,4 +1,4 @@
 package com.booking.ProjectISS.model;
 
-public class Accomodation {
+public class Reservation {
 }

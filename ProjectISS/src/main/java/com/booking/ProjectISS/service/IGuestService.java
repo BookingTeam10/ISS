@@ -1,7 +1,7 @@
 package com.booking.ProjectISS.service;
 
-import com.booking.ProjectISS.dto.GuestDTO;
-import com.booking.ProjectISS.model.Guest;
+import com.booking.ProjectISS.dto.users.GuestDTO;
+import com.booking.ProjectISS.model.users.Guest;
 
 import java.util.Collection;
 

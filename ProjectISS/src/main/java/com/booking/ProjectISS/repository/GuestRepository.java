@@ -1,7 +1,6 @@
 package com.booking.ProjectISS.repository;
 
-import com.booking.ProjectISS.dto.GuestDTO;
-import com.booking.ProjectISS.model.Guest;
+import com.booking.ProjectISS.model.users.Guest;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

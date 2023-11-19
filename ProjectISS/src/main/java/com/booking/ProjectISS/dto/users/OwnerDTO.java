@@ -1,6 +1,6 @@
-package com.booking.ProjectISS.dto;
+package com.booking.ProjectISS.dto.users;
 
-import com.booking.ProjectISS.model.Owner;
+import com.booking.ProjectISS.model.users.Owner;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package com.booking.ProjectISS.model;
+package com.booking.ProjectISS.model.users;
 
 import org.antlr.v4.runtime.misc.NotNull;
 
