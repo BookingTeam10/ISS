@@ -1,8 +1,10 @@
 package com.booking.ProjectISS.controller;
 
 import com.booking.ProjectISS.dto.users.GuestDTO;
+import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.users.Guest;
-import com.booking.ProjectISS.service.IGuestService;
+import com.booking.ProjectISS.service.users.IGuestService;
+import com.booking.ProjectISS.service.users.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
