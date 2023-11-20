@@ -121,4 +121,13 @@ public abstract class User implements Serializable {
                 '}';
     }
 
+    public void copyValues(User user) {
+        this.setEmail(user.getEmail());
+        this.setPassword(user.getPassword());
+        this.setName(user.getName());
+        this.setSurname(user.getSurname());
+        this.setPhone(user.getPhone());
+        this.setAddress(user.getAddress());
+        this.setBlocked(user.isBlocked());
+    }
 }

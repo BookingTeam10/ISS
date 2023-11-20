@@ -37,6 +37,7 @@ public class Owner extends User {
     @Override
     public String toString() {
         return "Owner{" +
+                "email="+ super.getEmail()+
                 "totalPrice=" + totalPrice +
                 ", rating=" + rating +
                 ", turnOnNotification1=" + createdNotification +
@@ -44,5 +45,15 @@ public class Owner extends User {
                 ", turnOnNotification3=" + cancelledNotification +
                 ", turnOnNotification4=" + rateAccomodationNotification +
                 '}';
+    }
+
+    public void copyValues(Owner ownerForUpdate) {
+        this.setEmail(ownerForUpdate.getEmail());
+        this.setPassword(ownerForUpdate.getPassword());
+        this.setName(ownerForUpdate.getName());
+        this.setSurname(ownerForUpdate.getSurname());
+        this.setPhone(ownerForUpdate.getPhone());
+        this.setAddress(ownerForUpdate.getAddress());
+        this.setBlocked(ownerForUpdate.isBlocked());
     }
 }

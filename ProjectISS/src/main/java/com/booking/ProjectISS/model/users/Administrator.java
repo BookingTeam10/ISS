@@ -85,4 +85,11 @@ public class Administrator {
                 ", accomodations=" + accomodations +
                 '}';
     }
+
+    public void copyValues(Administrator administrator) {
+        this.setEmail(administrator.getEmail());
+        this.setPassword(administrator.getPassword());
+        this.setUsers(administrator.getUsers());
+        this.setAccomodations(administrator.getAccomodations());
+    }
 }

@@ -34,6 +34,22 @@ public class UserDTO implements Serializable {
         this.surname = u.getSurname();
     }
 
+    public UserDTO(GuestDTO g){
+        this();
+        this.id=g.getId();
+        this.email = g.getEmail();
+        this.name = g.getName();
+        this.surname = g.getSurname();
+    }
+
+    public UserDTO(OwnerDTO g){
+        this();
+        this.id=g.getId();
+        this.email = g.getEmail();
+        this.name = g.getName();
+        this.surname = g.getSurname();
+    }
+
     public Long getId() {
         return id;
     }

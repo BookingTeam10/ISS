@@ -1,6 +1,7 @@
-package com.booking.ProjectISS.repository;
+package com.booking.ProjectISS.repository.users;
 
 import com.booking.ProjectISS.model.users.Guest;
+import com.booking.ProjectISS.model.users.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -9,27 +10,22 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
-public class GuestRepository implements IGuestRepository{
+public class GuestRepository implements IGuestRepository {
 
     private final List<Guest> guests=new ArrayList<Guest>();
-
-    private static AtomicLong counter = new AtomicLong();
+    private UserRepository userRepository;
 
     public GuestRepository(){
-        loadAll();
+        this.userRepository=new UserRepository();
+        loadAll(userRepository.getUsers());
     }
 
-    public Collection<Guest> loadAll(){
-        Guest g1=new Guest(5L,"a","b","c","d","065555555","fwae");
-        Guest g2=new Guest(6L,"a","b","c","d","065555555","fwae");
-        Guest g3=new Guest(7L,"a","b","c","d","065555555","fwae");
-        Guest g4=new Guest(8L,"a","b","c","d","065555555","fwae");
-        Guest g5=new Guest(9L,"a","b","c","d","065555555","fwae");
-        guests.add(g1);
-        guests.add(g2);
-        guests.add(g3);
-        guests.add(g4);
-        guests.add(g5);
+    public Collection<Guest> loadAll(List<User> users){
+        for(User u:users){
+            if(u instanceof Guest){
+                guests.add((Guest) u);
+            }
+        }
         return guests;
     }
     @Override
@@ -56,11 +52,15 @@ public class GuestRepository implements IGuestRepository{
         Long id = guest.getId();
 
         if (id == null) {
-            id = counter.incrementAndGet();
+            id = userRepository.getCounter().incrementAndGet();
             guest.setId(id);
         }
 
         this.guests.add(guest);
+        this.userRepository.addUser(guest);
+        for(User u:this.userRepository.getUsers()){
+            System.out.println(u);
+        }
         return guest;
     }
 
