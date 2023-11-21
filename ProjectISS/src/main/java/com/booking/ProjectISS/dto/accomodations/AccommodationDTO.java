@@ -12,6 +12,8 @@ public class AccommodationDTO {
     private TypeAccommodation typeAccomodation;
     private double rating;
     private int cancelDeadline;
+
+    private boolean isAccepted;
     public Long getId() {
         return id;
     }
@@ -64,6 +66,10 @@ public class AccommodationDTO {
         return rating;
     }
 
+    public boolean isAccepted() {
+        return isAccepted;
+    }
+
     public void setRating(double rating) {
         this.rating = rating;
     }
@@ -80,7 +86,7 @@ public class AccommodationDTO {
 
     }
 
-    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, String photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline) {
+    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, String photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted) {
         this.id = id;
         this.description = description;
         this.minPeople = minPeople;
@@ -89,6 +95,7 @@ public class AccommodationDTO {
         this.typeAccomodation = typeAccomodation;
         this.rating = rating;
         this.cancelDeadline = cancelDeadline;
+        this.isAccepted=isAccepted;
     }
 
     public AccommodationDTO(Accommodation a) {

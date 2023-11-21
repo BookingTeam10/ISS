@@ -11,4 +11,8 @@ public interface IAccommodationRepository {
     Collection<Accommodation> findAll();
     void delete(Long id);
     Accommodation create(Accommodation accommodation);
+
+    Collection<Accommodation> findAllByOwner(Long id);
+
+    Accommodation createByOwner(Long id, Accommodation accommodation);
 }
