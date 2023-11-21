@@ -1,4 +1,4 @@
-package com.booking.ProjectISS.service.users;
+package com.booking.ProjectISS.service.users.administrator;
 
 import com.booking.ProjectISS.dto.users.AdministratorDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;

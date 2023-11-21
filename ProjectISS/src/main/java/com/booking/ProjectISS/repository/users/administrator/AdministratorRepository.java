@@ -1,13 +1,12 @@
-package com.booking.ProjectISS.repository.users;
+package com.booking.ProjectISS.repository.users.administrator;
 
 import com.booking.ProjectISS.model.users.Administrator;
-import com.booking.ProjectISS.model.users.User;
+import com.booking.ProjectISS.repository.users.user.UserRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class AdministratorRepository implements IAdministratorRepository {

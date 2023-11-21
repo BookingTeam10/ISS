@@ -1,4 +1,4 @@
-package com.booking.ProjectISS.service.users;
+package com.booking.ProjectISS.service.users.owner;
 
 import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.dto.users.OwnerDTO;

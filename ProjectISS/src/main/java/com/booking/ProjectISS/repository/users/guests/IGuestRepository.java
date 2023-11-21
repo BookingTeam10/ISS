@@ -1,19 +1,18 @@
-package com.booking.ProjectISS.repository.users;
+package com.booking.ProjectISS.repository.users.guests;
 
 import com.booking.ProjectISS.model.users.Guest;
-import com.booking.ProjectISS.model.users.User;
 
 import java.util.Collection;
 
-//extends JpaRepository<User, Long>
-public interface IUserRepository {
-    User findOne(Long id);
+//extends JpaRepository<Guest, Long>
+public interface IGuestRepository{
+    Guest findOne(Long id);
 
-    Collection<User> findAll();
+    Collection<Guest> findAll();
 
     void delete(Long id);
 
-    User create(User user);
+    Guest create(Guest guest);
 
     //for later, add @OneToOne
     //@Query("select new com.booking.ProjectISS.dto.GuestDTO(g) from Guest g")

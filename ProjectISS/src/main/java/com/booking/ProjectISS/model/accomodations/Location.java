@@ -7,12 +7,12 @@ public class Location {
     private String city;
     private String street;
     private int number;
-    private List<Accomodation> accomodations;
+    private List<Accommodation> accomodations;
 
     public Location() {
     }
 
-    public Location(String country, String city, String street, int number, List<Accomodation> accomodations) {
+    public Location(String country, String city, String street, int number, List<Accommodation> accomodations) {
         this.country = country;
         this.city = city;
         this.street = street;
@@ -52,11 +52,11 @@ public class Location {
         this.number = number;
     }
 
-    public List<Accomodation> getAccomodations() {
+    public List<Accommodation> getAccomodations() {
         return accomodations;
     }
 
-    public void setAccomodations(List<Accomodation> accomodations) {
+    public void setAccomodations(List<Accommodation> accomodations) {
         this.accomodations = accomodations;
     }
 

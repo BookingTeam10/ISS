@@ -1,8 +1,8 @@
-package com.booking.ProjectISS.service.users;
+package com.booking.ProjectISS.service.users.guest;
 
 import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.model.users.Guest;
-import com.booking.ProjectISS.repository.users.IGuestRepository;
+import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

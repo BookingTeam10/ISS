@@ -1,8 +1,9 @@
-package com.booking.ProjectISS.service.users;
+package com.booking.ProjectISS.service.users.owner;
 
 import com.booking.ProjectISS.dto.users.OwnerDTO;
 import com.booking.ProjectISS.model.users.Owner;
-import com.booking.ProjectISS.repository.users.IOwnerRepository;
+import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
+import com.booking.ProjectISS.service.users.owner.IOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
-public class OwnerService implements IOwnerService{
+public class OwnerService implements IOwnerService {
 
     @Autowired
     private IOwnerRepository ownerRepository;

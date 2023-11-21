@@ -1,22 +1,15 @@
 package com.booking.ProjectISS.dto.accomodations;
 
-import com.booking.ProjectISS.model.Reservation;
-import com.booking.ProjectISS.model.accomodations.Amenity;
-import com.booking.ProjectISS.model.accomodations.Location;
-import com.booking.ProjectISS.model.accomodations.Price;
-import com.booking.ProjectISS.model.accomodations.TakenDate;
-import com.booking.ProjectISS.model.users.Owner;
-import enums.TypeAccomodation;
+import com.booking.ProjectISS.enums.TypeAccommodation;
+import com.booking.ProjectISS.model.accomodations.Accommodation;
 
-import java.util.List;
-
-public class AccomodationDTO {
+public class AccommodationDTO {
     private Long id;
     private String description;
     private int minPeople;
     private int maxPeople;
     private String photo;
-    private TypeAccomodation typeAccomodation;
+    private TypeAccommodation typeAccomodation;
     private double rating;
     private int cancelDeadline;
     public Long getId() {
@@ -59,12 +52,12 @@ public class AccomodationDTO {
         this.photo = photo;
     }
 
-    public TypeAccomodation getTypeAccomodation() {
+    public TypeAccommodation getTypeAccomodation() {
         return typeAccomodation;
     }
 
-    public void setTypeAccomodation(TypeAccomodation typeAccomodation) {
-        this.typeAccomodation = typeAccomodation;
+    public void setTypeAccomodation(TypeAccommodation typeAccommodation) {
+        this.typeAccomodation = typeAccommodation;
     }
 
     public double getRating() {
@@ -83,7 +76,11 @@ public class AccomodationDTO {
         this.cancelDeadline = cancelDeadline;
     }
 
-    public AccomodationDTO(Long id, String description, int minPeople, int maxPeople, String photo, TypeAccomodation typeAccomodation, double rating, int cancelDeadline) {
+    public AccommodationDTO(){
+
+    }
+
+    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, String photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline) {
         this.id = id;
         this.description = description;
         this.minPeople = minPeople;
@@ -92,6 +89,18 @@ public class AccomodationDTO {
         this.typeAccomodation = typeAccomodation;
         this.rating = rating;
         this.cancelDeadline = cancelDeadline;
+    }
+
+    public AccommodationDTO(Accommodation a) {
+        this();
+        this.id = a.getId();
+        this.description = a.getDescription();
+        this.minPeople = a.getMinPeople();
+        this.maxPeople = a.getMaxPeople();
+        this.photo =a.getPhoto();
+        this.typeAccomodation = a.getTypeAccomodation();
+        this.rating = a.getRating();
+        this.cancelDeadline = a.getCancelDeadline();
     }
 
 
