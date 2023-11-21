@@ -19,6 +19,8 @@ public abstract class User implements Serializable {
     private String address;
     private boolean blocked;
 
+    private boolean isReported;
+
     public User(Long id,String email, String password, String name, String surname, String phone, String address) {
         this.id=id;
         this.email = email;
@@ -28,9 +30,10 @@ public abstract class User implements Serializable {
         this.phone = phone;
         this.address = address;
         this.blocked = false;
+        this.isReported=false;
     }
 
-    public User(Long id,String email, String password, String name, String surname, String phone, String address,boolean blocked) {
+    public User(Long id,String email, String password, String name, String surname, String phone, String address,boolean rep,boolean blocked) {
         this.id=id;
         this.email = email;
         this.password = password;
@@ -38,10 +41,15 @@ public abstract class User implements Serializable {
         this.surname = surname;
         this.phone = phone;
         this.address = address;
+        this.isReported=rep;
         this.blocked = blocked;
     }
 
     public User() {
+    }
+
+    public User(Long id) {
+        this.id=id;
     }
 
     public Long getId() {
@@ -80,6 +88,8 @@ public abstract class User implements Serializable {
         return blocked;
     }
 
+    public boolean isReported() {return isReported;}
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -106,6 +116,10 @@ public abstract class User implements Serializable {
 
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
+    }
+
+    public void setReported(boolean reported) {
+        this.isReported = reported;
     }
     @Override
     public String toString() {

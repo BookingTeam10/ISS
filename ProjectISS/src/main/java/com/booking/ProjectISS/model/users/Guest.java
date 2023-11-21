@@ -4,14 +4,14 @@ package com.booking.ProjectISS.model.users;
 public class Guest extends User {
     private int numberCanceledReservation;
     private boolean turnOnNotification;
-    public Guest(Long id,String email, String password, String name, String surname, String phone, String address) {
-        super(id,email, password, name, surname, phone, address);
+    public Guest(Long id,String email, String password, String name, String surname, String phone, String address,boolean rep, boolean blocked) {
+        super(id,email, password, name, surname, phone, address,rep, blocked);
         this.numberCanceledReservation=0;
         this.turnOnNotification=true;
     }
 
-    public Guest(Long id,String email, String password, String name, String surname, String phone, String address, int numberCanceledReservation,boolean turnOnNotification) {
-        super(id,email, password, name, surname, phone, address);
+    public Guest(Long id,String email, String password, String name, String surname, String phone, String address,boolean rep, boolean blocked, int numberCanceledReservation,boolean turnOnNotification) {
+        super(id,email, password, name, surname, phone, address,rep,blocked);
         this.numberCanceledReservation = numberCanceledReservation;
         this.turnOnNotification=turnOnNotification;
     }

@@ -1,15 +1,24 @@
 package com.booking.ProjectISS.controller.users;
 
+import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.dto.users.AdministratorDTO;
+import com.booking.ProjectISS.dto.users.OwnerDTO;
+import com.booking.ProjectISS.dto.users.UserDTO;
+import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.users.Administrator;
+import com.booking.ProjectISS.service.accommodation.AccommodationService;
+import com.booking.ProjectISS.service.accommodation.IAccommodationService;
 import com.booking.ProjectISS.service.users.administrator.IAdministratorService;
+import com.booking.ProjectISS.service.users.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -17,6 +26,10 @@ public class AdministratorController {
 
     @Autowired
     private IAdministratorService administratorService;
+    @Autowired
+    private IAccommodationService accommodationService;
+    @Autowired
+    private IUserService userService;
 
     //getAll
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -61,7 +74,7 @@ public class AdministratorController {
 
     //put
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdministratorDTO> updateGreeting(@RequestBody Administrator administrator, @PathVariable Long id)
+    public ResponseEntity<AdministratorDTO> updateAdmin(@RequestBody Administrator administrator, @PathVariable Long id)
             throws Exception {
         Administrator administratorForUpdate = administratorService.findOne(id);
         if (administratorForUpdate == null) {
@@ -70,5 +83,45 @@ public class AdministratorController {
         administratorForUpdate.copyValues(administrator);
         AdministratorDTO updatedAdministrator = administratorService.update(administratorForUpdate);
         return new ResponseEntity<AdministratorDTO>(updatedAdministrator, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/accomodations", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsDTO() {
+        Collection<AccommodationDTO> accommodationDTOS = accommodationService.findAllDTO();
+        return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/accomodations/pending", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsPendingDTO() {
+        List<AccommodationDTO> accommodationPending=new ArrayList<AccommodationDTO>();
+        Collection<AccommodationDTO> accommodationDTOS = accommodationService.findAllDTO();
+
+        //Seljacki nacin za trazenje pendinga, uzeti sve i samo naci ako nije odobren
+
+        for(AccommodationDTO a:accommodationDTOS){
+            if(!a.isAccepted()){
+                accommodationPending.add(a);
+            }
+        }
+
+        return new ResponseEntity<Collection<AccommodationDTO>>(accommodationPending, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/reportsUsers", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<UserDTO>> getReportedUsers() {
+        List<UserDTO> userReport=new ArrayList<UserDTO>();
+        Collection<UserDTO> users = userService.findAllDTO();
+
+//        for(UserDTO a:users){
+//            if(a.isReported()){
+//                userReport.add(a);
+//            }
+//        }
+
+        for(UserDTO a:users){
+            System.out.println(a);
+        }
+
+        return new ResponseEntity<Collection<UserDTO>>(userReport, HttpStatus.OK);
     }
 }

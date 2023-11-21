@@ -11,8 +11,8 @@ public class Owner extends User {
     private boolean cancelledNotification;
     private boolean rateAccomodationNotification;
 
-    public Owner(Long id,String email, String password, String name, String surname, String phone, String address, boolean blocked) {
-        super(id,email, password, name, surname, phone, address, blocked);
+    public Owner(Long id,String email, String password, String name, String surname, String phone, String address,boolean rep, boolean blocked) {
+        super(id,email, password, name, surname, phone, address, rep,blocked);
         this.totalPrice=0;
         this.rating=0;
         this.createdNotification=true;
@@ -21,8 +21,8 @@ public class Owner extends User {
         this.rateAccomodationNotification=true;
     }
 
-    public Owner(Long id,String email, String password, String name, String surname, String phone, String address, boolean blocked,double totalPrice,double rating, boolean createdNotification, boolean rateMeNotification, boolean cancelledNotification, boolean rateAccomodationNotification) {
-        super(id,email, password, name, surname, phone, address, blocked);
+    public Owner(Long id,String email, String password, String name, String surname, String phone, String address,boolean rep, boolean blocked,double totalPrice,double rating, boolean createdNotification, boolean rateMeNotification, boolean cancelledNotification, boolean rateAccomodationNotification) {
+        super(id,email, password, name, surname, phone, address,rep, blocked);
         this.totalPrice=0;
         this.rating=0;
         this.createdNotification=createdNotification;
@@ -32,6 +32,10 @@ public class Owner extends User {
     }
 
     public Owner() {
+    }
+
+    public Owner(Long id) {
+        super(id);
     }
 
     @Override
