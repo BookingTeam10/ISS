@@ -1,7 +1,6 @@
 package com.booking.ProjectISS.model.accomodations;
 
-import com.booking.ProjectISS.model.Reservation;
-import com.booking.ProjectISS.model.users.Guest;
+import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.enums.TypeAccommodation;
 
