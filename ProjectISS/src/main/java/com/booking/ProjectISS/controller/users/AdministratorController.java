@@ -1,8 +1,8 @@
-package com.booking.ProjectISS.controller;
+package com.booking.ProjectISS.controller.users;
 
 import com.booking.ProjectISS.dto.users.AdministratorDTO;
 import com.booking.ProjectISS.model.users.Administrator;
-import com.booking.ProjectISS.service.users.IAdministratorService;
+import com.booking.ProjectISS.service.users.administrator.IAdministratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

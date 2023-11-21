@@ -1,13 +1,13 @@
-package com.booking.ProjectISS.repository.users;
+package com.booking.ProjectISS.repository.users.guests;
 
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.User;
+import com.booking.ProjectISS.repository.users.user.UserRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class GuestRepository implements IGuestRepository {

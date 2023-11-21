@@ -1,11 +1,8 @@
-package com.booking.ProjectISS.service.users;
+package com.booking.ProjectISS.service.users.administrator;
 
 import com.booking.ProjectISS.dto.users.AdministratorDTO;
-import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.users.Administrator;
-import com.booking.ProjectISS.model.users.User;
-import com.booking.ProjectISS.repository.users.IAdministratorRepository;
-import com.booking.ProjectISS.repository.users.IUserRepository;
+import com.booking.ProjectISS.repository.users.administrator.IAdministratorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
-public class AdministratorService implements IAdministratorService{
+public class AdministratorService implements IAdministratorService {
     @Autowired
     private IAdministratorRepository administratorRepository;
 

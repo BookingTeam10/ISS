@@ -1,4 +1,4 @@
-package com.booking.ProjectISS.repository.users;
+package com.booking.ProjectISS.repository.users.administrator;
 
 import com.booking.ProjectISS.model.users.Administrator;
 import com.booking.ProjectISS.model.users.Guest;

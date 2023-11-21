@@ -1,9 +1,5 @@
 package com.booking.ProjectISS.dto.accomodations;
 
-import com.booking.ProjectISS.model.accomodations.Accomodation;
-
-import java.util.List;
-
 public class LocationDTO {
     private String country;
     private String city;

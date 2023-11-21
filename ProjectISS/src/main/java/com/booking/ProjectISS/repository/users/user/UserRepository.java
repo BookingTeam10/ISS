@@ -1,8 +1,9 @@
-package com.booking.ProjectISS.repository.users;
+package com.booking.ProjectISS.repository.users.user;
 
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.User;
+import com.booking.ProjectISS.repository.users.user.IUserRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -11,11 +12,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
-public class UserRepository implements IUserRepository{
+public class UserRepository implements IUserRepository {
 
     private List<User> users;
-    private boolean isLoaded = false;
-
     private static AtomicLong counter = new AtomicLong();
 
     public UserRepository(){
@@ -54,7 +53,6 @@ public class UserRepository implements IUserRepository{
     public void delete(Long id) {
         users.removeIf(person -> person.getId() == id);
     }
-
     @Override
     public User create(User user) {
         Long id = user.getId();

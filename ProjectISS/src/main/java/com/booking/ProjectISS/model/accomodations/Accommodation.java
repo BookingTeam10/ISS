@@ -1,12 +1,14 @@
 package com.booking.ProjectISS.model.accomodations;
 
 import com.booking.ProjectISS.model.Reservation;
+import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
-import enums.TypeAccomodation;
+import com.booking.ProjectISS.enums.TypeAccommodation;
 
 import java.util.List;
+import java.util.Objects;
 
-public class Accomodation {
+public class Accommodation {
     private Long id;
     private boolean accepted;
     private boolean automaticActivation = false;
@@ -14,7 +16,7 @@ public class Accomodation {
     private int minPeople;
     private int maxPeople;
     private String photo;
-    private TypeAccomodation typeAccomodation;
+    private TypeAccommodation typeAccomodation;
     private double rating;
     private int cancelDeadline;
     private List<Price> prices;
@@ -80,11 +82,11 @@ public class Accomodation {
         this.photo = photo;
     }
 
-    public TypeAccomodation getTypeAccomodation() {
+    public TypeAccommodation getTypeAccomodation() {
         return typeAccomodation;
     }
 
-    public void setTypeAccomodation(TypeAccomodation typeAccomodation) {
+    public void setTypeAccomodation(TypeAccommodation typeAccomodation) {
         this.typeAccomodation = typeAccomodation;
     }
 
@@ -152,7 +154,7 @@ public class Accomodation {
         this.reservations = reservations;
     }
 
-    public Accomodation(Long id, boolean accepted, boolean automaticActivation, String description, int minPeople, int maxPeople, String photo, TypeAccomodation typeAccomodation, double rating, int cancelDeadline, List<Price> prices, List<TakenDate> takenDates, List<Amenity> amenities, Location location, Owner owner, List<Reservation> reservations) {
+    public Accommodation(Long id, boolean accepted, boolean automaticActivation, String description, int minPeople, int maxPeople, String photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, List<Price> prices, List<TakenDate> takenDates, List<Amenity> amenities, Location location, Owner owner, List<Reservation> reservations) {
         this.id = id;
         this.accepted = accepted;
         this.automaticActivation = automaticActivation;
@@ -191,5 +193,20 @@ public class Accomodation {
                 ", owner=" + owner +
                 ", reservations=" + reservations +
                 '}';
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Accommodation that)) return false;
+        return accepted == that.accepted && automaticActivation == that.automaticActivation && minPeople == that.minPeople && maxPeople == that.maxPeople && Double.compare(that.rating, rating) == 0 && cancelDeadline == that.cancelDeadline && Objects.equals(id, that.id) && Objects.equals(description, that.description) && Objects.equals(photo, that.photo) && typeAccomodation == that.typeAccomodation && Objects.equals(prices, that.prices) && Objects.equals(takenDates, that.takenDates) && Objects.equals(amenities, that.amenities) && Objects.equals(location, that.location) && Objects.equals(owner, that.owner) && Objects.equals(reservations, that.reservations);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, accepted, automaticActivation, description, minPeople, maxPeople, photo, typeAccomodation, rating, cancelDeadline, prices, takenDates, amenities, location, owner, reservations);
+    }
+
+    //srediti ovo
+    public void copyValues(Accommodation a) {
+
     }
 }

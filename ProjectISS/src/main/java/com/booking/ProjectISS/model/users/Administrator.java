@@ -1,6 +1,6 @@
 package com.booking.ProjectISS.model.users;
 
-import com.booking.ProjectISS.model.accomodations.Accomodation;
+import com.booking.ProjectISS.model.accomodations.Accommodation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +16,8 @@ public class Administrator {
     private String email;
     private String password;
     private List<User> users;
-    private List<Accomodation> accomodations;
-    public Administrator(Long id, String email, String password, List<User> users, List<Accomodation> accomodations) {
+    private List<Accommodation> accomodations;
+    public Administrator(Long id, String email, String password, List<User> users, List<Accommodation> accomodations) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -68,11 +68,11 @@ public class Administrator {
         this.users = users;
     }
 
-    public List<Accomodation> getAccomodations() {
+    public List<Accommodation> getAccomodations() {
         return accomodations;
     }
 
-    public void setAccomodations(List<Accomodation> accomodations) {
+    public void setAccomodations(List<Accommodation> accomodations) {
         this.accomodations = accomodations;
     }
     @Override
