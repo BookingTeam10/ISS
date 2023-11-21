@@ -1,6 +1,10 @@
 package com.booking.ProjectISS.dto.accomodations;
 
+import com.booking.ProjectISS.model.accomodations.Location;
+
 public class LocationDTO {
+
+    private Long id;
     private String country;
     private String city;
     private String street;
@@ -8,13 +12,21 @@ public class LocationDTO {
     public LocationDTO() {
     }
 
-    public LocationDTO(String country, String city, String street, int number) {
+    public LocationDTO(Long id,String country, String city, String street, int number) {
+        this.id = id;
         this.country = country;
         this.city = city;
         this.street = street;
         this.number = number;
     }
 
+    public LocationDTO(Location l){
+        this.id = l.getId();
+        this.country = l.getCountry();
+        this.city = l.getCity();
+        this.street = l.getStreet();
+        this.number = l.getNumber();
+    }
     public String getCountry() {
         return country;
     }
@@ -45,5 +57,13 @@ public class LocationDTO {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

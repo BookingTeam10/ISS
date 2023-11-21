@@ -27,7 +27,6 @@ public class AccommodationService implements IAccommodationService {
         }
         return new AccommodationDTO(accommodation);
     }
-
     @Override
     public Accommodation findOne(Long id) {
         Accommodation accommodation= accommodationRepository.findOne(id);
@@ -49,8 +48,7 @@ public class AccommodationService implements IAccommodationService {
 
     @Override
     public Collection<Accommodation> findAll() {
-        Collection<Accommodation> accommodations = accommodationRepository.findAll();
-        return accommodations;
+        return accommodationRepository.findAll();
     }
     @Override
     public void delete(Long id) {

@@ -61,7 +61,6 @@ public class AccommodationRepository implements IAccommodationRepository{
         return counter;
     }
 
-    //obrisati posle
     private List<Accommodation> loadAll() {
         this.accommodations=new ArrayList<Accommodation>();
         Accommodation a1 = new Accommodation(1L,false,false,"dadasda",3,3,"dasasd",

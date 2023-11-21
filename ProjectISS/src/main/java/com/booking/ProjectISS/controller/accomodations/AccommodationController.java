@@ -1,11 +1,8 @@
 package com.booking.ProjectISS.controller.accomodations;
 
 import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
-import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
-import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.service.accommodation.IAccommodationService;
-import com.booking.ProjectISS.service.users.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -54,7 +51,7 @@ public class AccommodationController {
         return new ResponseEntity<AccommodationDTO>(updatedAccommodation, HttpStatus.OK);
     }
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<AccommodationDTO> deleteGuest(@PathVariable("id") Long id) {
+    public ResponseEntity<AccommodationDTO> deleteAccommodation(@PathVariable("id") Long id) {
         accommodationService.delete(id);
         return new ResponseEntity<AccommodationDTO>(HttpStatus.NO_CONTENT);
     }
