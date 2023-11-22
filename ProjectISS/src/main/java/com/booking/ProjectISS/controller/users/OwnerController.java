@@ -1,7 +1,14 @@
 package com.booking.ProjectISS.controller.users;
 
+import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
+import com.booking.ProjectISS.dto.reviews.ReviewDTO;
+import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.dto.users.OwnerDTO;
+import com.booking.ProjectISS.dto.users.UserDTO;
+import com.booking.ProjectISS.model.accomodations.Accommodation;
+import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.service.accommodation.IAccommodationService;
 import com.booking.ProjectISS.service.users.owner.IOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +24,9 @@ public class OwnerController {
 
     @Autowired
     private IOwnerService ownerService;
+
+    @Autowired
+    private IAccommodationService accommodationService;
 
     //getAll
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -45,6 +55,21 @@ public class OwnerController {
         return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value = "/{id}/accomodations", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getOwnerAccomodation(@PathVariable("id") Long id) {
+        OwnerDTO Owner = ownerService.findOneDTO(id);
+        if (Owner != null) {
+            Collection<AccommodationDTO> accommodationDTOs=accommodationService.findAllByOwnerDTO(id);
+            if(accommodationDTOs!=null){
+
+                return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOs, HttpStatus.OK);
+            }
+            return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
+    }
+
     //deleteOne
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<OwnerDTO> deleteOwner(@PathVariable("id") Long id) {
@@ -53,6 +78,12 @@ public class OwnerController {
     }
 
     //post
+    @PostMapping(value = "/{id}/accomodations",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationDTO> createAccomodationByOwner(@PathVariable Long id, @RequestBody Accommodation accommodation) throws Exception {
+        AccommodationDTO accommodationDTO = accommodationService.createByOwner(id, accommodation);
+        return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.CREATED);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OwnerDTO> createOwner(@RequestBody Owner Owner) throws Exception {
         OwnerDTO OwnerDTO = ownerService.create(Owner);
@@ -70,5 +101,20 @@ public class OwnerController {
         OwnerForUpdate.copyValues(Owner);
         OwnerDTO updatedOwner = ownerService.update(OwnerForUpdate);
         return new ResponseEntity<OwnerDTO>(updatedOwner, HttpStatus.OK);
+    }
+
+    //pri proveravanju samo Type i Review menjati
+    @PutMapping(value = "/comment/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReviewDTO> updateComment(@RequestBody Review review, @PathVariable Long id)
+            throws Exception {
+        //ReviewDTO reviewDTOForUpdate = reviewService.findOne(id);
+        ReviewDTO reviewDTOForUpdate=null;
+        if (reviewDTOForUpdate == null) {
+            return new ResponseEntity<ReviewDTO>(HttpStatus.NOT_FOUND);
+        }
+        reviewDTOForUpdate.copyValues(review);
+        //ReviewDTO reviewDTO = reviewService.update(reviewDTOForUpdate);
+        ReviewDTO reviewDTO=null;
+        return new ResponseEntity<ReviewDTO>(reviewDTO, HttpStatus.OK);
     }
 }

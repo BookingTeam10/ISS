@@ -23,11 +23,11 @@ public class UserRepository implements IUserRepository {
 
     public Collection<User> loadAll(){
         this.users=new ArrayList<User>();
-        Guest g1=new Guest(5L,"a","b","c","d","065555555","fwae");
-        Owner g2=new Owner(6L,"a","b","c","d","065555555","fwae",false);
-        Guest g3=new Guest(7L,"a","b","c","d","065555555","fwae");
-        Guest g4=new Guest(8L,"a","b","c","d","065555555","fwae");
-        Owner g5=new Owner(9L,"a","b","c","d","065555555","fwae",true);
+        Guest g1=new Guest(5L,"a","b","c","d","065555555","fwae",false,false);
+        Owner g2=new Owner(6L,"a","b","c","d","065555555","fwae",true,false);
+        Guest g3=new Guest(7L,"a","b","c","d","065555555","fwae",false,false);
+        Guest g4=new Guest(8L,"a","b","c","d","065555555","fwae",false,false);
+        Owner g5=new Owner(9L,"a","b","c","d","065555555","fwae",true,true);
         users.add(g1);
         users.add(g2);
         users.add(g3);
@@ -65,6 +65,17 @@ public class UserRepository implements IUserRepository {
         this.users.add(user);
         return user;
     }
+
+    @Override
+    public User findOne(String email, String password) {
+        for(User u:this.users){
+            if(u.getEmail().equals(email) && u.getPassword().equals(password)){
+                return u;
+            }
+        }
+        return null;
+    }
+
     public List<User> getUsers() {
         return users;
     }

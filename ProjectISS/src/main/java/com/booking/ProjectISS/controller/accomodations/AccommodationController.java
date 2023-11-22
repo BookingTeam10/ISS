@@ -58,4 +58,16 @@ public class AccommodationController {
         accommodationService.delete(id);
         return new ResponseEntity<AccommodationDTO>(HttpStatus.NO_CONTENT);
     }
+
+    @PutMapping(value = "/pending/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationDTO> updateAccomodation(@RequestBody Accommodation accommodation, @PathVariable Long id)
+            throws Exception {
+        Accommodation accomodationForUpdate = accommodationService.findOne(id);
+        if (accomodationForUpdate == null) {
+            return new ResponseEntity<AccommodationDTO>(HttpStatus.NOT_FOUND);
+        }
+        accomodationForUpdate.copyValues(accommodation);
+        AccommodationDTO updatedAcc = accommodationService.update(accomodationForUpdate);
+        return new ResponseEntity<AccommodationDTO>(updatedAcc, HttpStatus.OK);
+    }
 }
