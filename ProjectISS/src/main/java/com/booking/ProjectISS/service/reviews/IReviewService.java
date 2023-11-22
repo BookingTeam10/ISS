@@ -13,4 +13,6 @@ public interface IReviewService {
     void delete(Long id);
     ReviewDTO create(Review review) throws Exception;
     ReviewDTO update(Review review) throws Exception;
+
+    ReviewDTO createByReservation(Long idReservation, Review review);
 }

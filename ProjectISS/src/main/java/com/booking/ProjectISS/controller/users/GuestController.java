@@ -12,6 +12,7 @@ import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.service.reservations.IReservationService;
+import com.booking.ProjectISS.service.reviews.IReviewService;
 import com.booking.ProjectISS.service.users.guest.IGuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,8 @@ public class GuestController {
     private IGuestService guestService;
     @Autowired
     private IReservationService reservationService;
+    @Autowired
+    private IReviewService reviewService;
 
     //getAll
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -140,14 +143,14 @@ public class GuestController {
     //3.17
     @PostMapping(value = "/{id}/comment",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReviewDTO> createComment(@PathVariable("id") Long idReservation,@RequestBody Review review) throws Exception {
-        ReviewDTO reviewDTO=new ReviewDTO();
-        //ReviewDTO reviewDTO = reviewService.createByReservation(idReservation, review);
+//        ReviewDTO reviewDTO=new ReviewDTO();
+        ReviewDTO reviewDTO = reviewService.createByReservation(idReservation, review);
         return new ResponseEntity<ReviewDTO>(reviewDTO, HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/comment/{id}")
     public ResponseEntity<ReviewDTO> deleteComm(@PathVariable("id") Long id) {
-        //reviewService.delete(id);
+        reviewService.delete(id);
         return new ResponseEntity<ReviewDTO>(HttpStatus.NO_CONTENT);
     }
 

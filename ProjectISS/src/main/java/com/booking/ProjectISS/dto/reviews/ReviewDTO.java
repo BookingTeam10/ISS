@@ -75,6 +75,6 @@ public class ReviewDTO {
         this.setRate(review.getRate());
         this.setComment(review.getComment());
         this.setStatus(review.getStatus());
-        this.setReservationId(review.getId());
+        this.getReservation().setId(review.getId());
     }
 }
