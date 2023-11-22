@@ -1,6 +1,7 @@
 package com.booking.ProjectISS.service.users.user;
 
 import com.booking.ProjectISS.dto.users.GuestDTO;
+import com.booking.ProjectISS.dto.users.LoginDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.User;
@@ -22,4 +23,6 @@ public interface IUserService {
     UserDTO create(User user) throws Exception;
 
     UserDTO update(User user) throws Exception;
+
+    UserDTO findUser(LoginDTO login);
 }

@@ -2,6 +2,7 @@ package com.booking.ProjectISS.repository.accomodations;
 
 import com.booking.ProjectISS.enums.TypeAccommodation;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
+import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.User;
 import org.springframework.stereotype.Repository;
 
@@ -50,6 +51,31 @@ public class AccommodationRepository implements IAccommodationRepository{
         return accommodation;
     }
 
+    @Override
+    public Collection<Accommodation> findAllByOwner(Long id) {
+        List<Accommodation> accomodationsByOwner=new ArrayList<Accommodation>();
+        for(Accommodation a:this.accommodations){
+            if(a.getOwner().getId().equals(id)){
+                accomodationsByOwner.add(a);
+            }
+        }
+        return accomodationsByOwner;
+    }
+
+    @Override
+    public Accommodation createByOwner(Long id, Accommodation accommodation) {
+        Long idAcc = accommodation.getId();
+
+        if (idAcc == null) {
+            id = counter.incrementAndGet();
+            accommodation.setId(id);
+            accommodation.setOwner(new Owner(id));
+        }
+
+        this.accommodations.add(accommodation);
+        return accommodation;
+    }
+
     public List<Accommodation> getAccommodations() {
         return accommodations;
     }
@@ -64,12 +90,12 @@ public class AccommodationRepository implements IAccommodationRepository{
     //obrisati posle
     private List<Accommodation> loadAll() {
         this.accommodations=new ArrayList<Accommodation>();
-        Accommodation a1 = new Accommodation(1L,false,false,"dadasda",3,3,"dasasd",
-                TypeAccommodation.Apartment,2,2,null,null,null,null,null,null);
-        Accommodation a2 = new Accommodation(2L,false,false,"dadasda",3,3,"dasasd",
-                TypeAccommodation.Apartment,2,2,null,null,null,null,null,null);
-        Accommodation a3 = new Accommodation(3L,false,false,"dadasda",3,3,"dasasd",
-                TypeAccommodation.Apartment,2,2,null,null,null,null,null,null);
+        Accommodation a1 = new Accommodation(5L,false,false,"dadasda",3,3,"dasasd",
+                TypeAccommodation.Apartment,2,2,null,null,null,null,new Owner(6L,"a","b","c","d","065555555","fwae",true,false),null);
+        Accommodation a2 = new Accommodation(6L,true,false,"dadasda",3,3,"dasasd",
+                TypeAccommodation.Apartment,2,2,null,null,null,null,new Owner(9L,"a","b","c","d","065555555","fwae",true,true),null);
+        Accommodation a3 = new Accommodation(7L,false,false,"dadasda",3,3,"dasasd",
+                TypeAccommodation.Apartment,2,2,null,null,null,null,new Owner(6L,"a","b","c","d","065555555","fwae",true,false),null);
 
         accommodations.add(a1);
         accommodations.add(a2);

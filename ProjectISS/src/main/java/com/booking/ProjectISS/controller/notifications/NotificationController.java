@@ -1,5 +1,6 @@
 package com.booking.ProjectISS.controller.notifications;
 
+
 import com.booking.ProjectISS.dto.notifications.NotificationDTO;
 import com.booking.ProjectISS.model.notifications.Notification;
 import com.booking.ProjectISS.service.notifications.INotificationService;
@@ -55,6 +56,5 @@ public class NotificationController {
     public ResponseEntity<NotificationDTO> deleteNotification(@PathVariable("id") Long id) {
         notificationService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
+    } 
 }

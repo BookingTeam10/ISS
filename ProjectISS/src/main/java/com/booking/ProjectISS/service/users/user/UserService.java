@@ -1,5 +1,6 @@
 package com.booking.ProjectISS.service.users.user;
 
+import com.booking.ProjectISS.dto.users.LoginDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.repository.users.user.IUserRepository;
@@ -66,5 +67,11 @@ public class UserService implements IUserService {
     @Override
     public UserDTO update(User User) throws Exception {
         return null;
+    }
+
+    @Override
+    public UserDTO findUser(LoginDTO login) {
+        User user=UserRepository.findOne(login.getEmail(),login.getPassword());
+        return new UserDTO(user.getId(),user.getEmail());
     }
 }

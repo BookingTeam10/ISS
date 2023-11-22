@@ -14,16 +14,22 @@ public class UserDTO implements Serializable {
     private String name;
     private String surname;
 
+    private boolean isReported;
+
+    private boolean blocked;
+
 
     public UserDTO() {
     }
 
-    public UserDTO(Long id,String email, String name, String surname) {
+    public UserDTO(Long id,String email, String name, String surname, boolean isReported, boolean isBlocked) {
         this();
         this.id=id;
         this.email = email;
         this.name = name;
         this.surname = surname;
+        this.isReported=isReported;
+        this.blocked=isBlocked;
     }
 
     public UserDTO(User u) {
@@ -32,6 +38,8 @@ public class UserDTO implements Serializable {
         this.email = u.getEmail();
         this.name = u.getName();
         this.surname = u.getSurname();
+        this.isReported=u.isReported();
+        this.blocked=u.isBlocked();
     }
 
     public UserDTO(GuestDTO g){
@@ -48,6 +56,12 @@ public class UserDTO implements Serializable {
         this.email = g.getEmail();
         this.name = g.getName();
         this.surname = g.getSurname();
+    }
+
+    public UserDTO(Long id,String email){
+        this();
+        this.id=id;
+        this.email=email;
     }
 
     public Long getId() {
@@ -77,16 +91,41 @@ public class UserDTO implements Serializable {
         return surname;
     }
 
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public boolean isReported() {return isReported;}
+
+    public void setReported(boolean reported) {
+        isReported = reported;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
     public void setSurname(String surname) {
         this.surname = surname;
     }
     @Override
     public String toString() {
-        return "UserDTO{" +
+        return "User{" +
+                "id='" + id + '\'' +
                 "email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
+                ", rep=" + isReported +
+                ", blocked=" + blocked +
                 '}';
+    }
+
+    public void copyValues(User u) {
+        this.setEmail(u.getEmail());
+        this.setName(u.getName());
+        this.setSurname(u.getSurname());
+        this.setReported(u.isReported());
+        this.setBlocked(u.isBlocked());
     }
 
     public static class AdministratorDTO implements Serializable {
@@ -122,11 +161,6 @@ public class UserDTO implements Serializable {
 
         public void setEmail(String email) {
             this.email = email;
-        }
-        @Override
-        public String toString() {
-            return "AdministratorDTO{" +
-                    "email='" + email + '\'';
         }
     }
 }

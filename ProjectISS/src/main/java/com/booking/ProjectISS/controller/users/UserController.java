@@ -1,8 +1,9 @@
 package com.booking.ProjectISS.controller.users;
 
-import com.booking.ProjectISS.dto.users.GuestDTO;
-import com.booking.ProjectISS.dto.users.OwnerDTO;
-import com.booking.ProjectISS.dto.users.UserDTO;
+import com.booking.ProjectISS.dto.reviews.ReviewDTO;
+import com.booking.ProjectISS.dto.users.*;
+import com.booking.ProjectISS.model.reviews.Review;
+import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.service.users.guest.IGuestService;
 import com.booking.ProjectISS.service.users.owner.IOwnerService;
 import com.booking.ProjectISS.service.users.user.IUserService;
@@ -87,5 +88,26 @@ public class UserController {
         guestService.delete(id);
         ownerService.delete(id);
         return new ResponseEntity<UserDTO>(HttpStatus.NO_CONTENT);
+    }
+
+
+
+
+    //3.22 i promeniti status u owneru da je REPORT=TRUE
+    @PostMapping(value = "/{idR}/report/{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReviewDTO> createReport(@PathVariable("idR") Long idR, @PathVariable("id") Long id, @RequestBody Review review) throws Exception {
+        ReviewDTO reviewDTO=new ReviewDTO();
+        //ReviewDTO reviewDTO = reviewService.createByUser(idR,id, review);
+        return new ResponseEntity<ReviewDTO>(reviewDTO, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> logIn(@RequestBody LoginDTO login) {
+        UserDTO user = userService.findUser(login);
+        System.out.println(user);
+        if(user!=null)
+            return new ResponseEntity<UserDTO>(HttpStatus.OK);
+        else
+            return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
     }
 }

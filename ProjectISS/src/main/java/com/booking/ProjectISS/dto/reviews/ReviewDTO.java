@@ -70,4 +70,11 @@ public class ReviewDTO {
     public void setReservation(Reservation reservation) {
         this.reservation = reservation;
     }
+
+    public void copyValues(Review review) {
+        this.setRate(review.getRate());
+        this.setComment(review.getComment());
+        this.setStatus(review.getStatus());
+        this.setReservationId(review.getId());
+    }
 }
