@@ -12,7 +12,7 @@ import java.util.List;
 public class Reservation {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     private double totalPrice;
 //    @Enumerated(EnumType.STRING)
     private ReservationStatus status;
@@ -36,11 +36,11 @@ public class Reservation {
 
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -109,5 +109,8 @@ public class Reservation {
                 ", firstDate=" + firstDate +
                 ", numberOfNights=" + numberOfNights +
                 '}';
+    }
+
+    public void copyValues(Reservation reservation) {
     }
 }

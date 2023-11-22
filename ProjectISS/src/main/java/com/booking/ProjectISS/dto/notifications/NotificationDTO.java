@@ -3,6 +3,8 @@ package com.booking.ProjectISS.dto.notifications;
 
 import com.booking.ProjectISS.enums.NotificationStatus;
 import com.booking.ProjectISS.model.notifications.Notification;
+import com.booking.ProjectISS.model.users.Guest;
+import com.booking.ProjectISS.model.users.Owner;
 
 import java.util.Date;
 
@@ -10,19 +12,19 @@ public class NotificationDTO {
     private Long id;
     private String text;
     private NotificationStatus status;
-    private Long guestId;
-    private Long ownerId;
+    private Guest guest;
+    private Owner owner;
     private Date sentDate;
 
     public NotificationDTO() {
     }
 
-    public NotificationDTO(Long id, String text, NotificationStatus status, Long guestId, Long ownerId, Date sentDate) {
+    public NotificationDTO(Long id, String text, NotificationStatus status, Guest guest, Owner owner, Date sentDate) {
         this.id = id;
         this.text = text;
         this.status = status;
-        this.guestId = guestId;
-        this.ownerId = ownerId;
+        this.guest = guest;
+        this.owner = owner;
         this.sentDate = sentDate;
     }
 
@@ -30,8 +32,8 @@ public class NotificationDTO {
         this.id = notification.getId();
         this.text = notification.getText();
         this.status = notification.getStatus();
-        this.guestId = notification.getGuest().getId();
-        this.ownerId = notification.getOwner().getId();
+        this.guest = notification.getGuest();
+        this.owner = notification.getOwner();
         this.sentDate = notification.getSentDate();
     }
 
@@ -59,20 +61,20 @@ public class NotificationDTO {
         this.status = status;
     }
 
-    public Long getGuestId() {
-        return guestId;
+    public Guest getGuest() {
+        return guest;
     }
 
-    public void setGuestId(Long guestId) {
-        this.guestId = guestId;
+    public void setGuest(Guest guest) {
+        this.guest = guest;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public Owner getOwner() {
+        return owner;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 
     public Date getSentDate() {

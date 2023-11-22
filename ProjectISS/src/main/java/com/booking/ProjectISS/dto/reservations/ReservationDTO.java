@@ -1,34 +1,36 @@
 package com.booking.ProjectISS.dto.reservations;
 
 import com.booking.ProjectISS.enums.ReservationStatus;
+import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.reviews.Review;
+import com.booking.ProjectISS.model.users.Guest;
 
 import java.util.Date;
 import java.util.List;
 
 public class ReservationDTO {
-    private int id;
+    private long id;
     private double totalPrice;
     private ReservationStatus status;
     private Date firstDate;
     private int numberOfNights;
-    private int accommodationId;
-    private int guestId;
+    private Accommodation accommodation;
+    private Guest guest;
     private List<Review> reviews;
 
     public ReservationDTO() {
     }
 
-    public ReservationDTO(int id, double totalPrice, ReservationStatus status, Date firstDate, int numberOfNights,
-                          int accommodationId, int guestId, List<Review> reviews) {
+    public ReservationDTO(long id, double totalPrice, ReservationStatus status, Date firstDate, int numberOfNights,
+                          Accommodation accommodation, Guest guest, List<Review> reviews) {
         this.id = id;
         this.totalPrice = totalPrice;
         this.status = status;
         this.firstDate = firstDate;
         this.numberOfNights = numberOfNights;
-        this.accommodationId = accommodationId;
-        this.guestId = guestId;
+        this.accommodation = accommodation;
+        this.guest = guest;
         this.reviews = reviews;
     }
 
@@ -39,18 +41,17 @@ public class ReservationDTO {
         this.firstDate = reservation.getFirstDate();
         this.numberOfNights = reservation.getNumberOfNights();
 
-        // Assuming Accommodation and Guest objects have getId() methods
-        this.accommodationId = Math.toIntExact(reservation.getAccommodation().getId());
-        this.guestId = Math.toIntExact(reservation.getGuest().getId());
+        this.accommodation = reservation.getAccommodation();
+        this.guest = reservation.getGuest();
 
         this.reviews = reservation.getReviews();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -86,20 +87,20 @@ public class ReservationDTO {
         this.numberOfNights = numberOfNights;
     }
 
-    public int getAccommodationId() {
-        return accommodationId;
+    public Accommodation getAccommodation() {
+        return accommodation;
     }
 
-    public void setAccommodationId(int accommodationId) {
-        this.accommodationId = accommodationId;
+    public void setAccommodation(Accommodation accommodation) {
+        this.accommodation = accommodation;
     }
 
-    public int getGuestId() {
-        return guestId;
+    public Guest getGuest() {
+        return guest;
     }
 
-    public void setGuestId(int guestId) {
-        this.guestId = guestId;
+    public void setGuest(Guest guest) {
+        this.guest = guest;
     }
 
     public List<Review> getReviews() {

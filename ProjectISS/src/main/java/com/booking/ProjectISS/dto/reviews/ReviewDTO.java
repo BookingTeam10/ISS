@@ -1,24 +1,25 @@
 package com.booking.ProjectISS.dto.reviews;
 
 import com.booking.ProjectISS.enums.ReviewStatus;
+import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.reviews.Review;
 
 public class ReviewDTO {
-    private int id;
+    private long id;
     private double rate;
     private String comment;
     private ReviewStatus status;
-    private int reservationId;
+    private Reservation reservation;
 
     public ReviewDTO() {
     }
 
-    public ReviewDTO(int id, double rate, String comment, ReviewStatus status, int reservationId) {
+    public ReviewDTO(long id, double rate, String comment, ReviewStatus status, Reservation reservation) {
         this.id = id;
         this.rate = rate;
         this.comment = comment;
         this.status = status;
-        this.reservationId = reservationId;
+        this.reservation = reservation;
     }
 
     public ReviewDTO(Review review) {
@@ -26,15 +27,15 @@ public class ReviewDTO {
         this.rate = review.getRate();
         this.comment = review.getComment();
         this.status = review.getStatus();
-        this.reservationId = review.getReservation().getId();
+        this.reservation = review.getReservation();
     }
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -62,11 +63,11 @@ public class ReviewDTO {
         this.status = status;
     }
 
-    public int getReservationId() {
-        return reservationId;
+    public Reservation getReservation() {
+        return reservation;
     }
 
-    public void setReservationId(int reservationId) {
-        this.reservationId = reservationId;
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
     }
 }
