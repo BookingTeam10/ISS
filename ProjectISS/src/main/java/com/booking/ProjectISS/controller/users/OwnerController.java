@@ -1,7 +1,12 @@
 package com.booking.ProjectISS.controller.users;
 
+import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.dto.users.OwnerDTO;
+import com.booking.ProjectISS.enums.ReservationStatus;
+import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.service.reservations.IReservationService;
+import com.booking.ProjectISS.service.users.guest.IGuestService;
 import com.booking.ProjectISS.service.users.owner.IOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,7 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/owners")
@@ -17,6 +22,10 @@ public class OwnerController {
 
     @Autowired
     private IOwnerService ownerService;
+    @Autowired
+    private IReservationService reservationService;
+    @Autowired
+    private IGuestService guestService;
 
     //getAll
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,6 +44,24 @@ public class OwnerController {
 
     //getOne
 
+    @GetMapping(value = "/{id}/requests", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<ReservationDTO>> getGuestReservations(
+            @PathVariable("id") Long id,
+            @RequestParam(name = "location", required = false) String location,
+            @RequestParam(name = "date", required = false) String date,
+            @RequestParam(name = "status", required = false) ReservationStatus status){
+
+        List<Reservation> reservations = reservationService.getOwnerReservations(ownerService.findOne(id).getId());
+        if(location != null || date != null){
+            reservations = reservationService.searchReservations(reservations, location, date);
+        }
+        if(status != null){
+            reservations = reservationService.filterReservations(reservations, status);
+        }
+
+        return new ResponseEntity<Collection<ReservationDTO>>(reservationService.getReservationsDTO(reservations),
+                HttpStatus.OK);
+    }
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OwnerDTO> getOwner(@PathVariable("id") Long id) {
         OwnerDTO Owner = ownerService.findOneDTO(id);

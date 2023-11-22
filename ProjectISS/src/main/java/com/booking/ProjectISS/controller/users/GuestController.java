@@ -3,6 +3,7 @@ package com.booking.ProjectISS.controller.users;
 import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.enums.ReservationStatus;
+import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.service.reservations.IReservationService;
@@ -52,6 +53,12 @@ public class GuestController {
         return new ResponseEntity<GuestDTO>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value = "/{id}/favouriteAccommodations", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<Accommodation>> getFavouriteAccommodation(@PathVariable("id") Long id){
+
+        return new ResponseEntity<Collection<Accommodation>>(guestService.findOne(id).getFavouriteAccommodations(),
+                HttpStatus.OK);
+    }
     @GetMapping(value = "/{id}/requests", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ReservationDTO>> getGuestReservations(
         @PathVariable("id") Long id,
@@ -61,16 +68,17 @@ public class GuestController {
 
         List<Reservation> reservations = reservationService.getGuestReservations(guestService.findOne(id).getId());
         if(location != null || date != null){
-            reservations = reservationService.searchGuestReservations(reservations, location, date);
+            reservations = reservationService.searchReservations(reservations, location, date);
         }
         if(status != null){
-            reservations = reservationService.filterGuestReservations(reservations, status);
+            reservations = reservationService.filterReservations(reservations, status);
         }
 
 
         return new ResponseEntity<Collection<ReservationDTO>>(reservationService.getReservationsDTO(reservations),
         HttpStatus.OK);
     }
+
 
     //moze proci i ovo
 //    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -93,6 +101,16 @@ public class GuestController {
         return new ResponseEntity<GuestDTO>(HttpStatus.NO_CONTENT);
     }
 
+    @DeleteMapping(value = "/{id}/request/{reqId}")
+    public ResponseEntity<ReservationDTO> deleteGuestReservation(@PathVariable("id") Long id,
+                                                                 @PathVariable("reqId") Long reqId){
+        if(reservationService.findOne(reqId).getStatus() == ReservationStatus.ACCEPTED){
+            return new ResponseEntity<ReservationDTO>(HttpStatus.NOT_FOUND);
+        }else{
+            reservationService.delete(reqId);
+        }
+        return new ResponseEntity<ReservationDTO>(HttpStatus.NO_CONTENT);
+    }
     //post
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GuestDTO> createGuest(@RequestBody Guest guest) throws Exception {

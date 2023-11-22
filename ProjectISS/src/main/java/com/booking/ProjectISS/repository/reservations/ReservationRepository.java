@@ -66,20 +66,27 @@ public class ReservationRepository implements IReservationRepository{
                 TypeAccommodation.Apartment,2,2,null,null,null,loc,null,null);
 
         Guest g = new Guest();
+        Owner o = new Owner();
         g.setId(5L);
+        o.setId(6L);
 
         Reservation r1 = new Reservation(200, ReservationStatus.ACCEPTED, new Date(), new Date(), 5);
         r1.setAccommodation(a1);
         r1.setId(counter.incrementAndGet());
         r1.setGuest(g);
+        r1.getAccommodation().setOwner(o);
         Reservation r2 = new Reservation(100, ReservationStatus.REJECTED, new Date(), new Date(), 3);
         r2.setAccommodation(a2);
         r2.setGuest(g);
+        r2.getAccommodation().setOwner(o);
         r2.setId(counter.incrementAndGet());
         Reservation r3 = new Reservation(50, ReservationStatus.WAITING, new Date(), new Date(), 1);
         r3.setAccommodation(a3);
         r3.setGuest(g);
         r3.setId(counter.incrementAndGet());
+        Owner o2 = new Owner();
+        o2.setId(9L);
+        r3.getAccommodation().setOwner(o2);
         reservations.add(r1);
         reservations.add(r2);
         reservations.add(r3);

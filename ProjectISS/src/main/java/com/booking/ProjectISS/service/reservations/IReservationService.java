@@ -11,22 +11,30 @@ import java.util.List;
 
 public interface IReservationService {
     ReservationDTO findOneDTO(Long id);
+
     Reservation findOne(Long id);
+
     Collection<ReservationDTO> findAllDTO();
+
     Collection<Reservation> findAll();
+
     void delete(Long id);
+
     ReservationDTO create(Reservation reservation) throws Exception;
+
     ReservationDTO update(Reservation reservation) throws Exception;
 
     boolean hasOverlappingRequests(Reservation reservation);
 
     List<Reservation> getGuestReservations(long guestId);
 
-    List<Reservation> searchGuestReservations(List<Reservation> reservation, String location, String date);
+    List<Reservation> searchReservations(List<Reservation> reservation, String location, String date);
 
-    List<Reservation> filterGuestReservations(List<Reservation> reservations, ReservationStatus status);
+    List<Reservation> filterReservations(List<Reservation> reservations, ReservationStatus status);
 
     Collection<ReservationDTO> getReservationsDTO(List<Reservation> reservations);
 
     ReservationDTO convertToDTO(Reservation reservation);
+
+    List<Reservation> getOwnerReservations(Long ownerId);
 }

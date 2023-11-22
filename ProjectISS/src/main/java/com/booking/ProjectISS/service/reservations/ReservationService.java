@@ -91,7 +91,7 @@ public class ReservationService implements IReservationService{
     }
 
     @Override
-    public List<Reservation> searchGuestReservations(List<Reservation> reservations, String location, String date) {
+    public List<Reservation> searchReservations(List<Reservation> reservations, String location, String date) {
         return reservations.stream()
                 .filter(reservation -> matchesLocation(reservation, location) && matchesDates(reservation, date ))
                 .toList();
@@ -101,15 +101,25 @@ public class ReservationService implements IReservationService{
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            Date searchedDate = dateFormat.parse(date);
+            Date searchedDate = truncateTime(dateFormat.parse(date));
+            Date startOfDay = truncateTime(reservation.getStartDate());
+            Date endOfDay = truncateTime(reservation.getEndDate());
 
-            return reservation.getStartDate().equals(searchedDate) || reservation.getEndDate().equals(searchedDate)
-                    || (searchedDate.after(reservation.getStartDate()) && searchedDate.before(reservation.getEndDate()));
+            return searchedDate.equals(startOfDay) || searchedDate.equals(endOfDay)
+                    || (searchedDate.after(startOfDay) && searchedDate.before(endOfDay));
         } catch (ParseException e) {
             return true;
         }
+    }
 
-
+    private Date truncateTime(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
     }
 
     private boolean matchesLocation(Reservation reservation, String location) {
@@ -133,7 +143,7 @@ public class ReservationService implements IReservationService{
     }
 
     @Override
-    public List<Reservation> filterGuestReservations(List<Reservation> reservations, ReservationStatus status) {
+    public List<Reservation> filterReservations(List<Reservation> reservations, ReservationStatus status) {
         return reservations.stream()
                 .filter(reservation -> reservation.getStatus().equals(status))
                 .toList();
@@ -147,10 +157,16 @@ public class ReservationService implements IReservationService{
 
 
     }
-
     @Override
     public ReservationDTO convertToDTO(Reservation reservation) {
         return new ReservationDTO(reservation);
     }
 
+    @Override
+    public List<Reservation> getOwnerReservations(Long ownerId) {
+        return reservationRepository.findAll().stream()
+                .filter(reservation -> reservation.getAccommodation().getOwner().getId().equals(ownerId))
+                .toList();
+
+    }
 }
