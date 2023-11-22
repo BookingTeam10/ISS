@@ -56,10 +56,10 @@ public class ReservationRepository implements IReservationRepository{
     private List<Reservation> loadAll(){
         this.reservations = new ArrayList<Reservation>();
 
-        Location loc = new Location("Srbija", "Novi Sad", "Bulevar", 5, null);
+        Location loc = new Location(1L,"Srbija", "Novi Sad", "Bulevar", 5, null);
         Accommodation a1 = new Accommodation(1L,false,false,"dadasda",3,3,"dasasd",
                 TypeAccommodation.Apartment,2,2,null,null,null,loc,null,null);
-        loc = new Location("", "", "", 0, null);
+        loc = new Location(2L,"", "", "", 0, null);
         Accommodation a2 = new Accommodation(2L,false,false,"dadasda",3,3,"dasasd",
                 TypeAccommodation.Apartment,2,2,null,null,null,loc,null,null);
         Accommodation a3 = new Accommodation(3L,false,false,"dadasda",3,3,"dasasd",
