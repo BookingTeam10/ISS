@@ -142,6 +142,7 @@ public abstract class User implements Serializable {
         this.setSurname(user.getSurname());
         this.setPhone(user.getPhone());
         this.setAddress(user.getAddress());
+        this.setReported(user.isReported());
         this.setBlocked(user.isBlocked());
     }
 }

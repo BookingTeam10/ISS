@@ -33,6 +33,14 @@ public class OwnerController {
         return new ResponseEntity<Collection<OwnerDTO>>(Owners, HttpStatus.OK);
     }
 
+//without DTO
+
+//    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Collection<Owner>> getOwner() {
+//        Collection<Owner> Owners = OwnerService.findAll();
+//        return new ResponseEntity<Collection<Owner>>(Owners, HttpStatus.OK);
+//    }
+
     //getOne
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -45,12 +53,35 @@ public class OwnerController {
         return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value = "/{id}/accomodations", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getOwnerAccomodation(@PathVariable("id") Long id) {
+        OwnerDTO Owner = ownerService.findOneDTO(id);
+        if (Owner != null) {
+            Collection<AccommodationDTO> accommodationDTOs=accommodationService.findAllByOwnerDTO(id);
+            if(accommodationDTOs!=null){
+
+                return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOs, HttpStatus.OK);
+            }
+            return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
+    }
+
     //deleteOne
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<OwnerDTO> deleteOwner(@PathVariable("id") Long id) {
         ownerService.delete(id);
         return new ResponseEntity<OwnerDTO>(HttpStatus.NO_CONTENT);
     }
+
+    //post
+    @PostMapping(value = "/{id}/accomodations",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationDTO> createAccomodationByOwner(@PathVariable Long id, @RequestBody Accommodation accommodation) throws Exception {
+        AccommodationDTO accommodationDTO = accommodationService.createByOwner(id, accommodation);
+        return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.CREATED);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OwnerDTO> createOwner(@RequestBody Owner Owner) throws Exception {
         OwnerDTO OwnerDTO = ownerService.create(Owner);
@@ -62,49 +93,11 @@ public class OwnerController {
     public ResponseEntity<OwnerDTO> updateOwner(@RequestBody Owner Owner, @PathVariable Long id)
             throws Exception {
         Owner OwnerForUpdate = ownerService.findOne(id);
-        if (OwnerForUpdate == null)
+        if (OwnerForUpdate == null) {
             return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
-
+        }
         OwnerForUpdate.copyValues(Owner);
         OwnerDTO updatedOwner = ownerService.update(OwnerForUpdate);
         return new ResponseEntity<OwnerDTO>(updatedOwner, HttpStatus.OK);
     }
-
-    //part 3.8, get owners accomodation
-    @GetMapping(value = "/{id}/accommodations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getOwnerAccomodation(@PathVariable("id") Long id) {
-        OwnerDTO Owner = ownerService.findOneDTO(id);
-        if (Owner != null) {
-            Collection<AccommodationDTO> accommodationDTOs=accommodationService.findAllByOwnerDTO(id);
-            if(accommodationDTOs!=null)
-                return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOs, HttpStatus.OK);
-            return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
-    }
-
-    //3.5, create accommodation with id
-    @PostMapping(value = "/{id}/accommodations",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationDTO> createAccommodationByOwner(@PathVariable Long id, @RequestBody Accommodation accommodation) throws Exception {
-        AccommodationDTO accommodationDTO = accommodationService.createByOwner(id, accommodation);
-        return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.CREATED);
-    }
-
-//////    //3.8, update accommodation
-//    @PutMapping(value = "/{id1}/accommodations/{id2}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<AccommodationDTO> updateAccommodationOwner(@RequestBody Accommodation accommodation, @PathVariable Long id1,@PathVariable Long id2)
-//            throws Exception {
-//        OwnerDTO owner = ownerService.findOneDTO(id1);
-//        if (owner != null) {
-//            AccommodationDTO accommodationDTO=accommodationService.findOneOwnerDTO(id1,id2);
-//            if(accommodationDTO!=null)
-//                return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOs, HttpStatus.OK);
-//            return new ResponseEntity<AccommodationDTO>(HttpStatus.NOT_FOUND);
-//        }
-//
-//        return new ResponseEntity<AccommodationDTO>(HttpStatus.NOT_FOUND);
-//    }
-
-
 }

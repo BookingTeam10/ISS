@@ -6,6 +6,8 @@ import com.booking.ProjectISS.dto.users.OwnerDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.users.Administrator;
+import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.service.accommodation.AccommodationService;
 import com.booking.ProjectISS.service.accommodation.IAccommodationService;
 import com.booking.ProjectISS.service.users.administrator.IAdministratorService;
@@ -98,21 +100,40 @@ public class AdministratorController {
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodationPending, HttpStatus.OK);
     }
 
+    @PutMapping(value = "/accomodations/pending/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationDTO> updateAccomodationPeding(@RequestBody Accommodation accommodation, @PathVariable Long id)
+            throws Exception {
+        Accommodation accommodationUp=accommodationService.findOne(id);
+        if (accommodationUp == null) {
+            return new ResponseEntity<AccommodationDTO>(HttpStatus.NOT_FOUND);
+        }
+        accommodationUp.copyValues(accommodation);
+        return new ResponseEntity<AccommodationDTO>(new AccommodationDTO(accommodationUp), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/reportsUsers", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<UserDTO>> getReportedUsers() {
         List<UserDTO> userReport=new ArrayList<UserDTO>();
         Collection<UserDTO> users = userService.findAllDTO();
 
-//        for(UserDTO a:users){
-//            if(a.isReported()){
-//                userReport.add(a);
-//            }
-//        }
-
         for(UserDTO a:users){
-            System.out.println(a);
+            if(a.isReported() && !a.isBlocked()){
+                userReport.add(a);
+            }
         }
-
         return new ResponseEntity<Collection<UserDTO>>(userReport, HttpStatus.OK);
+    }
+
+
+    //srediti i napraviti novi PUT
+    @PutMapping(value = "/reportsOwner/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDTO> blockUsers(@RequestBody Owner o, @PathVariable Long id)
+            throws Exception {
+        UserDTO userDTO=userService.findOneDTO(id);
+        if (userDTO == null) {
+            return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
+        }
+        userDTO.copyValues(o);
+        return new ResponseEntity<UserDTO>(userDTO, HttpStatus.OK);
     }
 }
