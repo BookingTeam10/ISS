@@ -108,7 +108,21 @@ public class AccommodationDTO {
         this.typeAccomodation = a.getTypeAccomodation();
         this.rating = a.getRating();
         this.cancelDeadline = a.getCancelDeadline();
+        this.isAccepted = a.isAccepted();
     }
 
-
+    @Override
+    public String toString() {
+        return "AccommodationDTO{" +
+                "id=" + id +
+                ", description='" + description + '\'' +
+                ", minPeople=" + minPeople +
+                ", maxPeople=" + maxPeople +
+                ", photo='" + photo + '\'' +
+                ", typeAccomodation=" + typeAccomodation +
+                ", rating=" + rating +
+                ", cancelDeadline=" + cancelDeadline +
+                ", isAccepted=" + isAccepted +
+                '}';
+    }
 }

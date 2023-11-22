@@ -15,6 +15,9 @@ public interface IUserRepository {
 
     User create(User user);
 
+    User findOne(String email, String password);
+
+
     //for later, add @OneToOne
     //@Query("select new com.booking.ProjectISS.dto.GuestDTO(g) from Guest g")
     //public Collection<GuestDTO> findAllGuests();

@@ -38,6 +38,8 @@ public class UserDTO implements Serializable {
         this.email = u.getEmail();
         this.name = u.getName();
         this.surname = u.getSurname();
+        this.isReported=u.isReported();
+        this.blocked=u.isBlocked();
     }
 
     public UserDTO(GuestDTO g){
@@ -54,6 +56,12 @@ public class UserDTO implements Serializable {
         this.email = g.getEmail();
         this.name = g.getName();
         this.surname = g.getSurname();
+    }
+
+    public UserDTO(Long id,String email){
+        this();
+        this.id=id;
+        this.email=email;
     }
 
     public Long getId() {
@@ -88,6 +96,15 @@ public class UserDTO implements Serializable {
     }
 
     public boolean isReported() {return isReported;}
+
+    public void setReported(boolean reported) {
+        isReported = reported;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
     public void setSurname(String surname) {
         this.surname = surname;
     }
@@ -101,6 +118,14 @@ public class UserDTO implements Serializable {
                 ", rep=" + isReported +
                 ", blocked=" + blocked +
                 '}';
+    }
+
+    public void copyValues(User u) {
+        this.setEmail(u.getEmail());
+        this.setName(u.getName());
+        this.setSurname(u.getSurname());
+        this.setReported(u.isReported());
+        this.setBlocked(u.isBlocked());
     }
 
     public static class AdministratorDTO implements Serializable {

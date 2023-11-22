@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Accommodation {
     private Long id;
     private boolean accepted;
-    private boolean automaticActivation = false;
+    private boolean automaticActivation;
     private String description;
     private int minPeople;
     private int maxPeople;
@@ -206,6 +206,13 @@ public class Accommodation {
 
     //srediti ovo
     public void copyValues(Accommodation a) {
-
+        this.setAccepted(a.isAccepted());
+        this.description = a.getDescription();
+        this.minPeople = a.getMinPeople();
+        this.maxPeople = a.getMaxPeople();
+        this.photo =a.getPhoto();
+        this.typeAccomodation = a.getTypeAccomodation();
+        this.rating = a.getRating();
+        this.cancelDeadline = a.getCancelDeadline();
     }
 }

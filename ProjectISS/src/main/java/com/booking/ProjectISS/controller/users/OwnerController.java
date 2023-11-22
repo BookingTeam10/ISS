@@ -1,10 +1,12 @@
 package com.booking.ProjectISS.controller.users;
 
 import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
+import com.booking.ProjectISS.dto.reviews.ReviewDTO;
 import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.dto.users.OwnerDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
+import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.service.accommodation.IAccommodationService;
 import com.booking.ProjectISS.service.users.owner.IOwnerService;
@@ -99,5 +101,20 @@ public class OwnerController {
         OwnerForUpdate.copyValues(Owner);
         OwnerDTO updatedOwner = ownerService.update(OwnerForUpdate);
         return new ResponseEntity<OwnerDTO>(updatedOwner, HttpStatus.OK);
+    }
+
+    //pri proveravanju samo Type i Review menjati
+    @PutMapping(value = "/comment/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReviewDTO> updateComment(@RequestBody Review review, @PathVariable Long id)
+            throws Exception {
+        //ReviewDTO reviewDTOForUpdate = reviewService.findOne(id);
+        ReviewDTO reviewDTOForUpdate=null;
+        if (reviewDTOForUpdate == null) {
+            return new ResponseEntity<ReviewDTO>(HttpStatus.NOT_FOUND);
+        }
+        reviewDTOForUpdate.copyValues(review);
+        //ReviewDTO reviewDTO = reviewService.update(reviewDTOForUpdate);
+        ReviewDTO reviewDTO=null;
+        return new ResponseEntity<ReviewDTO>(reviewDTO, HttpStatus.OK);
     }
 }
