@@ -12,12 +12,13 @@ import java.util.List;
 public class Reservation {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     private double totalPrice;
 //    @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 //    @Temporal(TemporalType.DATE)
-    private Date firstDate;
+    private Date startDate;
+    private Date endDate;
     private int numberOfNights = 1;
 //    @OneToOne
     private Accommodation accommodation;
@@ -27,20 +28,21 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Reservation(double totalPrice, ReservationStatus status, Date firstDate, int numberOfNights) {
+    public Reservation(double totalPrice, ReservationStatus status, Date startDate, Date endDate, int numberOfNights) {
         this.totalPrice = totalPrice;
         this.status = status;
-        this.firstDate = firstDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.numberOfNights = numberOfNights;
     }
 
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -60,12 +62,20 @@ public class Reservation {
         this.status = status;
     }
 
-    public Date getFirstDate() {
-        return firstDate;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setFirstDate(Date firstDate) {
-        this.firstDate = firstDate;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     public int getNumberOfNights() {
@@ -106,8 +116,12 @@ public class Reservation {
                 "id=" + id +
                 ", totalPrice=" + totalPrice +
                 ", status=" + status +
-                ", firstDate=" + firstDate +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
                 ", numberOfNights=" + numberOfNights +
                 '}';
+    }
+
+    public void copyValues(Reservation reservation) {
     }
 }
