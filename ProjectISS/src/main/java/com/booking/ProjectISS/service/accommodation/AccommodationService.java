@@ -41,9 +41,8 @@ public class AccommodationService implements IAccommodationService {
     public Collection<AccommodationDTO> findAllDTO() {
         Collection<Accommodation> accommodations = accommodationRepository.findAll();
         Collection<AccommodationDTO> accommodationDTOS= new ArrayList<AccommodationDTO>();
-        for(Accommodation a : accommodations) {
+        for(Accommodation a : accommodations)
             accommodationDTOS.add(new AccommodationDTO(a));
-        }
         return accommodationDTOS;
     }
 
@@ -58,9 +57,8 @@ public class AccommodationService implements IAccommodationService {
 
     @Override
     public AccommodationDTO create(Accommodation accommodation) throws Exception {
-        if (accommodation.getId() != null) {
+        if (accommodation.getId() != null)
             throw new Exception("Id mora biti null prilikom perzistencije novog entiteta.");
-        }
         Accommodation savedAccommodation= accommodationRepository.create(accommodation);
         return new AccommodationDTO(savedAccommodation);
     }
@@ -68,14 +66,12 @@ public class AccommodationService implements IAccommodationService {
     public AccommodationDTO update(Accommodation guest) throws Exception {
         return null;
     }
-
     @Override
     public Collection<AccommodationDTO> findAllByOwnerDTO(Long id) {
         Collection<Accommodation> accommodations = accommodationRepository.findAllByOwner(id);
         Collection<AccommodationDTO> accommodationDTOS= new ArrayList<AccommodationDTO>();
-        for(Accommodation a : accommodations) {
+        for(Accommodation a : accommodations)
             accommodationDTOS.add(new AccommodationDTO(a));
-        }
         return accommodationDTOS;
     }
 
@@ -84,4 +80,14 @@ public class AccommodationService implements IAccommodationService {
         Accommodation savedAccommodation= accommodationRepository.createByOwner(id, accommodation);
         return new AccommodationDTO(savedAccommodation);
     }
+
+    //find 1 accommonation by id
+//    @Override
+//    public AccommodationDTO findOneOwnerDTO(Long idOwner,Long idAccommodation) {
+//        Collection<Accommodation> accommodations = accommodationRepository.findAllByOwner(idOwner,idAccommodation);
+//        Collection<AccommodationDTO> accommodationDTOS= new ArrayList<AccommodationDTO>();
+//        for(Accommodation a : accommodations)
+//            accommodationDTOS.add(new AccommodationDTO(a));
+//        return null;
+//    }
 }

@@ -38,16 +38,7 @@ public class AdministratorController {
         return new ResponseEntity<Collection<AdministratorDTO>>(administrators, HttpStatus.OK);
     }
 
-//without DTO
-
-//    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Collection<Administrator>> getAdministrator() {
-//        Collection<Administrator> administrators = AdministratorService.findAll();
-//        return new ResponseEntity<Collection<Administrator>>(administrators, HttpStatus.OK);
-//    }
-
     //getOne
-
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AdministratorDTO> getAdministrator(@PathVariable("id") Long id) {
         AdministratorDTO administrator = administratorService.findOneDTO(id);

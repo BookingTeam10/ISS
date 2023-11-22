@@ -18,4 +18,5 @@ public interface IAccommodationService {
     Collection<AccommodationDTO> findAllByOwnerDTO(Long id);
 
     AccommodationDTO createByOwner(Long id, Accommodation accommodation);
+
 }

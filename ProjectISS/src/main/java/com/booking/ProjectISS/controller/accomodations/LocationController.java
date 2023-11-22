@@ -37,7 +37,6 @@ public class LocationController {
         LocationDTO locationDTO =locationService.create(location);
         return new ResponseEntity<LocationDTO>(locationDTO, HttpStatus.CREATED);
     }
-
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LocationDTO> updateLocation(@RequestBody Location location, @PathVariable Long id)
             throws Exception {

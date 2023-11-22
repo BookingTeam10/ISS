@@ -45,20 +45,6 @@ public class GuestController {
         return new ResponseEntity<GuestDTO>(HttpStatus.NOT_FOUND);
     }
 
-    //moze proci i ovo
-//    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Guest> getGuest(@RequestParam("id") String email) {
-//        Collection<Guest> guests=new ArrayList<>();
-//        Guest guest=new Guest(5,"a","b","c","d","065555555","fwae");
-//        guests.add(guest);
-//        //Greeting greeting = greetingService.findOne(id);
-//
-//        if(email.equals("ab")){
-//            return new ResponseEntity<Guest>(guest, HttpStatus.OK);
-//        }
-//        return new ResponseEntity<Guest>(HttpStatus.NOT_FOUND);
-//    }
-
     //deleteOne
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<GuestDTO> deleteGuest(@PathVariable("id") Long id) {
