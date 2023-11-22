@@ -62,7 +62,7 @@ public class ReviewRepository implements IReviewRepository {
 
             Guest g = new Guest();
             g.setId(1L);
-            Reservation r1 = new Reservation(200, ReservationStatus.ACCEPTED, new Date(), 5);
+            Reservation r1 = new Reservation(200, ReservationStatus.ACCEPTED, new Date(), new Date(), 5);
             r1.setAccommodation(a1);
             r1.setId(1);
             r1.setGuest(g);

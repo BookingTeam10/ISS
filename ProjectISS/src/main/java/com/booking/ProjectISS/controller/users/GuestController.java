@@ -1,7 +1,11 @@
 package com.booking.ProjectISS.controller.users;
 
+import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.dto.users.GuestDTO;
+import com.booking.ProjectISS.enums.ReservationStatus;
+import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Guest;
+import com.booking.ProjectISS.service.reservations.IReservationService;
 import com.booking.ProjectISS.service.users.guest.IGuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/guests")
@@ -17,6 +22,8 @@ public class GuestController {
 
     @Autowired
     private IGuestService guestService;
+    @Autowired
+    private IReservationService reservationService;
 
     //getAll
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -43,6 +50,26 @@ public class GuestController {
         }
 
         return new ResponseEntity<GuestDTO>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(value = "/{id}/requests", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<ReservationDTO>> getGuestReservations(
+        @PathVariable("id") Long id,
+        @RequestParam(name = "location", required = false) String location,
+        @RequestParam(name = "date", required = false) String date,
+        @RequestParam(name = "status", required = false) ReservationStatus status){
+
+        List<Reservation> reservations = reservationService.getGuestReservations(guestService.findOne(id).getId());
+        if(location != null || date != null){
+            reservations = reservationService.searchGuestReservations(reservations, location, date);
+        }
+        if(status != null){
+            reservations = reservationService.filterGuestReservations(reservations, status);
+        }
+
+
+        return new ResponseEntity<Collection<ReservationDTO>>(reservationService.getReservationsDTO(reservations),
+        HttpStatus.OK);
     }
 
     //moze proci i ovo

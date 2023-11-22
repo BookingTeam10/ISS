@@ -2,9 +2,12 @@ package com.booking.ProjectISS.service.reservations;
 
 
 import com.booking.ProjectISS.dto.reservations.ReservationDTO;
+import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.reservations.Reservation;
+import com.booking.ProjectISS.model.users.Guest;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface IReservationService {
     ReservationDTO findOneDTO(Long id);
@@ -14,4 +17,16 @@ public interface IReservationService {
     void delete(Long id);
     ReservationDTO create(Reservation reservation) throws Exception;
     ReservationDTO update(Reservation reservation) throws Exception;
+
+    boolean hasOverlappingRequests(Reservation reservation);
+
+    List<Reservation> getGuestReservations(long guestId);
+
+    List<Reservation> searchGuestReservations(List<Reservation> reservation, String location, String date);
+
+    List<Reservation> filterGuestReservations(List<Reservation> reservations, ReservationStatus status);
+
+    Collection<ReservationDTO> getReservationsDTO(List<Reservation> reservations);
+
+    ReservationDTO convertToDTO(Reservation reservation);
 }

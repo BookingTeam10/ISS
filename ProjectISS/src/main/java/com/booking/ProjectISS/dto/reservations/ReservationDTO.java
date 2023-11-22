@@ -13,7 +13,8 @@ public class ReservationDTO {
     private long id;
     private double totalPrice;
     private ReservationStatus status;
-    private Date firstDate;
+    private Date startDate;
+    private Date endDate;
     private int numberOfNights;
     private Accommodation accommodation;
     private Guest guest;
@@ -22,12 +23,13 @@ public class ReservationDTO {
     public ReservationDTO() {
     }
 
-    public ReservationDTO(long id, double totalPrice, ReservationStatus status, Date firstDate, int numberOfNights,
+    public ReservationDTO(long id, double totalPrice, ReservationStatus status, Date startDate, Date endDate, int numberOfNights,
                           Accommodation accommodation, Guest guest, List<Review> reviews) {
         this.id = id;
         this.totalPrice = totalPrice;
         this.status = status;
-        this.firstDate = firstDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.numberOfNights = numberOfNights;
         this.accommodation = accommodation;
         this.guest = guest;
@@ -38,7 +40,8 @@ public class ReservationDTO {
         this.id = reservation.getId();
         this.totalPrice = reservation.getTotalPrice();
         this.status = reservation.getStatus();
-        this.firstDate = reservation.getFirstDate();
+        this.startDate = reservation.getStartDate();
+        this.endDate = reservation.getEndDate();
         this.numberOfNights = reservation.getNumberOfNights();
 
         this.accommodation = reservation.getAccommodation();
@@ -71,12 +74,20 @@ public class ReservationDTO {
         this.status = status;
     }
 
-    public Date getFirstDate() {
-        return firstDate;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setFirstDate(Date firstDate) {
-        this.firstDate = firstDate;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     public int getNumberOfNights() {

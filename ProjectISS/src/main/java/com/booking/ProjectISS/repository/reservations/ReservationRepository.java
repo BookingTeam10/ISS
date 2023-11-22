@@ -3,6 +3,7 @@ package com.booking.ProjectISS.repository.reservations;
 import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.enums.TypeAccommodation;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
+import com.booking.ProjectISS.model.accomodations.Location;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
@@ -55,25 +56,27 @@ public class ReservationRepository implements IReservationRepository{
     private List<Reservation> loadAll(){
         this.reservations = new ArrayList<Reservation>();
 
+        Location loc = new Location("Srbija", "Novi Sad", "Bulevar", 5, null);
         Accommodation a1 = new Accommodation(1L,false,false,"dadasda",3,3,"dasasd",
-                TypeAccommodation.Apartment,2,2,null,null,null,null,null,null);
+                TypeAccommodation.Apartment,2,2,null,null,null,loc,null,null);
+        loc = new Location("", "", "", 0, null);
         Accommodation a2 = new Accommodation(2L,false,false,"dadasda",3,3,"dasasd",
-                TypeAccommodation.Apartment,2,2,null,null,null,null,null,null);
+                TypeAccommodation.Apartment,2,2,null,null,null,loc,null,null);
         Accommodation a3 = new Accommodation(3L,false,false,"dadasda",3,3,"dasasd",
-                TypeAccommodation.Apartment,2,2,null,null,null,null,null,null);
+                TypeAccommodation.Apartment,2,2,null,null,null,loc,null,null);
 
         Guest g = new Guest();
-        g.setId(1L);
+        g.setId(5L);
 
-        Reservation r1 = new Reservation(200, ReservationStatus.ACCEPTED, new Date(), 5);
+        Reservation r1 = new Reservation(200, ReservationStatus.ACCEPTED, new Date(), new Date(), 5);
         r1.setAccommodation(a1);
         r1.setId(counter.incrementAndGet());
         r1.setGuest(g);
-        Reservation r2 = new Reservation(100, ReservationStatus.REJECTED, new Date(), 3);
+        Reservation r2 = new Reservation(100, ReservationStatus.REJECTED, new Date(), new Date(), 3);
         r2.setAccommodation(a2);
         r2.setGuest(g);
         r2.setId(counter.incrementAndGet());
-        Reservation r3 = new Reservation(50, ReservationStatus.WAITING, new Date(), 1);
+        Reservation r3 = new Reservation(50, ReservationStatus.WAITING, new Date(), new Date(), 1);
         r3.setAccommodation(a3);
         r3.setGuest(g);
         r3.setId(counter.incrementAndGet());
