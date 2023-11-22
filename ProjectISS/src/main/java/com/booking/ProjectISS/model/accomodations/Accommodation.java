@@ -204,8 +204,15 @@ public class Accommodation {
         return Objects.hash(id, accepted, automaticActivation, description, minPeople, maxPeople, photo, typeAccomodation, rating, cancelDeadline, prices, takenDates, amenities, location, owner, reservations);
     }
 
-    //srediti ovo
     public void copyValues(Accommodation a) {
-
+        this.setAccepted(a.isAccepted());
+        this.description = a.getDescription();
+        this.minPeople = a.getMinPeople();
+        this.maxPeople = a.getMaxPeople();
+        this.photo =a.getPhoto();
+        this.typeAccomodation = a.getTypeAccomodation();
+        this.rating = a.getRating();
+        this.cancelDeadline = a.getCancelDeadline();
     }
+
 }

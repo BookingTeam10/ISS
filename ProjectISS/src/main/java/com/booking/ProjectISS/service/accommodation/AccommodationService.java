@@ -4,6 +4,7 @@ import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
+import com.booking.ProjectISS.model.accomodations.Location;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.repository.accomodations.IAccommodationRepository;
@@ -11,8 +12,11 @@ import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 @Service
 public class AccommodationService implements IAccommodationService {
@@ -81,13 +85,26 @@ public class AccommodationService implements IAccommodationService {
         return new AccommodationDTO(savedAccommodation);
     }
 
-    //find 1 accommonation by id
-//    @Override
-//    public AccommodationDTO findOneOwnerDTO(Long idOwner,Long idAccommodation) {
-//        Collection<Accommodation> accommodations = accommodationRepository.findAllByOwner(idOwner,idAccommodation);
-//        Collection<AccommodationDTO> accommodationDTOS= new ArrayList<AccommodationDTO>();
-//        for(Accommodation a : accommodations)
-//            accommodationDTOS.add(new AccommodationDTO(a));
-//        return null;
-//    }
+    @Override
+    public Collection<AccommodationDTO> getAccommodationsSearched(Date start, Date end, int numPeople,String location) {
+        Collection<Accommodation> accommodations = accommodationRepository.findAll();
+        Collection<AccommodationDTO> accommodationDTOS= new ArrayList<AccommodationDTO>();
+        for (Accommodation a:accommodations){
+            if(a.getMinPeople()<=numPeople && a.getMaxPeople()>=numPeople && matchesLocation(a,location))
+                accommodationDTOS.add(new AccommodationDTO(a));
+        }
+        return accommodationDTOS;
+    }
+
+    private boolean matchesLocation(Accommodation accomodation, String location) {
+        if(location == null || location.isEmpty()){return true;}
+        Location accomodationLocation = accomodation.getLocation();
+        String country = accomodationLocation.getCountry();
+        String city = accomodationLocation.getCity();
+        String street = accomodationLocation.getStreet();
+        return containsIgnoreCase(country, location) || containsIgnoreCase(city, location) || containsIgnoreCase(street, location);
+    }
+    private boolean containsIgnoreCase(String str, String searchTerm) {
+        return str != null && str.toLowerCase().contains(searchTerm.toLowerCase());
+    }
 }

@@ -4,12 +4,14 @@ import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.service.accommodation.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/accommodations")
@@ -66,5 +68,18 @@ public class AccommodationController {
         accomodationForUpdate.copyValues(accommodation);
         AccommodationDTO updatedAcc = accommodationService.update(accomodationForUpdate);
         return new ResponseEntity<AccommodationDTO>(updatedAcc, HttpStatus.OK);
+    }
+
+    //3.9 for unregisted user
+    @GetMapping(value = "/accommodationsSearch")
+    public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
+            @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")  Date end,
+            @RequestParam(required = false) int numPeople){
+        Collection<AccommodationDTO> accommodationDTOS = accommodationService.getAccommodationsSearched(start,end,numPeople,location);
+        if(accommodationDTOS == null)
+            return new ResponseEntity<Collection<AccommodationDTO>>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(accommodationDTOS);
     }
 }

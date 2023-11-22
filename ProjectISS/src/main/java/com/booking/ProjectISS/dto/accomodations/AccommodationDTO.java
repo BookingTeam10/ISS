@@ -2,6 +2,7 @@ package com.booking.ProjectISS.dto.accomodations;
 
 import com.booking.ProjectISS.enums.TypeAccommodation;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
+import com.booking.ProjectISS.model.accomodations.Location;
 
 public class AccommodationDTO {
     private Long id;
@@ -12,8 +13,8 @@ public class AccommodationDTO {
     private TypeAccommodation typeAccomodation;
     private double rating;
     private int cancelDeadline;
-
     private boolean isAccepted;
+    private Location location;
     public Long getId() {
         return id;
     }
@@ -82,6 +83,18 @@ public class AccommodationDTO {
         this.cancelDeadline = cancelDeadline;
     }
 
+    public void setAccepted(boolean accepted) {
+        isAccepted = accepted;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
     public AccommodationDTO(){
 
     }
@@ -98,6 +111,19 @@ public class AccommodationDTO {
         this.isAccepted=isAccepted;
     }
 
+    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, String photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,Location location) {
+        this.id = id;
+        this.description = description;
+        this.minPeople = minPeople;
+        this.maxPeople = maxPeople;
+        this.photo = photo;
+        this.typeAccomodation = typeAccomodation;
+        this.rating = rating;
+        this.cancelDeadline = cancelDeadline;
+        this.isAccepted=isAccepted;
+        this.location = location;
+    }
+
     public AccommodationDTO(Accommodation a) {
         this();
         this.id = a.getId();
@@ -109,6 +135,7 @@ public class AccommodationDTO {
         this.rating = a.getRating();
         this.cancelDeadline = a.getCancelDeadline();
         this.isAccepted = a.isAccepted();
+        this.location = a.getLocation();
     }
 
     @Override
@@ -123,6 +150,7 @@ public class AccommodationDTO {
                 ", rating=" + rating +
                 ", cancelDeadline=" + cancelDeadline +
                 ", isAccepted=" + isAccepted +
+                ", location=" + location +
                 '}';
     }
 }
