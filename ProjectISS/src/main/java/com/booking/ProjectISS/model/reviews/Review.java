@@ -7,7 +7,7 @@ import com.booking.ProjectISS.model.reservations.Reservation;
 public class Review {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     private double rate;
     private String comment;
@@ -27,11 +27,11 @@ public class Review {
         this.status = status;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -76,6 +76,9 @@ public class Review {
                 ", comment='" + comment + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    public void copyValues(Review review) {
     }
 }
 
