@@ -5,6 +5,7 @@ import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.users.Owner;
 
 import java.util.Collection;
+import java.util.Date;
 
 public interface IAccommodationService {
     AccommodationDTO findOneDTO(Long id);
@@ -18,4 +19,6 @@ public interface IAccommodationService {
     Collection<AccommodationDTO> findAllByOwnerDTO(Long id);
 
     AccommodationDTO createByOwner(Long id, Accommodation accommodation);
+
+    Collection<AccommodationDTO> getAccommodationsSearched(Date start, Date end, int numPeople,String location);
 }

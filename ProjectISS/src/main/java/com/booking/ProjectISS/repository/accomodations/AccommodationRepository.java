@@ -2,6 +2,7 @@ package com.booking.ProjectISS.repository.accomodations;
 
 import com.booking.ProjectISS.enums.TypeAccommodation;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
+import com.booking.ProjectISS.model.accomodations.Location;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.User;
 import org.springframework.stereotype.Repository;
@@ -87,15 +88,14 @@ public class AccommodationRepository implements IAccommodationRepository{
         return counter;
     }
 
-    //obrisati posle
     private List<Accommodation> loadAll() {
         this.accommodations=new ArrayList<Accommodation>();
-        Accommodation a1 = new Accommodation(5L,false,false,"dadasda",3,3,"dasasd",
-                TypeAccommodation.Apartment,2,2,null,null,null,null,new Owner(6L,"a","b","c","d","065555555","fwae",true,false),null);
-        Accommodation a2 = new Accommodation(6L,true,false,"dadasda",3,3,"dasasd",
-                TypeAccommodation.Apartment,2,2,null,null,null,null,new Owner(9L,"a","b","c","d","065555555","fwae",true,true),null);
-        Accommodation a3 = new Accommodation(7L,false,false,"dadasda",3,3,"dasasd",
-                TypeAccommodation.Apartment,2,2,null,null,null,null,new Owner(6L,"a","b","c","d","065555555","fwae",true,false),null);
+        Accommodation a1 = new Accommodation(5L,false,false,"dadasda",2,4,"dasasd",
+                TypeAccommodation.Apartment,2,2,null,null,null,new Location("Srbija","Novi Sad","Bulevar"),new Owner(6L,"a","b","c","d","065555555","fwae",true,false),null);
+        Accommodation a2 = new Accommodation(6L,true,false,"dadasda",7,8,"dasasd",
+                TypeAccommodation.Apartment,2,2,null,null,null,new Location("Srbija","Novi Sad","Gunduliceva"),new Owner(9L,"a","b","c","d","065555555","fwae",true,true),null);
+        Accommodation a3 = new Accommodation(7L,false,false,"dadasda",3,5,"dasasd",
+                TypeAccommodation.Apartment,2,2,null,null,null,new Location("Srbija","Sabac","Save Mrkalja"),new Owner(6L,"a","b","c","d","065555555","fwae",true,false),null);
 
         accommodations.add(a1);
         accommodations.add(a2);
