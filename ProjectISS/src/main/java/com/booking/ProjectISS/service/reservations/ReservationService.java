@@ -6,6 +6,7 @@ import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.accomodations.Location;
+import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.repository.reservations.IReservationRepository;
 import org.apache.coyote.Request;
 import org.hibernate.dialect.SimpleDatabaseVersion;
@@ -168,5 +169,13 @@ public class ReservationService implements IReservationService{
                 .filter(reservation -> reservation.getAccommodation().getOwner().getId().equals(ownerId))
                 .toList();
 
+    }
+
+    @Override
+    public void cancelledAllReservation(Guest u) {
+        Collection<Reservation> reservations=reservationRepository.findAllByGuest(u.getId());
+        for(Reservation r:reservations){
+            r.setStatus(ReservationStatus.DELETED);
+        }
     }
 }

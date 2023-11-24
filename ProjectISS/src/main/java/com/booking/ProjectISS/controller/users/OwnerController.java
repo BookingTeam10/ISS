@@ -1,5 +1,13 @@
 package com.booking.ProjectISS.controller.users;
 import com.booking.ProjectISS.dto.reservations.ReservationDTO;
+import com.booking.ProjectISS.dto.reviews.ReviewDTO;
+import com.booking.ProjectISS.enums.ReservationStatus;
+import com.booking.ProjectISS.model.reservations.Reservation;
+import com.booking.ProjectISS.model.reviews.Review;
+import com.booking.ProjectISS.model.users.Guest;
+import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.service.reservations.IReservationService;
+import com.booking.ProjectISS.service.reviews.IReviewService;
 import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Owner;
@@ -38,6 +46,9 @@ public class OwnerController {
 
     @Autowired
     private IAccommodationService accommodationService;
+
+    @Autowired
+    private IReviewService reviewService;
 
     //getAll
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -131,21 +142,9 @@ public class OwnerController {
         if (Owner != null) {
             Collection<AccommodationDTO> accommodationDTOs=accommodationService.findAllByOwnerDTO(id);
             if(accommodationDTOs!=null){
-
                 return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOs, HttpStatus.OK);
             }
             return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
-    }
-
-    //3.8 without owners id, get, pregled smestaja
-    @GetMapping(value = "/accommodations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getOwnerAccommodation() {
-        Collection<Accommodation> accommodations = accommodationService.findAll();
-        if (accommodations != null){
-            return new ResponseEntity<Collection<Accommodation>>(accommodations, HttpStatus.OK);
         }
 
         return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
@@ -162,6 +161,29 @@ public class OwnerController {
         accommodationUpdate.copyValues(accommodation);
         AccommodationDTO updatedAccommodation = accommodationService.update(accommodationUpdate);
         return new ResponseEntity<AccommodationDTO>(updatedAccommodation, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/comment/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReviewDTO> updateComment(@RequestBody Review review, @PathVariable Long id)
+            throws Exception {
+        ReviewDTO reviewDTOForUpdate = reviewService.findOneDTO(id);
+        if (reviewDTOForUpdate == null) {
+            return new ResponseEntity<ReviewDTO>(HttpStatus.NOT_FOUND);
+        }
+        reviewDTOForUpdate.copyValues(review);
+        ReviewDTO reviewDTO = reviewService.update(reviewDTOForUpdate);
+        return new ResponseEntity<ReviewDTO>(reviewDTO, HttpStatus.OK);
+    }
+
+    //3.8 without owners id, get, pregled smestaja
+    @GetMapping(value = "/accommodations", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getOwnerAccommodation() {
+        Collection<Accommodation> accommodations = accommodationService.findAll();
+        if (accommodations != null){
+            return new ResponseEntity<Collection<Accommodation>>(accommodations, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
     }
 
     //3.9, search and filter accommodations
@@ -181,5 +203,16 @@ public class OwnerController {
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsDTO() {
         Collection<AccommodationDTO> accommodationDTOS = accommodationService.findAllDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOS, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "{idOwner}/reportGuest/{idGuest}")
+    public ResponseEntity<?> reportOwner(@PathVariable("idGuest") Long idGuest,@PathVariable("idOwner") Long idOwner) {
+        boolean canReport=ownerService.reportGuest(idGuest,idOwner);
+        if(canReport){
+            Guest guest=guestService.findOne(idGuest);
+            guest.setReported(true);
+            return new ResponseEntity<>("Guest can report", HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>("Guest cant report", HttpStatus.BAD_REQUEST);
     }
 }

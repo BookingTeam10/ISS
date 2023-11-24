@@ -10,7 +10,6 @@ public class Guest extends User {
     private int numberCanceledReservation;
     private boolean turnOnNotification;
     private List<Accommodation> favouriteAccommodations;
-
     public List<Accommodation> getFavouriteAccommodations() {
         return favouriteAccommodations;
     }

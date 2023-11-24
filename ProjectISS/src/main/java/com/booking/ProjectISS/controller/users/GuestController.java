@@ -1,6 +1,4 @@
 package com.booking.ProjectISS.controller.users;
-
-
 import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.reservations.Reservation;
@@ -12,10 +10,12 @@ import com.booking.ProjectISS.dto.users.OwnerDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.users.Guest;
+import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.service.accommodation.IAccommodationService;
 import com.booking.ProjectISS.service.reservations.IReservationService;
 import com.booking.ProjectISS.service.reviews.IReviewService;
 import com.booking.ProjectISS.service.users.guest.IGuestService;
+import com.booking.ProjectISS.service.users.owner.IOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -40,6 +40,9 @@ public class GuestController {
     private IReservationService reservationService;
     @Autowired
     private IReviewService reviewService;
+
+    @Autowired
+    private IOwnerService ownerService;
 
 
     //getAll
@@ -160,6 +163,17 @@ public class GuestController {
     public ResponseEntity<ReviewDTO> deleteComm(@PathVariable("id") Long id) {
         reviewService.delete(id);
         return new ResponseEntity<ReviewDTO>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping(value = "{idGuest}/reportOwner/{idOwner}")
+    public ResponseEntity<?> reportOwner(@PathVariable("idGuest") Long idGuest,@PathVariable("idOwner") Long idOwner) {
+        boolean canReport=guestService.reportOwner(idGuest,idOwner);
+        if(canReport){
+            Owner owner=ownerService.findOne(idOwner);
+            owner.setReported(true);
+            return new ResponseEntity<>("Guest can report", HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>("Guest cant report", HttpStatus.BAD_REQUEST);
     }
 
 

@@ -1,9 +1,12 @@
 package com.booking.ProjectISS.controller.users;
 
 import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
+import com.booking.ProjectISS.dto.reviews.ReviewDTO;
+import com.booking.ProjectISS.dto.reviews.ReviewDTOComment;
 import com.booking.ProjectISS.dto.users.AdministratorDTO;
 import com.booking.ProjectISS.dto.users.OwnerDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
+import com.booking.ProjectISS.enums.ReviewStatus;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.users.Administrator;
 import com.booking.ProjectISS.model.users.Guest;
@@ -11,6 +14,8 @@ import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.service.accommodation.AccommodationService;
 import com.booking.ProjectISS.service.accommodation.IAccommodationService;
+import com.booking.ProjectISS.service.reservations.IReservationService;
+import com.booking.ProjectISS.service.reviews.IReviewService;
 import com.booking.ProjectISS.service.users.administrator.IAdministratorService;
 import com.booking.ProjectISS.service.users.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +38,10 @@ public class AdministratorController {
     private IAccommodationService accommodationService;
     @Autowired
     private IUserService userService;
+    @Autowired
+    private IReviewService reviewService;
+    @Autowired
+    private IReservationService reservationService;
 
     //getAll
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -127,16 +136,43 @@ public class AdministratorController {
     }
 
     @PutMapping(value = "/reportsUsers/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> blockUsers(@RequestBody User u, @PathVariable Long id)
+    public ResponseEntity<?> blockUsers(@RequestBody User u, @PathVariable Long id)
             throws Exception {
         User user=userService.findOne(id);
         if (user == null)
             return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
+        if(!user.isReported()){
+            return new ResponseEntity<>("User does not have report", HttpStatus.OK);
+        }
         user.copyValues(u);
         if(u instanceof Guest){
-            int a=5;
-            //reservationService.cancelledAllReservation(u);
+            reservationService.cancelledAllReservation((Guest) u);
         }
         return new ResponseEntity<UserDTO>(new UserDTO(user), HttpStatus.OK);
+    }
+
+    //ova 3
+    @GetMapping(value = "/allComments", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<ReviewDTOComment>> allComments() {
+        Collection<ReviewDTOComment> reviews = reviewService.findAllDTOComments();
+        return new ResponseEntity<Collection<ReviewDTOComment>>(reviews, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/allComments/report", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<ReviewDTOComment>> allCommentsReport() {
+        Collection<ReviewDTOComment> newReviews=new ArrayList<>();
+        Collection<ReviewDTOComment> reviews = reviewService.findAllDTOComments();
+        for(ReviewDTOComment r:reviews){
+            if(r.getStatus()== ReviewStatus.REPORTED){
+                newReviews.add(r);
+            }
+        }
+        return new ResponseEntity<Collection<ReviewDTOComment>>(newReviews, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/allComments/report/{id}")
+    public ResponseEntity<ReviewDTO> deleteReview(@PathVariable("id") Long id) {
+        reviewService.deleteReport(id);
+        return new ResponseEntity<ReviewDTO>(HttpStatus.NO_CONTENT);
     }
 }

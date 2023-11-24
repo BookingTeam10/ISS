@@ -1,6 +1,8 @@
 package com.booking.ProjectISS.service.reviews;
 
 import com.booking.ProjectISS.dto.reviews.ReviewDTO;
+import com.booking.ProjectISS.dto.reviews.ReviewDTOComment;
+import com.booking.ProjectISS.enums.ReviewStatus;
 import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.repository.reviews.IReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +62,31 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public ReviewDTO createByReservation(Long idReservation, Review review) {
+    public ReviewDTO update(ReviewDTO review) throws Exception {
+        // Implement your update logic if needed
         return null;
+    }
+    @Override
+    public ReviewDTO createByReservation(Long idReservation, Review review) {
+
+        return null;
+    }
+
+    @Override
+    public Collection<ReviewDTOComment> findAllDTOComments() {
+        Collection<Review> reviews = reviewRepository.findAll();
+        Collection<ReviewDTOComment> reviewDTOs = new ArrayList<>();
+        for (Review r : reviews) {
+            reviewDTOs.add(new ReviewDTOComment(r));
+        }
+        return reviewDTOs;
+    }
+
+    @Override
+    public void deleteReport(Long id) {
+        Review review=reviewRepository.findOne(id);
+        if(review.getStatus()== ReviewStatus.REPORTED){
+            reviewRepository.delete(id);
+        }
     }
 }

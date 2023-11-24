@@ -20,4 +20,6 @@ public interface IGuestService {
     GuestDTO create(Guest guest) throws Exception;
 
     GuestDTO update(Guest guest) throws Exception;
+
+    boolean reportOwner(Long idGuest,Long idOwner);
 }

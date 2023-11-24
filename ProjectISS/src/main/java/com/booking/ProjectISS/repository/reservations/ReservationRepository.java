@@ -53,6 +53,17 @@ public class ReservationRepository implements IReservationRepository{
         return reservation;
     }
 
+    @Override
+    public Collection<Reservation> findAllByGuest(Long id) {
+        List<Reservation> reservationsByGuest=new ArrayList<Reservation>();
+        for(Reservation r:this.reservations){
+            if(r.getGuest().getId().equals(id)){
+                reservationsByGuest.add(r);
+            }
+        }
+        return reservationsByGuest;
+    }
+
     private List<Reservation> loadAll(){
         this.reservations = new ArrayList<Reservation>();
 

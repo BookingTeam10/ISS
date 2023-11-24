@@ -76,6 +76,16 @@ public class UserRepository implements IUserRepository {
         return null;
     }
 
+    @Override
+    public User findOne(String email) {
+        for(User u:this.users){
+            if(u.getEmail().equals(email)){
+                return u;
+            }
+        }
+        return null;
+    }
+
     public List<User> getUsers() {
         return users;
     }
