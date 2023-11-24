@@ -67,4 +67,9 @@ public class GuestService implements IGuestService {
     public GuestDTO update(Guest guest) throws Exception {
         return null;
     }
+
+    @Override
+    public boolean reportOwner(Long idGuest,Long idOwner) {
+        return true;
+    }
 }

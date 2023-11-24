@@ -5,6 +5,7 @@ import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Guest;
+import com.booking.ProjectISS.model.users.User;
 
 import java.util.Collection;
 import java.util.List;
@@ -37,4 +38,6 @@ public interface IReservationService {
     ReservationDTO convertToDTO(Reservation reservation);
 
     List<Reservation> getOwnerReservations(Long ownerId);
+
+    void cancelledAllReservation(Guest u);
 }

@@ -10,4 +10,5 @@ public interface IReservationRepository {
     Collection<Reservation> findAll();
     void delete(long id);
     Reservation create(Reservation reservation);
+    Collection<Reservation> findAllByGuest(Long id);
 }
