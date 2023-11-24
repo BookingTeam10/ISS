@@ -90,9 +90,6 @@ public class UserController {
         return new ResponseEntity<UserDTO>(HttpStatus.NO_CONTENT);
     }
 
-
-
-
     //3.22 i promeniti status u owneru da je REPORT=TRUE
     @PostMapping(value = "/{idR}/report/{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReviewDTO> createReport(@PathVariable("idR") Long idR, @PathVariable("id") Long id, @RequestBody Review review) throws Exception {
@@ -101,12 +98,12 @@ public class UserController {
         return new ResponseEntity<ReviewDTO>(reviewDTO, HttpStatus.CREATED);
     }
 
+    //3.2 function
     @PostMapping("/login")
     public ResponseEntity<?> logIn(@RequestBody LoginDTO login) {
         UserDTO user = userService.findUser(login);
-        System.out.println(user);
         if(user!=null)
-            return new ResponseEntity<UserDTO>(HttpStatus.OK);
+            return new ResponseEntity<UserDTO>(user,HttpStatus.OK);
         else
             return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
     }

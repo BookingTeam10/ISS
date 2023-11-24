@@ -6,7 +6,7 @@ import java.io.Serializable;
 //@Entity
 ////If annotation is @MappedSuperclass => 2 table (Guest+User), if annotation is @Entity => 1table (User=Guest+Host)
 //@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class User implements Serializable {
+public class User implements Serializable {
     //@javax.persistence.Id
     //    @Id
     //    @GeneratedValue(strategy = GenerationType.IDENTITY)         //increment add id+1, e.g. if previous id was 5, the next will be 6

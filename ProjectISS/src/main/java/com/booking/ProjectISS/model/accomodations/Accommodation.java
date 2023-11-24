@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Accommodation {
     private Long id;
     private boolean accepted;
-    private boolean automaticActivation;
+    private boolean automaticActivation = false;
     private String description;
     private int minPeople;
     private int maxPeople;
@@ -204,7 +204,6 @@ public class Accommodation {
         return Objects.hash(id, accepted, automaticActivation, description, minPeople, maxPeople, photo, typeAccomodation, rating, cancelDeadline, prices, takenDates, amenities, location, owner, reservations);
     }
 
-    //srediti ovo
     public void copyValues(Accommodation a) {
         this.setAccepted(a.isAccepted());
         this.description = a.getDescription();
@@ -215,4 +214,5 @@ public class Accommodation {
         this.rating = a.getRating();
         this.cancelDeadline = a.getCancelDeadline();
     }
+
 }

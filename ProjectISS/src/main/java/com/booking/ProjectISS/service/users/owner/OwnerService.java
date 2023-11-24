@@ -68,4 +68,11 @@ public class OwnerService implements IOwnerService {
     public OwnerDTO update(Owner owner) throws Exception {
         return null;
     }
+
+    @Override
+    public boolean reportGuest(Long idGuest, Long idOwner) {
+        return true;
+    }
+
+
 }

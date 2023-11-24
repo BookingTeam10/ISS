@@ -22,4 +22,6 @@ public interface IOwnerService {
     OwnerDTO create(Owner owner) throws Exception;
 
     OwnerDTO update(Owner owner) throws Exception;
+
+    boolean reportGuest(Long idGuest, Long idOwner);
 }

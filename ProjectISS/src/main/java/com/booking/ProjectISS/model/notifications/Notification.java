@@ -32,8 +32,6 @@ public class Notification {
         this.sentDate = sentDate;
     }
 
-    // Other methods, getters, setters, etc.
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -47,6 +45,7 @@ public class Notification {
     }
 
     public Long getId() {
+        if(id == null){return 0L;}
         return id;
     }
 
@@ -92,6 +91,9 @@ public class Notification {
 
     public void setSentDate(Date sentDate) {
         this.sentDate = sentDate;
+    }
+
+    public void copyValues(Notification notification) {
     }
 }
 
