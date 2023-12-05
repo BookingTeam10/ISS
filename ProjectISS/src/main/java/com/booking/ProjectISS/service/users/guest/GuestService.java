@@ -1,13 +1,16 @@
 package com.booking.ProjectISS.service.users.guest;
 
 import com.booking.ProjectISS.dto.users.GuestDTO;
+import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.users.Guest;
+import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class GuestService implements IGuestService {
@@ -17,20 +20,20 @@ public class GuestService implements IGuestService {
 
     @Override
     public GuestDTO findOneDTO(Long id) {
-        Guest guest=guestRepository.findOne(id);
-        if(guest==null){
+        Optional<Guest> Guest=guestRepository.findById(id);
+        if(Guest.isEmpty()){
             return null;
         }
-        return new GuestDTO(guest);
+        return new GuestDTO(Guest.get());
     }
 
     @Override
     public Guest findOne(Long id) {
-        Guest guest=guestRepository.findOne(id);
-        if(guest==null){
+        Optional<Guest> Guest=guestRepository.findById(id);
+        if(Guest.isEmpty()){
             return null;
         }
-        return guest;
+        return Guest.get();
     }
 
     @Override
@@ -51,16 +54,14 @@ public class GuestService implements IGuestService {
 
     @Override
     public void delete(Long id) {
-        guestRepository.delete(id);
+        Guest found = findOne(id);
+        guestRepository.delete(found);
+        guestRepository.flush();
     }
 
     @Override
     public GuestDTO create(Guest guest) throws Exception {
-        if (guest.getId() != null) {
-            throw new Exception("Id mora biti null prilikom perzistencije novog entiteta.");
-        }
-        Guest savedGuest = guestRepository.create(guest);
-        return new GuestDTO(savedGuest);
+        return new GuestDTO(guestRepository.save(new Guest(guest)));
     }
 
     @Override

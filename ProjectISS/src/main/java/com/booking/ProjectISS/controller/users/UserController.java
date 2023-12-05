@@ -3,7 +3,9 @@ package com.booking.ProjectISS.controller.users;
 import com.booking.ProjectISS.dto.reviews.ReviewDTO;
 import com.booking.ProjectISS.dto.users.*;
 import com.booking.ProjectISS.model.reviews.Review;
+import com.booking.ProjectISS.model.users.Administrator;
 import com.booking.ProjectISS.model.users.User;
+import com.booking.ProjectISS.service.users.administrator.IAdministratorService;
 import com.booking.ProjectISS.service.users.guest.IGuestService;
 import com.booking.ProjectISS.service.users.owner.IOwnerService;
 import com.booking.ProjectISS.service.users.user.IUserService;
@@ -27,6 +29,9 @@ public class UserController {
 
     @Autowired
     private IOwnerService ownerService;
+
+    @Autowired
+    private IAdministratorService administratorService;
 
     //getAll
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -100,11 +105,19 @@ public class UserController {
 
     //3.2 function
     @PostMapping("/login")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> logIn(@RequestBody LoginDTO login) {
+        System.out.println("USLO OVDE");
         UserDTO user = userService.findUser(login);
+        System.out.println(user);
         if(user!=null)
             return new ResponseEntity<UserDTO>(user,HttpStatus.OK);
-        else
+        else{
+            AdministratorDTO admin=administratorService.findAdministrator(login);
+            if(admin!=null){
+                return new ResponseEntity<AdministratorDTO>(admin,HttpStatus.OK);
+            }
+        }
             return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
     }
 }

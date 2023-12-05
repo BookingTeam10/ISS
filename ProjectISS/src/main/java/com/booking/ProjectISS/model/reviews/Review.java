@@ -2,20 +2,23 @@ package com.booking.ProjectISS.model.reviews;
 
 import com.booking.ProjectISS.enums.ReviewStatus;
 import com.booking.ProjectISS.model.reservations.Reservation;
+import jakarta.persistence.*;
 
-//@Entity
+@Entity
+@Table(name="review")
 public class Review {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private double rate;
     private String comment;
 
-//    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private ReviewStatus status;
 
-//    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "reservation_id", nullable = false)
     private Reservation reservation;
 
     public Review() {

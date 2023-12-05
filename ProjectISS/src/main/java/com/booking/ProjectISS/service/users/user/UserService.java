@@ -1,9 +1,11 @@
 package com.booking.ProjectISS.service.users.user;
 
+import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.dto.users.LoginDTO;
 import com.booking.ProjectISS.dto.users.RegistrationRequestDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.enums.TypeUser;
+import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.User;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
+
 @Service
 public class UserService implements IUserService {
 
@@ -28,26 +32,26 @@ public class UserService implements IUserService {
 
     @Override
     public UserDTO findOneDTO(Long id) {
-        User User=UserRepository.findOne(id);
-        if(User==null){
+        Optional<User> User=UserRepository.findById(id);
+        if(User.isEmpty()){
             return null;
         }
-        return new UserDTO(User);
+        return new UserDTO(User.get());
     }
 
     @Override
     public User findOne(Long id) {
-        User User=UserRepository.findOne(id);
-        if(User==null){
+        Optional<User> User=UserRepository.findById(id);
+        if(User.isEmpty()){
             return null;
         }
-        return User;
+        return User.get();
     }
 
     @Override
     public Collection<UserDTO> findAllDTO() {
         Collection<User> Users = UserRepository.findAll();
-        Collection<UserDTO> ret = new ArrayList<UserDTO>();       //primitive way, delete other this line after
+        Collection<UserDTO> ret = new ArrayList<UserDTO>();
         for(User g : Users) {
             ret.add(new UserDTO(g));
         }
@@ -62,16 +66,14 @@ public class UserService implements IUserService {
 
     @Override
     public void delete(Long id) {
-        UserRepository.delete(id);
+        User found = findOne(id);
+        UserRepository.delete(found);
+        UserRepository.flush();
     }
 
     @Override
-    public UserDTO create(User User) throws Exception {
-        if (User.getId() != null) {
-            throw new Exception("Id mora biti null prilikom perzistencije novog entiteta.");
-        }
-        User savedUser = UserRepository.create(User);
-        return new UserDTO(savedUser);
+    public UserDTO create(User user) throws Exception {
+        return new UserDTO(UserRepository.save(new User(user)));
     }
 
     @Override
@@ -81,7 +83,7 @@ public class UserService implements IUserService {
 
     @Override
     public UserDTO findUser(LoginDTO login) {
-        User user=UserRepository.findOne(login.getEmail(),login.getPassword());
+        User user=UserRepository.findByEmail(login.getEmail(),login.getPassword());
         if(user==null){
             return null;
         }
@@ -90,19 +92,24 @@ public class UserService implements IUserService {
 
     @Override
     public RegistrationRequestDTO register(RegistrationRequestDTO registrationRequest) {
-        User user=UserRepository.findOne(registrationRequest.getemail());
-        if(user==null){
-            if(registrationRequest.getTypeUser()== TypeUser.GUEST){
-                Guest g=new Guest(null,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress(),false,false);
-                GuestRepository.create(g);
-                return registrationRequest;
-            }
-            else{
-                Owner g=new Owner(null,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress(),false,false);
-                OwnerRepository.create(g);
-                return registrationRequest;
-            }
-        }
         return null;
     }
+
+//    @Override
+//    public RegistrationRequestDTO register(RegistrationRequestDTO registrationRequest) {
+//        User user=UserRepository.findOne(registrationRequest.getemail());
+//        if(user==null){
+//            if(registrationRequest.getTypeUser()== TypeUser.GUEST){
+//                Guest g=new Guest(null,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress(),false,false);
+//                GuestRepository.create(g);
+//                return registrationRequest;
+//            }
+//            else{
+//                Owner g=new Owner(null,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress(),false,false);
+//                OwnerRepository.create(g);
+//                return registrationRequest;
+//            }
+//        }
+//        return null;
+//    }
 }

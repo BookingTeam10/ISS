@@ -1,6 +1,8 @@
 package com.booking.ProjectISS.model.accomodations;
 
-public class Amenity {
+import java.io.Serializable;
+
+public class Amenity implements Serializable {
     private String name;
 
     public String getName() {

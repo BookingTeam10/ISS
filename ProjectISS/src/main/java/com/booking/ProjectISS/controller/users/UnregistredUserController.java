@@ -8,24 +8,21 @@ import com.booking.ProjectISS.service.users.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/unregistredUsers")
+@RequestMapping("/api")
 public class UnregistredUserController {
 
     @Autowired
     private IUserService userService;
 
     @PostMapping(value = "/register")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> registered(@RequestBody RegistrationRequestDTO registrationRequest){
         RegistrationRequestDTO registrationResponse = userService.register(registrationRequest);
-        if(registrationResponse == null){
-            return new ResponseEntity<>("User have account", HttpStatus.OK);
-        }
-        return new ResponseEntity<Owner>(HttpStatus.CREATED);
+        if(registrationResponse == null)
+            return new ResponseEntity<>( HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

@@ -21,12 +21,15 @@ public class AccommodationController {
 
     //GET ALL ACCOMMODATIONS
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsDTO() {
+        System.out.println(accommodationService.findAll());
         Collection<AccommodationDTO> accommodationDTOS = accommodationService.findAllDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOS, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<AccommodationDTO> getAccommodation(@PathVariable("id") Long id) {
         AccommodationDTO accommodationDTO = accommodationService.findOneDTO(id);
         if (accommodationDTO!= null) {

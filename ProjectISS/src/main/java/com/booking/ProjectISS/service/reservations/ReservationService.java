@@ -126,13 +126,14 @@ public class ReservationService implements IReservationService{
     private boolean matchesLocation(Reservation reservation, String location) {
         if(location == null || location.isEmpty()){return true;}
 
-        Location accomodationLocation = reservation.getAccommodation().getLocation();
+        //Location accomodationLocation = reservation.getAccommodation().getLocation();
 
-        String country = accomodationLocation.getCountry();
-        String city = accomodationLocation.getCity();
-        String street = accomodationLocation.getStreet();
+        //String country = accomodationLocation.getCountry();
+        //String city = accomodationLocation.getCity();
+        //String street = accomodationLocation.getStreet();
 
-        return containsIgnoreCase(country, location) || containsIgnoreCase(city, location) || containsIgnoreCase(street, location);
+        //return containsIgnoreCase(country, location) || containsIgnoreCase(city, location) || containsIgnoreCase(street, location);
+        return true;
     }
 
     private boolean containsIgnoreCase(String str, String searchTerm) {

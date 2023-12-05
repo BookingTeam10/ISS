@@ -1,13 +1,17 @@
 package com.booking.ProjectISS.service.users.administrator;
 
 import com.booking.ProjectISS.dto.users.AdministratorDTO;
+import com.booking.ProjectISS.dto.users.LoginDTO;
+import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.users.Administrator;
+import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.repository.users.administrator.IAdministratorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class AdministratorService implements IAdministratorService {
@@ -16,20 +20,20 @@ public class AdministratorService implements IAdministratorService {
 
     @Override
     public AdministratorDTO findOneDTO(Long id) {
-        Administrator administrator=administratorRepository.findOne(id);
-        if(administrator==null){
+        Optional<Administrator> Administrator= administratorRepository.findById(id);
+        if(Administrator.isEmpty()){
             return null;
         }
-        return new AdministratorDTO(administrator);
+        return new AdministratorDTO(Administrator.get());
     }
 
     @Override
     public Administrator findOne(Long id) {
-        Administrator administrator=administratorRepository.findOne(id);
-        if(administrator==null){
+        Optional<Administrator> Administrator=administratorRepository.findById(id);
+        if(Administrator.isEmpty()){
             return null;
         }
-        return administrator;
+        return Administrator.get();
     }
 
     @Override
@@ -50,20 +54,27 @@ public class AdministratorService implements IAdministratorService {
 
     @Override
     public void delete(Long id) {
-        administratorRepository.delete(id);
+        Administrator found = findOne(id);
+        administratorRepository.delete(found);
+        administratorRepository.flush();
     }
 
     @Override
     public AdministratorDTO create(Administrator administrator) throws Exception {
-        if (administrator.getId() != null) {
-            throw new Exception("Id mora biti null prilikom perzistencije novog entiteta.");
-        }
-        Administrator savedAdministrator = administratorRepository.create(administrator);
-        return new AdministratorDTO(savedAdministrator);
+        return new AdministratorDTO(administratorRepository.save(new Administrator(administrator)));
     }
 
     @Override
     public AdministratorDTO update(Administrator administrator) throws Exception {
         return null;
+    }
+
+    @Override
+    public AdministratorDTO findAdministrator(LoginDTO login) {
+        Administrator administrator=administratorRepository.findByEmail(login.getEmail(),login.getPassword());
+        if(administrator==null){
+            return null;
+        }
+        return new AdministratorDTO(administrator.getId(),administrator.getEmail());
     }
 }

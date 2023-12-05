@@ -1,6 +1,7 @@
 package com.booking.ProjectISS.service.accommodation;
 
 import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
+import com.booking.ProjectISS.dto.accomodations.LocationDTO;
 import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
@@ -17,28 +18,29 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class AccommodationService implements IAccommodationService {
 
     @Autowired
     private IAccommodationRepository accommodationRepository;
+    //ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
     @Override
     public AccommodationDTO findOneDTO(Long id) {
-        Accommodation accommodation = accommodationRepository.findOne(id);
-
-        if(accommodation ==null){
+        Optional<Accommodation> found = accommodationRepository.findById(id);
+        if(found.isEmpty())
             return null;
-        }
-        return new AccommodationDTO(accommodation);
+        return new AccommodationDTO(found.get());
     }
     @Override
     public Accommodation findOne(Long id) {
-        Accommodation accommodation= accommodationRepository.findOne(id);
-        if(accommodation==null){
+        Optional<Accommodation> found = accommodationRepository.findById(id);
+
+        if(found.isEmpty()){
             return null;
         }
-        return accommodation;
+        return found.get();
     }
 
     @Override
@@ -56,35 +58,33 @@ public class AccommodationService implements IAccommodationService {
     }
     @Override
     public void delete(Long id) {
-        accommodationRepository.delete(id);
+        Accommodation found = findOne(id);
+        accommodationRepository.delete(found);
+        accommodationRepository.flush();
     }
-
     @Override
     public AccommodationDTO create(Accommodation accommodation) throws Exception {
-        if (accommodation.getId() != null)
-            throw new Exception("Id mora biti null prilikom perzistencije novog entiteta.");
-        Accommodation savedAccommodation= accommodationRepository.create(accommodation);
-        return new AccommodationDTO(savedAccommodation);
+        return new AccommodationDTO(accommodationRepository.save(new Accommodation(accommodation)));
     }
     @Override
-    public AccommodationDTO update(Accommodation guest) throws Exception {
-        return null;
-    }
+    public AccommodationDTO update(Accommodation accommodation) throws Exception {return null;}
+
     @Override
     public Collection<AccommodationDTO> findAllByOwnerDTO(Long id) {
         Collection<Accommodation> accommodations = accommodationRepository.findAllByOwner(id);
+        System.out.println("AAAAA");
+        System.out.println(accommodations);
         Collection<AccommodationDTO> accommodationDTOS= new ArrayList<AccommodationDTO>();
         for(Accommodation a : accommodations)
             accommodationDTOS.add(new AccommodationDTO(a));
         return accommodationDTOS;
     }
-
     @Override
     public AccommodationDTO createByOwner(Long id, Accommodation accommodation) {
-        Accommodation savedAccommodation= accommodationRepository.createByOwner(id, accommodation);
-        return new AccommodationDTO(savedAccommodation);
+//        Accommodation savedAccommodation= accommodationRepository.createByOwner(id, accommodation);
+//        return new AccommodationDTO(savedAccommodation);
+        return null;
     }
-
     @Override
     public Collection<AccommodationDTO> getAccommodationsSearched(Date start, Date end, int numPeople,String location) {
         Collection<Accommodation> accommodations = accommodationRepository.findAll();
@@ -95,13 +95,13 @@ public class AccommodationService implements IAccommodationService {
         }
         return accommodationDTOS;
     }
-
     private boolean matchesLocation(Accommodation accomodation, String location) {
         if(location == null || location.isEmpty()){return true;}
         Location accomodationLocation = accomodation.getLocation();
         String country = accomodationLocation.getCountry();
         String city = accomodationLocation.getCity();
         String street = accomodationLocation.getStreet();
+
         return containsIgnoreCase(country, location) || containsIgnoreCase(city, location) || containsIgnoreCase(street, location);
     }
     private boolean containsIgnoreCase(String str, String searchTerm) {
