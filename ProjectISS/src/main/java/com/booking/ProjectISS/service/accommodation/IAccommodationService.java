@@ -15,10 +15,7 @@ public interface IAccommodationService {
     void delete(Long id);
     AccommodationDTO create(Accommodation accommodation) throws Exception;
     AccommodationDTO update(Accommodation accommodation) throws Exception;
-
     Collection<AccommodationDTO> findAllByOwnerDTO(Long id);
-
     AccommodationDTO createByOwner(Long id, Accommodation accommodation);
-
     Collection<AccommodationDTO> getAccommodationsSearched(Date start, Date end, int numPeople,String location);
 }

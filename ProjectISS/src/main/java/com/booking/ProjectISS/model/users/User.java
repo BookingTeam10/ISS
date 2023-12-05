@@ -1,24 +1,28 @@
 package com.booking.ProjectISS.model.users;
 
+import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.io.Serializable;
-//@Entity
-////If annotation is @MappedSuperclass => 2 table (Guest+User), if annotation is @Entity => 1table (User=Guest+Host)
-//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Entity
+@Table(name="Users")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User implements Serializable {
-    //@javax.persistence.Id
-    //    @Id
-    //    @GeneratedValue(strategy = GenerationType.IDENTITY)         //increment add id+1, e.g. if previous id was 5, the next will be 6
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)         //increment add id+1, e.g. if previous id was 5, the next will be 6
     private Long id;
+    @Column(nullable = false, unique = true)
     private String email;
     private String password;
+    @Column(nullable = false,name="firstname")
     private String name;
+    @Column(nullable = false,name="surname")
     private String surname;
     private String phone;
     private String address;
     private boolean blocked;
-
+    @Column(name="is_reported")
     private boolean isReported;
 
     public User(Long id,String email, String password, String name, String surname, String phone, String address) {

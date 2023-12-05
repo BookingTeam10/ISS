@@ -1,14 +1,25 @@
 package com.booking.ProjectISS.model.users;
 
-//@Entity
-public class Owner extends User {
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
+import java.io.Serializable;
+
+@Entity
+@Table(name="owners")
+public class Owner extends User implements Serializable {
+    @Column(name="total_price")
     private double totalPrice;
+    @Column(name="owner_rating")
     private double rating;
-
+    @Column(name="created_notification")
     private boolean createdNotification;
+    @Column(name="rate_notification")
     private boolean rateMeNotification;
+    @Column(name="cancelled_notification")
     private boolean cancelledNotification;
+    @Column(name="accommodation_notification")
     private boolean rateAccomodationNotification;
 
     public Owner(Long id,String email, String password, String name, String surname, String phone, String address,boolean rep, boolean blocked) {
@@ -60,4 +71,8 @@ public class Owner extends User {
         this.setAddress(ownerForUpdate.getAddress());
         this.setBlocked(ownerForUpdate.isBlocked());
     }
+    public Long id() {
+        return super.getId();
+    }
+
 }

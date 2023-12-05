@@ -64,12 +64,12 @@ public class GuestController {
     }
 
     //delete one, 3.4 for guest
-    @GetMapping(value = "/{id}/favouriteAccommodations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Accommodation>> getFavouriteAccommodation(@PathVariable("id") Long id){
-
-        return new ResponseEntity<Collection<Accommodation>>(guestService.findOne(id).getFavouriteAccommodations(),
-                HttpStatus.OK);
-    }
+//    @GetMapping(value = "/{id}/favouriteAccommodations", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Collection<Accommodation>> getFavouriteAccommodation(@PathVariable("id") Long id){
+//
+//        return new ResponseEntity<Collection<Accommodation>>(guestService.findOne(id).getFavouriteAccommodations(),
+//                HttpStatus.OK);
+//    }
     @GetMapping(value = "/{id}/requests", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ReservationDTO>> getGuestReservations(
         @PathVariable("id") Long id,

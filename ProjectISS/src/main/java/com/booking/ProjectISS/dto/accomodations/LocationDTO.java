@@ -66,4 +66,15 @@ public class LocationDTO {
     public void setId(Long id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "LocationDTO{" +
+                "id=" + id +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", street='" + street + '\'' +
+                ", number=" + number +
+                '}';
+    }
 }

@@ -23,8 +23,8 @@ public class UserRepository implements IUserRepository {
 
     public Collection<User> loadAll(){
         this.users=new ArrayList<User>();
-        Guest g1=new Guest(5L,"a","b","c","d","065555555","fwae",false,false);
-        Owner g2=new Owner(6L,"a","b","c","d","065555555","fwae",true,false);
+        Guest g1=new Guest(5L,"admin","admin","c","d","065555555","fwae",false,false);
+        Owner g2=new Owner(1L,"a","b","c","d","065555555","fwae",true,false);
         Guest g3=new Guest(7L,"a","b","c","d","065555555","fwae",false,false);
         Guest g4=new Guest(8L,"a","b","c","d","065555555","fwae",false,false);
         Owner g5=new Owner(9L,"a","b","c","d","065555555","fwae",true,true);

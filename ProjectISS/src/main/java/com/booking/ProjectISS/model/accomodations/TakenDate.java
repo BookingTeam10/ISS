@@ -1,8 +1,9 @@
 package com.booking.ProjectISS.model.accomodations;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class TakenDate {
+public class TakenDate implements Serializable {
     private Date firstDate;
     private Date lastDate;
 

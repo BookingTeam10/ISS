@@ -100,6 +100,7 @@ public class UserController {
 
     //3.2 function
     @PostMapping("/login")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<?> logIn(@RequestBody LoginDTO login) {
         UserDTO user = userService.findUser(login);
         if(user!=null)

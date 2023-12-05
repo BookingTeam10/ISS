@@ -4,26 +4,31 @@ import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.users.Guest;
+import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.List;
 
-//@Entity
+@Entity
+@Table(name = "reservation")
 public class Reservation {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private double totalPrice;
-//    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private ReservationStatus status;
-//    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.DATE)
     private Date startDate;
+    @Temporal(TemporalType.DATE)
     private Date endDate;
     private int numberOfNights = 1;
-//    @OneToOne
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "accommodation_id", nullable = false)
     private Accommodation accommodation;
     private Guest guest;
-//    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Review> reviews;
     public Reservation() {
     }
@@ -35,9 +40,6 @@ public class Reservation {
         this.endDate = endDate;
         this.numberOfNights = numberOfNights;
     }
-
-
-
     public long getId() {
         return id;
     }
