@@ -5,20 +5,31 @@ import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-//@Entity
-public class Notification {
+@Entity
+@Table(name = "notifications")
+public class Notification implements Serializable {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name= "id")
     private Long id;
-
+    @Column(name= "text")
     private String text;
+    @Column(name= "notification_status")
+    @Enumerated(EnumType.STRING)
     private NotificationStatus status;
+    @ManyToOne
+    @JoinColumn(name = "guest_id")
     private Guest guest;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
     private Owner owner;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "sent_date")
     private Date sentDate;
 
     public Notification() {

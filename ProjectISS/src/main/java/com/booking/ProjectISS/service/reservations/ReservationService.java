@@ -25,12 +25,15 @@ public class ReservationService implements IReservationService{
     private IReservationRepository reservationRepository;
     @Override
     public ReservationDTO findOneDTO(Long id) {
-        return new ReservationDTO(reservationRepository.findOne(id));
+        Optional<Reservation> found = reservationRepository.findById(id);
+        return found.map(ReservationDTO::new).orElse(null);
+
     }
 
     @Override
     public Reservation findOne(Long id) {
-        return reservationRepository.findOne(id);
+        Optional<Reservation> found = reservationRepository.findById(id);
+        return found.orElse(null);
     }
 
     @Override
@@ -52,19 +55,22 @@ public class ReservationService implements IReservationService{
 
     @Override
     public void delete(Long id) {
-        reservationRepository.delete(id);
+        Optional<Reservation> found = reservationRepository.findById(id);
+        if(found.isEmpty()){ return;}
+        reservationRepository.delete(found.get());
+        reservationRepository.flush();
     }
 
     @Override
     public ReservationDTO create(Reservation reservation) throws Exception {
-        Reservation savedReservations = reservationRepository.create(reservation);
-        return new ReservationDTO(savedReservations);
+
+        return new ReservationDTO(reservationRepository.save(reservation));
     }
 
     @Override
     public ReservationDTO update(Reservation reservation) throws Exception {
-        reservationRepository.delete(reservation.getId());
-        reservationRepository.create(reservation);
+        reservationRepository.delete(reservation);
+        reservationRepository.save(reservation);
 
         return new ReservationDTO(reservation);
     }
@@ -87,8 +93,6 @@ public class ReservationService implements IReservationService{
         return reservationRepository.findAll().stream()
                 .filter(reservation -> reservation.getGuest().getId().equals(guestId))
                 .toList();
-
-
     }
 
     @Override
@@ -174,9 +178,9 @@ public class ReservationService implements IReservationService{
 
     @Override
     public void cancelledAllReservation(Guest u) {
-        Collection<Reservation> reservations=reservationRepository.findAllByGuest(u.getId());
-        for(Reservation r:reservations){
-            r.setStatus(ReservationStatus.DELETED);
-        }
+//        Collection<Reservation> reservations=reservationRepository.findAllByGuest(u.getId());
+//        for(Reservation r:reservations){
+//            r.setStatus(ReservationStatus.DELETED);
+//        }
     }
 }

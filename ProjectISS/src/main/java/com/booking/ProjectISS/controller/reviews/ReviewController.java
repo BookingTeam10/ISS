@@ -19,11 +19,13 @@ public class ReviewController {
     private IReviewService reviewService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Collection<ReviewDTO>> getReviewDTO(){
         return new ResponseEntity<Collection<ReviewDTO>>(reviewService.findAllDTO(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<ReviewDTO> getReview(@PathVariable("id") Long id) {
         ReviewDTO reviewDTO = reviewService.findOneDTO(id);
         if (reviewDTO != null) {
@@ -34,12 +36,14 @@ public class ReviewController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<ReviewDTO> createReview(@RequestBody Review review) throws Exception {
         ReviewDTO reviewDTO = reviewService.create(review);
         return new ResponseEntity<>(reviewDTO, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<ReviewDTO> updateReview(@RequestBody Review review, @PathVariable Long id)
             throws Exception {
         Review updateReview = reviewService.findOne(id);
@@ -52,6 +56,7 @@ public class ReviewController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<ReviewDTO> deleteReview(@PathVariable("id") Long id) {
         reviewService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
