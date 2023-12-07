@@ -1,6 +1,7 @@
 package com.booking.ProjectISS.service.users.administrator;
 
 import com.booking.ProjectISS.dto.users.AdministratorDTO;
+import com.booking.ProjectISS.dto.users.LoginDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.users.Administrator;
 import com.booking.ProjectISS.model.users.User;
@@ -22,4 +23,6 @@ public interface IAdministratorService {
     AdministratorDTO create(Administrator administrator) throws Exception;
 
     AdministratorDTO update(Administrator administrator) throws Exception;
+
+    AdministratorDTO findAdministrator(LoginDTO login);
 }

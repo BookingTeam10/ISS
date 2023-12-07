@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 
 import java.io.Serializable;
 @Entity
-@Table(name="Users")
+@Table(name="users")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User implements Serializable {
 
@@ -14,13 +14,17 @@ public class User implements Serializable {
     private Long id;
     @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false,name="user_password")
     private String password;
     @Column(nullable = false,name="firstname")
     private String name;
     @Column(nullable = false,name="surname")
     private String surname;
+    @Column(nullable = false,name="phone")
     private String phone;
+    @Column(nullable = false,name="address")
     private String address;
+    @Column(nullable = false,name="is_blocked")
     private boolean blocked;
     @Column(name="is_reported")
     private boolean isReported;
@@ -54,6 +58,18 @@ public class User implements Serializable {
 
     public User(Long id) {
         this.id=id;
+    }
+
+    public User(User user){
+        this.id=user.id;
+        this.email = user.email;
+        this.password = user.password;
+        this.name = user.name;
+        this.surname = user.surname;
+        this.phone = user.phone;
+        this.address = user.address;
+        this.isReported=user.isReported;
+        this.blocked = user.blocked;
     }
 
     public Long getId() {

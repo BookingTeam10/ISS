@@ -2,20 +2,13 @@ package com.booking.ProjectISS.repository.users.administrator;
 
 import com.booking.ProjectISS.model.users.Administrator;
 import com.booking.ProjectISS.model.users.Guest;
+import com.booking.ProjectISS.model.users.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Collection;
 
-public interface IAdministratorRepository {
-
-    Administrator findOne(Long id);
-
-    Collection<Administrator> findAll();
-
-    void delete(Long id);
-
-    Administrator create(Administrator administrator);
-
-    //for later, add @OneToOne
-    //@Query("select new com.booking.ProjectISS.dto.GuestDTO(g) from Guest g")
-    //public Collection<GuestDTO> findAllGuests();
+public interface IAdministratorRepository extends JpaRepository<Administrator,Long> {
+    @Query("select a from Administrator a where a.email = ?1 and a.password=?2 ")
+    Administrator findByEmail(String email, String password);
 }

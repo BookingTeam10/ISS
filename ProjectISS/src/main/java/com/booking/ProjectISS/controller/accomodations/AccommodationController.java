@@ -3,9 +3,6 @@ package com.booking.ProjectISS.controller.accomodations;
 import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.service.accommodation.IAccommodationService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -13,11 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/accommodations")
 public class AccommodationController {
@@ -25,12 +20,9 @@ public class AccommodationController {
     private IAccommodationService accommodationService;
 
     //GET ALL ACCOMMODATIONS
-    @ApiOperation(value = "Get All Products Example", notes = "Returns all products from database.")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successful returned products.", response = ArrayList.class)})
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    //@CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Collection<AccommodationDTO>> getAll() {
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsDTO() {
         System.out.println(accommodationService.findAll());
         Collection<AccommodationDTO> accommodationDTOS = accommodationService.findAllDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOS, HttpStatus.OK);

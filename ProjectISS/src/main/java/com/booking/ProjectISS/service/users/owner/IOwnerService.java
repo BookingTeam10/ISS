@@ -1,11 +1,11 @@
 package com.booking.ProjectISS.service.users.owner;
 
-import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.dto.users.OwnerDTO;
-import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.model.users.User;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface IOwnerService {
 

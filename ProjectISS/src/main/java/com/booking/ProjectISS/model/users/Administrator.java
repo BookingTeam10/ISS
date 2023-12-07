@@ -1,21 +1,26 @@
 package com.booking.ProjectISS.model.users;
 
 import com.booking.ProjectISS.model.accomodations.Accommodation;
+import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Entity
-//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class Administrator {
+@Entity
+@Table(name="administrators")
+public class Administrator implements Serializable {
 
-    //@javax.persistence.Id
-    //    @Id
-    //    @GeneratedValue(strategy = GenerationType.IDENTITY)         //increment add id+1, e.g. if previous id was 5, the next will be 6
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)         //increment add id+1, e.g. if previous id was 5, the next will be 6
     private Long id;
+    @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false,name="user_password")
     private String password;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<User> users;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Accommodation> accomodations;
     public Administrator(Long id, String email, String password, List<User> users, List<Accommodation> accomodations) {
         this.id = id;
@@ -32,6 +37,14 @@ public class Administrator {
     }
 
     public Administrator(){
+        users=new ArrayList<>();
+        accomodations=new ArrayList<>();
+    }
+
+    public Administrator(Administrator administrator) {
+        this.id=administrator.id;
+        this.email=administrator.email;
+        this.password=administrator.password;
         users=new ArrayList<>();
         accomodations=new ArrayList<>();
     }

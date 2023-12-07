@@ -1,14 +1,17 @@
 package com.booking.ProjectISS.service.users.owner;
 
+import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.dto.users.OwnerDTO;
+import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
-import com.booking.ProjectISS.service.users.owner.IOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class OwnerService implements IOwnerService {
@@ -18,20 +21,21 @@ public class OwnerService implements IOwnerService {
 
     @Override
     public OwnerDTO findOneDTO(Long id) {
-        Owner owner=ownerRepository.findOne(id);
-        if(owner==null){
+        Optional<Owner> Owner=ownerRepository.findById(id);
+        if(Owner.isEmpty()){
             return null;
         }
-        return new OwnerDTO(owner);
+        return new OwnerDTO(Owner.get());
     }
 
     @Override
     public Owner findOne(Long id) {
-        Owner owner=ownerRepository.findOne(id);
-        if(owner==null){
+        Optional<Owner> found = ownerRepository.findById(id);
+
+        if(found.isEmpty()){
             return null;
         }
-        return owner;
+        return found.get();
     }
 
     @Override
@@ -52,16 +56,14 @@ public class OwnerService implements IOwnerService {
 
     @Override
     public void delete(Long id) {
-        ownerRepository.delete(id);
+        Owner found = findOne(id);
+        ownerRepository.delete(found);
+        ownerRepository.flush();
     }
 
     @Override
     public OwnerDTO create(Owner owner) throws Exception {
-        if (owner.getId() != null) {
-            throw new Exception("Id mora biti null prilikom perzistencije novog entiteta.");
-        }
-        Owner savedOwner = ownerRepository.create(owner);
-        return new OwnerDTO(savedOwner);
+        return new OwnerDTO(ownerRepository.save(new Owner(owner)));
     }
 
     @Override

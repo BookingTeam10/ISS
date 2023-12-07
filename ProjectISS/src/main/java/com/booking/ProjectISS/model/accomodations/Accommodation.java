@@ -4,7 +4,6 @@ import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.enums.TypeAccommodation;
 import jakarta.persistence.*;
-import lombok.Builder;
 
 import java.io.Serializable;
 import java.util.List;

@@ -55,6 +55,12 @@ public class Guest extends User {
     public Guest() {
     }
 
+    public Guest(Guest g) {
+        super(g.getId(),g.getEmail(), g.getPassword(), g.getName(), g.getSurname(), g.getPhone(), g.getAddress(),g.isReported(),g.isBlocked());
+        this.numberCanceledReservation=0;
+        this.turnOnNotification=true;
+    }
+
     public int getNumberCanceledReservation() {
         return numberCanceledReservation;
     }
