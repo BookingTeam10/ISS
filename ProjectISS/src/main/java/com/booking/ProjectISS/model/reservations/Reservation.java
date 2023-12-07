@@ -6,27 +6,36 @@ import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.users.Guest;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "reservation")
-public class Reservation {
+@Table(name = "reservations")
+public class Reservation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private long id;
+    @Column(name= "total_price")
     private double totalPrice;
     @Enumerated(EnumType.STRING)
+    @Column(name= "reservation_status")
     private ReservationStatus status;
     @Temporal(TemporalType.DATE)
+    @Column(name = "start_date")
     private Date startDate;
     @Temporal(TemporalType.DATE)
+    @Column(name = "end_date")
     private Date endDate;
+    @Column(name="number_of_nights")
     private int numberOfNights = 1;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "accommodation_id", nullable = false)
     private Accommodation accommodation;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "guest_id", nullable = false)
     private Guest guest;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Review> reviews;

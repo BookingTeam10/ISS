@@ -25,6 +25,7 @@ public class Accommodation implements Serializable {
     private int minPeople;
     @Column(name = "max_people")
     private int maxPeople;
+    @Column(name = "photo")
     private String photo;
     @Enumerated(EnumType.STRING)
     @Column(name = "type_acc")

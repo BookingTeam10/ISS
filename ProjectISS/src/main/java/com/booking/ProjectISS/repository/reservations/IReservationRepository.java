@@ -1,14 +1,15 @@
 package com.booking.ProjectISS.repository.reservations;
 
 import com.booking.ProjectISS.model.reservations.Reservation;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Collection;
+import java.util.Optional;
 
-public interface IReservationRepository {
+public interface IReservationRepository  extends JpaRepository<Reservation, Long> {
 
-    Reservation findOne(long id);
-    Collection<Reservation> findAll();
-    void delete(long id);
-    Reservation create(Reservation reservation);
-    Collection<Reservation> findAllByGuest(Long id);
+    @Query("select r from Reservation r where r.guest.id = ?1")
+    Reservation findByGuest(String guestId);
+
 }

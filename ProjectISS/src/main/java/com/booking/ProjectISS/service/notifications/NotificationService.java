@@ -2,14 +2,17 @@ package com.booking.ProjectISS.service.notifications;
 
 import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.dto.notifications.NotificationDTO;
+import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.notifications.Notification;
 import com.booking.ProjectISS.repository.notifications.INotificationRepository;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class NotificationService implements INotificationService {
@@ -19,12 +22,13 @@ public class NotificationService implements INotificationService {
 
     @Override
     public NotificationDTO findOneDTO(Long id) {
-        return new NotificationDTO(notificationRepository.findOne(id));
+        Optional<Notification> found = notificationRepository.findById(id);
+        return found.map(NotificationDTO::new).orElse(null);
     }
-
     @Override
     public Notification findOne(Long id) {
-        return notificationRepository.findOne(id);
+        Optional<Notification> found = notificationRepository.findById(id);
+        return found.orElse(null);
     }
 
     @Override
@@ -46,18 +50,21 @@ public class NotificationService implements INotificationService {
 
     @Override
     public void delete(Long id) {
-        notificationRepository.delete(id);
+        Optional<Notification> found = notificationRepository.findById(id);
+        if(found.isEmpty()){ return;}
+        notificationRepository.delete(found.get());
+        notificationRepository.flush();
     }
 
     @Override
     public NotificationDTO create(Notification notification) throws Exception {
-        Notification savedNotification = notificationRepository.create(notification);
+        Notification savedNotification = notificationRepository.save(notification);
         return new NotificationDTO(savedNotification);
     }
 
     @Override
     public NotificationDTO update(Notification notification) throws Exception {
-        // Implement your update logic if needed
+
         return null;
     }
 }

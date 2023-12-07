@@ -1,8 +1,10 @@
 package com.booking.ProjectISS.service.reviews;
 
+import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.dto.reviews.ReviewDTO;
 import com.booking.ProjectISS.dto.reviews.ReviewDTOComment;
 import com.booking.ProjectISS.enums.ReviewStatus;
+import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.repository.reviews.IReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class ReviewService implements IReviewService {
@@ -19,12 +22,15 @@ public class ReviewService implements IReviewService {
 
     @Override
     public ReviewDTO findOneDTO(Long id) {
-        return new ReviewDTO(reviewRepository.findOne(id));
+        Optional<Review> found = reviewRepository.findById(id);
+        return found.map(ReviewDTO::new).orElse(null);
+
     }
 
     @Override
     public Review findOne(Long id) {
-        return reviewRepository.findOne(id);
+        Optional<Review> found = reviewRepository.findById(id);
+        return found.orElse(null);
     }
 
     @Override
@@ -46,12 +52,15 @@ public class ReviewService implements IReviewService {
 
     @Override
     public void delete(Long id) {
-        reviewRepository.delete(id);
+        Optional<Review> found = reviewRepository.findById(id);
+        if(found.isEmpty()){ return;}
+        reviewRepository.delete(found.get());
+        reviewRepository.flush();
     }
 
     @Override
     public ReviewDTO create(Review review) throws Exception {
-        Review savedReview = reviewRepository.create(review);
+        Review savedReview = reviewRepository.save(review);
         return new ReviewDTO(savedReview);
     }
 
@@ -84,9 +93,9 @@ public class ReviewService implements IReviewService {
 
     @Override
     public void deleteReport(Long id) {
-        Review review=reviewRepository.findOne(id);
-        if(review.getStatus()== ReviewStatus.REPORTED){
-            reviewRepository.delete(id);
-        }
+//        Review review=reviewRepository.findOne(id);
+//        if(review.getStatus()== ReviewStatus.REPORTED){
+//            reviewRepository.delete(id);
+//        }
     }
 }

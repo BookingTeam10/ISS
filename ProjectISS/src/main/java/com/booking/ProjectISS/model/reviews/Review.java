@@ -4,16 +4,19 @@ import com.booking.ProjectISS.enums.ReviewStatus;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name="review")
-public class Review {
+public class Review  implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "rate")
     private double rate;
+    @Column(name = "review_comment")
     private String comment;
-
     @Enumerated(EnumType.STRING)
     private ReviewStatus status;
 
