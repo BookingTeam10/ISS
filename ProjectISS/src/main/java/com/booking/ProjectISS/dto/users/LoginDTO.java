@@ -1,6 +1,7 @@
 package com.booking.ProjectISS.dto.users;
 
 import java.io.Serializable;
+import jakarta.persistence.*;
 
 public class LoginDTO implements Serializable {
     private static final Long serialVersionUID = -8178366724097283480L;
@@ -8,6 +9,9 @@ public class LoginDTO implements Serializable {
     private String email;
 
     private String password;
+
+    @Transient
+    private String jwt;
 
     public LoginDTO(String email, String password) {
         this.email = email;
@@ -38,5 +42,12 @@ public class LoginDTO implements Serializable {
                 "email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+    public String getJwt() {
+        return jwt;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
     }
 }

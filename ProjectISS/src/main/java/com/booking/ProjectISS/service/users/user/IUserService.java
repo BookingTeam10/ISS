@@ -6,10 +6,11 @@ import com.booking.ProjectISS.dto.users.RegistrationRequestDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
 
-public interface IUserService {
+public interface IUserService extends UserDetailsService {
 
     UserDTO findOneDTO(Long id);
 
@@ -25,7 +26,7 @@ public interface IUserService {
 
     UserDTO update(User user) throws Exception;
 
-    UserDTO findUser(LoginDTO login);
+    User findUser(LoginDTO login);
 
     RegistrationRequestDTO register(RegistrationRequestDTO registrationRequest);
 }

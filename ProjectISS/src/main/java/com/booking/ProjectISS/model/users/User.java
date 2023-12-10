@@ -14,7 +14,7 @@ public class User implements Serializable {
     private Long id;
     @Column(nullable = false, unique = true)
     private String email;
-    @Column(nullable = false,name="user_password")
+    @Column(nullable = false,name="password")
     private String password;
     @Column(nullable = false,name="firstname")
     private String name;
@@ -164,5 +164,18 @@ public class User implements Serializable {
         this.setAddress(user.getAddress());
         this.setReported(user.isReported());
         this.setBlocked(user.isBlocked());
+    }
+
+    public String getRole() {
+        if(this instanceof Guest){
+            return "Guest";
+        }
+        if(this instanceof Owner){
+            return "Owner";
+        }
+        if(this instanceof Administrator){
+            return "Administrator";
+        }
+        return "User";
     }
 }

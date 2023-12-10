@@ -4,10 +4,12 @@ import com.booking.ProjectISS.dto.users.RegistrationRequestDTO;
 import com.booking.ProjectISS.enums.TypeUser;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.security.jwt.JwtTokenUtil;
 import com.booking.ProjectISS.service.users.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

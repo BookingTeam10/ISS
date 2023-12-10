@@ -14,6 +14,8 @@ import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
 import com.booking.ProjectISS.repository.users.user.IUserRepository;
 import com.booking.ProjectISS.service.users.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -82,17 +84,26 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDTO findUser(LoginDTO login) {
+    public User findUser(LoginDTO login) {
         User user=UserRepository.findByEmail(login.getEmail(),login.getPassword());
         if(user==null){
             return null;
         }
-        return new UserDTO(user.getId(),user.getEmail());
+        return user;
     }
 
     @Override
     public RegistrationRequestDTO register(RegistrationRequestDTO registrationRequest) {
         return null;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> ret = UserRepository.findByEmail(username);
+        if (!ret.isEmpty() ) {
+            return org.springframework.security.core.userdetails.User.withUsername(username).password(ret.get().getPassword()).roles(ret.get().getRole()).build();
+        }
+        throw new UsernameNotFoundException("User not found with this username: " + username);
     }
 
 //    @Override

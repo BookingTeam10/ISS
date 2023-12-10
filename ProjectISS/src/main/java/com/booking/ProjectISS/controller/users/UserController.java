@@ -4,7 +4,9 @@ import com.booking.ProjectISS.dto.reviews.ReviewDTO;
 import com.booking.ProjectISS.dto.users.*;
 import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.users.Administrator;
+import com.booking.ProjectISS.model.users.Token;
 import com.booking.ProjectISS.model.users.User;
+import com.booking.ProjectISS.security.jwt.JwtTokenUtil;
 import com.booking.ProjectISS.service.users.administrator.IAdministratorService;
 import com.booking.ProjectISS.service.users.guest.IGuestService;
 import com.booking.ProjectISS.service.users.owner.IOwnerService;
@@ -13,6 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -32,6 +39,12 @@ public class UserController {
 
     @Autowired
     private IAdministratorService administratorService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     //getAll
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -103,21 +116,19 @@ public class UserController {
         return new ResponseEntity<ReviewDTO>(reviewDTO, HttpStatus.CREATED);
     }
 
-    //3.2 function
     @PostMapping("/login")
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<?> logIn(@RequestBody LoginDTO login) {
-        System.out.println("USLO OVDE");
-        UserDTO user = userService.findUser(login);
-        System.out.println(user);
-        if(user!=null)
-            return new ResponseEntity<UserDTO>(user,HttpStatus.OK);
-        else{
-            AdministratorDTO admin=administratorService.findAdministrator(login);
-            if(admin!=null){
-                return new ResponseEntity<AdministratorDTO>(admin,HttpStatus.OK);
-            }
-        }
-            return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
+    public Token logIn(@RequestBody LoginDTO login) {
+        Token tokenJWT=new Token();
+        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(login.getEmail(),login.getPassword());
+        Authentication auth = authenticationManager.authenticate(authReq);
+
+        SecurityContext sc = SecurityContextHolder.getContext();
+        sc.setAuthentication(auth);
+
+        String token = jwtTokenUtil.generateToken(login.getEmail());
+        login.setJwt(token);
+        tokenJWT.setJwt(token);
+        return tokenJWT;
     }
 }
