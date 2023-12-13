@@ -1,27 +1,24 @@
 package com.booking.ProjectISS.service.users.user;
 
-import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.dto.users.LoginDTO;
 import com.booking.ProjectISS.dto.users.RegistrationRequestDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
-import com.booking.ProjectISS.enums.TypeUser;
-import com.booking.ProjectISS.model.accomodations.Accommodation;
-import com.booking.ProjectISS.model.users.Guest;
-import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
 import com.booking.ProjectISS.repository.users.user.IUserRepository;
-import com.booking.ProjectISS.service.users.user.IUserService;
+import com.booking.ProjectISS.service.users.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
-public class UserService implements IUserService {
+public class UserService implements IUserService, UserDetailsService {
 
     @Autowired
     private IUserRepository UserRepository;
@@ -29,6 +26,9 @@ public class UserService implements IUserService {
     private IGuestRepository GuestRepository;
     @Autowired
     private IOwnerRepository OwnerRepository;
+    @Autowired
+    private EmailService emailService;
+    int brojac=1;
 
     @Override
     public UserDTO findOneDTO(Long id) {
@@ -82,34 +82,74 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDTO findUser(LoginDTO login) {
+    public User findUser(LoginDTO login) {
         User user=UserRepository.findByEmail(login.getEmail(),login.getPassword());
         if(user==null){
             return null;
         }
-        return new UserDTO(user.getId(),user.getEmail());
+        return user;
     }
 
     @Override
-    public RegistrationRequestDTO register(RegistrationRequestDTO registrationRequest) {
-        return null;
+    public User register(RegistrationRequestDTO registrationRequest) {
+        User user=null;
+        System.out.println(registrationRequest.getTypeUser());
+        user=new User(0L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress());
+//        if(registrationRequest.getTypeUser()==TypeUser.GUEST){
+//            user=new Guest(0L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress());
+//        }
+//        if(registrationRequest.getTypeUser()==TypeUser.OWNER){
+//            user=new Owner(0L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress(),false,false);
+//        }
+        user.setActivationCode(UUID.randomUUID().toString());
+        user.setActivationExpiry(LocalDateTime.now().plusHours(24));
+        user.setActive(false);
+        sendActivationEmail(user.getEmail(), user.getActivationCode());
+        if(brojac==1){
+            UserRepository.save(user);
+            brojac++;
+        }
+        return user;
+    }
+    public void sendActivationEmail(String email, String activationCode) {
+        String activationUrl = "http://localhost:4200/activate?code=" + activationCode;
+        String emailContent = "Molimo kliknite na sledeći link da aktivirate vaš nalog: " + activationUrl;
+        emailService.sendVerificationEmail(email, "Aktivirajte vaš nalog", emailContent);
+    }
+    public User activateUser(String activationCode) {
+        User user=null;
+        List<User> ret = UserRepository.findAll();
+
+        for(User u:ret){
+            if(u.getActivationCode()!=null){
+                user=u;
+            }
+        }
+
+        //User user = UserRepository.findByActivationCode(activationCode);
+
+        if (user == null) {
+            return null;
+        }
+
+        user.setActive(true);
+        user.setActivationCode("");
+        user.setActivationExpiry(null);
+        if(brojac==2){
+            System.out.println("USLO OVDE VAZNO!");
+            UserRepository.save(user);
+            brojac=1;
+        }
+
+        return user;
     }
 
-//    @Override
-//    public RegistrationRequestDTO register(RegistrationRequestDTO registrationRequest) {
-//        User user=UserRepository.findOne(registrationRequest.getemail());
-//        if(user==null){
-//            if(registrationRequest.getTypeUser()== TypeUser.GUEST){
-//                Guest g=new Guest(null,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress(),false,false);
-//                GuestRepository.create(g);
-//                return registrationRequest;
-//            }
-//            else{
-//                Owner g=new Owner(null,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress(),false,false);
-//                OwnerRepository.create(g);
-//                return registrationRequest;
-//            }
-//        }
-//        return null;
-//    }
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> ret = UserRepository.findByEmail(email);
+        if (!ret.isEmpty() ) {
+            return org.springframework.security.core.userdetails.User.withUsername(email).password(ret.get().getPassword()).roles(ret.get().getRole().toString()).build();
+        }
+        throw new UsernameNotFoundException("User not found with this username: " + email);
+    }
 }
