@@ -37,13 +37,11 @@ public class Accommodation implements Serializable {
     @Column(name = "price")
     private List<Price> prices;
     @ElementCollection(fetch = FetchType.EAGER)
-    @Column(name = "taken_date")
+    @CollectionTable(name = "accommodation_taken_dates", joinColumns = @JoinColumn(name = "accommodation_id"))
     private List<TakenDate> takenDates;
     @ElementCollection(fetch = FetchType.EAGER)
-    @Column(name = "amenity")
+    @CollectionTable(name = "accommodation_amenity", joinColumns = @JoinColumn(name = "accommodation_id"))
     private List<Amenity> amenities;
-
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id",referencedColumnName = "id", nullable = false)
     private Location location;

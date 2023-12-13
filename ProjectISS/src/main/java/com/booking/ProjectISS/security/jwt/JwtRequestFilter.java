@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,12 +34,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             String requestTokenHeader = request.getHeader("Authorization");
             String username = null;
             String jwtToken = null;
+            System.out.println(requestTokenHeader);
             if (requestTokenHeader != null && requestTokenHeader.contains("Bearer")) {
                 jwtToken = requestTokenHeader.substring(requestTokenHeader.indexOf("Bearer ") + 7);
                 System.out.println(">>>>>JWT TOKEN: " + jwtToken);
                 try {
                     username = jwtTokenUtil.getUsernameFromToken(jwtToken);
                     UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
+                    System.out.println("GRESKA");
+                    System.out.println(userDetails);
                     if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
                         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());

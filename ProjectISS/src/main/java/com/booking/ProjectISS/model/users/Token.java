@@ -3,8 +3,6 @@ package com.booking.ProjectISS.model.users;
 import jakarta.persistence.Transient;
 
 public class Token {
-
-    @Transient
     private String jwt;
 
     public Token(){}

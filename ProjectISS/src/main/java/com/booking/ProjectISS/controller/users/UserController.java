@@ -11,6 +11,7 @@ import com.booking.ProjectISS.service.users.administrator.IAdministratorService;
 import com.booking.ProjectISS.service.users.guest.IGuestService;
 import com.booking.ProjectISS.service.users.owner.IOwnerService;
 import com.booking.ProjectISS.service.users.user.IUserService;
+import com.booking.ProjectISS.service.users.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +21,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -30,6 +33,9 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    public UserDetailsService userDetailsService;
 
     @Autowired
     private IGuestService guestService;
@@ -125,9 +131,11 @@ public class UserController {
 
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
-
-        String token = jwtTokenUtil.generateToken(login.getEmail());
-        login.setJwt(token);
+        //UserDetails user= (UserDetails) auth.getPrincipal();
+        UserDetails userDetails = userDetailsService.loadUserByUsername(login.getEmail());
+        System.out.println("userDetails");
+        System.out.println(userDetails);
+        String token = jwtTokenUtil.generateToken(userDetails);;
         tokenJWT.setJwt(token);
         return tokenJWT;
     }

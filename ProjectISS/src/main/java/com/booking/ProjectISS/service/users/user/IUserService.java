@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
 
-public interface IUserService extends UserDetailsService {
+public interface IUserService {
 
     UserDTO findOneDTO(Long id);
 
@@ -28,5 +28,7 @@ public interface IUserService extends UserDetailsService {
 
     User findUser(LoginDTO login);
 
-    RegistrationRequestDTO register(RegistrationRequestDTO registrationRequest);
+    User register(RegistrationRequestDTO registrationRequest);
+
+    User activateUser(String code);
 }

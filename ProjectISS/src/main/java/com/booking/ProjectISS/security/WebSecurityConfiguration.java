@@ -12,37 +12,42 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)  // <-- Obavezno za @PreAuthorize
 public class WebSecurityConfiguration {
 
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity
-				.csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/api/**").permitAll()
-						.anyRequest().authenticated()
-				)
-				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.httpBasic(Customizer.withDefaults());
-		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-		return httpSecurity.build();
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.csrf().disable().authorizeRequests()
+				.requestMatchers("/").permitAll()
+				.requestMatchers("/api/users/login").permitAll()
+				.requestMatchers("/api/activate").permitAll()
+				.requestMatchers("/api/accommodations/").authenticated()
+//                .requestMatchers("/api/register/").permitAll()
+//                .requestMatchers("/api/notifications/").authenticated()
+//                .requestMatchers("/api/reservations/").authenticated()
+//                .requestMatchers("/api/reviews/").authenticated()
+				.and()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // ne koristimo HttpSession i kukije
+		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // JWT procesiramo pre autentikacije
+
+		return http.build();
 	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		PasswordEncoder encoder = new BCryptPasswordEncoder();// PasswordEncoderFactories.createDelegatingPasswordEncoder();
-		//System.out.println(encoder.encode("admin"));
-		return encoder;
+        PasswordEncoder encoder = new BCryptPasswordEncoder();// PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return encoder;
 	}
 
 	@Bean

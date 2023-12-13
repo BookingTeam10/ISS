@@ -14,5 +14,6 @@ public interface IUserRepository extends JpaRepository<User,Long> {
     User findByEmail(String email, String password);
 
     Optional<User> findByEmail(String email);
-
+    @Query("select u from User u where u.activationCode = ?1")
+    User findByActivationCode(String activationCode);
 }
