@@ -20,4 +20,5 @@ public interface IReviewService {
     Collection<ReviewDTOComment> findAllDTOComments();
 
     void deleteReport(Long id);
+    ReviewDTO findByReservation(Long reservationId);
 }

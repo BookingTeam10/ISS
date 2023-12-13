@@ -47,6 +47,28 @@ public class ReservationService implements IReservationService{
 
         return reservationDTOS;
     }
+    @Override
+    public Collection<ReservationDTO> findAllNotAcceptedDTO() {
+        Collection<Reservation> reservations = reservationRepository.findAll();
+        Collection<ReservationDTO> reservationDTOS = new ArrayList<>();
+
+        for(Reservation r: reservations){
+            if (r.getStatus() != ReservationStatus.ACCEPTED)
+                reservationDTOS.add(new ReservationDTO(r));
+        }
+
+        return reservationDTOS;
+    }
+
+    @Override
+    public Collection<ReservationDTO> findByAccommodation(Long id) {
+        Collection<Reservation> reservations = reservationRepository.findByAccommodation(id);
+        Collection<ReservationDTO> reservationDTOS = new ArrayList<>();
+        for(Reservation r: reservations){
+                reservationDTOS.add(new ReservationDTO(r));
+        }
+        return reservationDTOS;
+    }
 
     @Override
     public Collection<Reservation> findAll() {
@@ -55,6 +77,7 @@ public class ReservationService implements IReservationService{
 
     @Override
     public void delete(Long id) {
+        //staviti ako ima review sa id od rezervacije da ne moze da se obrise
         Optional<Reservation> found = reservationRepository.findById(id);
         if(found.isEmpty()){ return;}
         reservationRepository.delete(found.get());
@@ -173,7 +196,6 @@ public class ReservationService implements IReservationService{
                 .toList();
 
     }
-
     @Override
     public void cancelledAllReservation(Guest u) {
 //        Collection<Reservation> reservations=reservationRepository.findAllByGuest(u.getId());

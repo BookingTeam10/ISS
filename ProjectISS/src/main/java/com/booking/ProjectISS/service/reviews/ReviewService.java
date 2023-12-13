@@ -80,7 +80,6 @@ public class ReviewService implements IReviewService {
 
         return null;
     }
-
     @Override
     public Collection<ReviewDTOComment> findAllDTOComments() {
         Collection<Review> reviews = reviewRepository.findAll();
@@ -90,7 +89,6 @@ public class ReviewService implements IReviewService {
         }
         return reviewDTOs;
     }
-
     @Override
     public void deleteReport(Long id) {
 //        Review review=reviewRepository.findOne(id);
@@ -98,4 +96,12 @@ public class ReviewService implements IReviewService {
 //            reviewRepository.delete(id);
 //        }
     }
+
+    @Override
+    public ReviewDTO findByReservation(Long reservationId) {
+        if (reviewRepository.findByReservation(reservationId)!=null)
+            return new ReviewDTO(reviewRepository.findByReservation(reservationId));
+        return null;
+    }
+
 }

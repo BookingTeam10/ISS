@@ -40,4 +40,6 @@ public interface IReservationService {
     List<Reservation> getOwnerReservations(Long ownerId);
 
     void cancelledAllReservation(Guest u);
+    Collection<ReservationDTO> findAllNotAcceptedDTO();
+    Collection<ReservationDTO> findByAccommodation(Long id);
 }

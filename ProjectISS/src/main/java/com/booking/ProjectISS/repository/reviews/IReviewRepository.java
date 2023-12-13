@@ -9,5 +9,5 @@ import java.util.Collection;
 public interface IReviewRepository extends JpaRepository<Review, Long> {
 
     @Query("select r from Review  r where r.reservation.id = ?1")
-    Review findByReservation(String reservationId);
+    Review findByReservation(Long reservationId);
 }

@@ -88,10 +88,14 @@ public class AccommodationService implements IAccommodationService {
     @Override
     public Collection<AccommodationDTO> getAccommodationsSearched(Date start, Date end, int numPeople,String location) {
         Collection<Accommodation> accommodations = accommodationRepository.findAll();
+        System.out.println(accommodations);
         Collection<AccommodationDTO> accommodationDTOS= new ArrayList<AccommodationDTO>();
         for (Accommodation a:accommodations){
-            if(a.getMinPeople()<=numPeople && a.getMaxPeople()>=numPeople && matchesLocation(a,location))
+            System.out.println(a);
+            if(a.getMinPeople()<=numPeople && a.getMaxPeople()>=numPeople && matchesLocation(a,location)){
                 accommodationDTOS.add(new AccommodationDTO(a));
+            }
+
         }
         return accommodationDTOS;
     }

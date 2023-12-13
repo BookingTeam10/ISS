@@ -3,13 +3,16 @@ package com.booking.ProjectISS.dto.accomodations;
 import com.booking.ProjectISS.enums.TypeAccommodation;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.accomodations.Location;
+import com.booking.ProjectISS.model.users.Owner;
+
+import java.util.List;
 
 public class AccommodationDTO {
     private Long id;
     private String description;
     private int minPeople;
     private int maxPeople;
-    private String photo;
+    private List<String> photoes;
     private TypeAccommodation typeAccomodation;
     private double rating;
     private int cancelDeadline;
@@ -47,12 +50,13 @@ public class AccommodationDTO {
         this.maxPeople = maxPeople;
     }
 
-    public String getPhoto() {
-        return photo;
+
+    public List<String> getPhotoes() {
+        return photoes;
     }
 
-    public void setPhoto(String photo) {
-        this.photo = photo;
+    public void setPhotoes(List<String> photoes) {
+        this.photoes = photoes;
     }
 
     public TypeAccommodation getTypeAccomodation() {
@@ -99,24 +103,24 @@ public class AccommodationDTO {
 
     }
 
-    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, String photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted) {
+    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted) {
         this.id = id;
         this.description = description;
         this.minPeople = minPeople;
         this.maxPeople = maxPeople;
-        this.photo = photo;
+        this.photoes = photos;
         this.typeAccomodation = typeAccomodation;
         this.rating = rating;
         this.cancelDeadline = cancelDeadline;
         this.isAccepted=isAccepted;
     }
 
-    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, String photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,Location location) {
+    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,Location location) {
         this.id = id;
         this.description = description;
         this.minPeople = minPeople;
         this.maxPeople = maxPeople;
-        this.photo = photo;
+        this.photoes = photo;
         this.typeAccomodation = typeAccomodation;
         this.rating = rating;
         this.cancelDeadline = cancelDeadline;
@@ -130,7 +134,7 @@ public class AccommodationDTO {
         this.description = a.getDescription();
         this.minPeople = a.getMinPeople();
         this.maxPeople = a.getMaxPeople();
-        this.photo =a.getPhoto();
+        this.photoes =a.getPhotoes();
         this.typeAccomodation = a.getTypeAccomodation();
         this.rating = a.getRating();
         this.cancelDeadline = a.getCancelDeadline();
@@ -145,7 +149,7 @@ public class AccommodationDTO {
                 ", description='" + description + '\'' +
                 ", minPeople=" + minPeople +
                 ", maxPeople=" + maxPeople +
-                ", photo='" + photo + '\'' +
+                ", photo='" + photoes + '\'' +
                 ", typeAccomodation=" + typeAccomodation +
                 ", rating=" + rating +
                 ", cancelDeadline=" + cancelDeadline +

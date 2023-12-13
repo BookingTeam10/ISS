@@ -9,36 +9,68 @@ import java.util.List;
 
 @Entity
 @Table(name="administrators")
-public class Administrator extends User implements Serializable {
+public class Administrator implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)         //increment add id+1, e.g. if previous id was 5, the next will be 6
+    private Long id;
+    @Column(nullable = false, unique = true)
+    private String email;
+    @Column(nullable = false,name="user_password")
+    private String password;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Column(name="all_users")
     private List<User> users;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Column(name="accommodations")
     private List<Accommodation> accomodations;
-    @Id
-    private Long id;
-
-    public Administrator(Long id, String email, String password, String name, String surname, String phone, String address, List<User> users, List<Accommodation> accomodations) {
-        super(id, email, password, name, surname, phone, address);
+    public Administrator(Long id, String email, String password, List<User> users, List<Accommodation> accomodations) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
         this.users = users;
         this.accomodations = accomodations;
     }
 
-    public Administrator(Long id, String email, String password, String name, String surname, String phone, String address) {
-        super(id, email, password, name, surname, phone, address);
-        this.users=new ArrayList<>();
-        this.accomodations=new ArrayList<>();
+    public Administrator(Long id, String email, String password) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
     }
 
-    public Administrator(Administrator a){
-        super(a.getId(),a.getEmail(),a.getPassword(),a.getName(),a.getSurname(),a.getPhone(),a.getAddress(),a.isReported(),a.isBlocked());
-        this.users=a.users;
-        this.accomodations=a.accomodations;
+    public Administrator(){
+        users=new ArrayList<>();
+        accomodations=new ArrayList<>();
     }
 
-    public Administrator() {
+    public Administrator(Administrator administrator) {
+        this.id=administrator.id;
+        this.email=administrator.email;
+        this.password=administrator.password;
+        users=new ArrayList<>();
+        accomodations=new ArrayList<>();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public List<User> getUsers() {
@@ -59,9 +91,9 @@ public class Administrator extends User implements Serializable {
     @Override
     public String toString() {
         return "Administrator{" +
-                "id=" + super.getId() +
-                ", email='" + super.getEmail() + '\'' +
-                ", password='" + super.getPassword() + '\'' +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", users=" + users +
                 ", accomodations=" + accomodations +
                 '}';

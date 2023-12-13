@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name="users")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -16,7 +14,7 @@ public class User implements Serializable {
     private Long id;
     @Column(nullable = false, unique = true)
     private String email;
-    @Column(nullable = false,name="password")
+    @Column(nullable = false,name="user_password")
     private String password;
     @Column(nullable = false,name="firstname")
     private String name;
@@ -30,26 +28,6 @@ public class User implements Serializable {
     private boolean blocked;
     @Column(name="is_reported")
     private boolean isReported;
-
-    @Column(name="is_active")
-    private boolean isActive;
-
-    @Column(name="activationc")
-    private String activationCode;
-
-    @Column(name="activatione")
-    private LocalDateTime activationExpiry;
-
-    @Transient
-    private String jwt;
-
-    public String getJwt() {
-        return jwt;
-    }
-
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
-    }
 
     public User(Long id,String email, String password, String name, String surname, String phone, String address) {
         this.id=id;
@@ -186,42 +164,5 @@ public class User implements Serializable {
         this.setAddress(user.getAddress());
         this.setReported(user.isReported());
         this.setBlocked(user.isBlocked());
-    }
-
-    public String getRole() {
-        if(this instanceof Guest){
-            return "Guest";
-        }
-        if(this instanceof Owner){
-            return "Owner";
-        }
-        if(this instanceof Administrator){
-            return "Administrator";
-        }
-        return "User";
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public String getActivationCode() {
-        return activationCode;
-    }
-
-    public void setActivationCode(String activationCode) {
-        this.activationCode = activationCode;
-    }
-
-    public LocalDateTime getActivationExpiry() {
-        return activationExpiry;
-    }
-
-    public void setActivationExpiry(LocalDateTime activationExpiry) {
-        this.activationExpiry = activationExpiry;
     }
 }

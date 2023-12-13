@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/guests")
 public class GuestController {
 
@@ -111,14 +112,20 @@ public class GuestController {
         guestService.delete(id);
         return new ResponseEntity<GuestDTO>(HttpStatus.NO_CONTENT);
     }
-
-    @DeleteMapping(value = "/{id}/request/{reqId}")
-    public ResponseEntity<ReservationDTO> deleteGuestReservation(@PathVariable("id") Long id,
-                                                                 @PathVariable("reqId") Long reqId){
+    @GetMapping(value = "/request")
+    public ResponseEntity<Collection<ReservationDTO>> guestNotAcceptedReservation(){
+        Collection<ReservationDTO> reservations = reservationService.findAllNotAcceptedDTO();
+        return new ResponseEntity<Collection<ReservationDTO>>(reservations, HttpStatus.OK);
+    }
+    @CrossOrigin(origins = "http://localhost:4200")
+    @DeleteMapping(value = "/request/{reqId}")
+    public ResponseEntity<ReservationDTO> deleteGuestReservation(@PathVariable("reqId") Long reqId){
         if(reservationService.findOne(reqId).getStatus() == ReservationStatus.ACCEPTED){
             return new ResponseEntity<ReservationDTO>(HttpStatus.NOT_FOUND);
         }else{
+            System.out.println(reservationService.findOne(reqId));
             reservationService.delete(reqId);
+
         }
         return new ResponseEntity<ReservationDTO>(HttpStatus.NO_CONTENT);
     }
@@ -142,7 +149,6 @@ public class GuestController {
         return new ResponseEntity<GuestDTO>(updatedGuest, HttpStatus.OK);
     }
 
-    //radi cekamo aleksu samo
     @GetMapping(value = "/{id}/allComments", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ReviewDTO>> allComments(@PathVariable("id") Long id) {
         Collection<ReviewDTO> reviews = new ArrayList<ReviewDTO>();
@@ -154,7 +160,6 @@ public class GuestController {
     //3.17
     @PostMapping(value = "/{id}/comment",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReviewDTO> createComment(@PathVariable("id") Long idReservation,@RequestBody Review review) throws Exception {
-//        ReviewDTO reviewDTO=new ReviewDTO();
         ReviewDTO reviewDTO = reviewService.createByReservation(idReservation, review);
         return new ResponseEntity<ReviewDTO>(reviewDTO, HttpStatus.CREATED);
     }
@@ -176,14 +181,7 @@ public class GuestController {
         return new ResponseEntity<>("Guest cant report", HttpStatus.BAD_REQUEST);
     }
 
-
-
-
-//    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<GuestDTO> createGuest(@RequestBody Guest guest) throws Exception {
-//        GuestDTO guestDTO = guestService.create(guest);
-//        return new ResponseEntity<GuestDTO>(guestDTO, HttpStatus.CREATED);
-//    }
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping(value = "/accommodationsSearch")
     public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
             @RequestParam(required = false) String location,
@@ -202,4 +200,20 @@ public class GuestController {
         Collection<AccommodationDTO> accommodationDTOS = accommodationService.findAllDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOS, HttpStatus.OK);
     }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @PostMapping(value="/reservations")
+    public ResponseEntity<ReservationDTO> createReservation(@RequestBody Reservation reservation) throws Exception {
+
+        System.out.println("UDJE1");
+        System.out.println(reservation);
+        if (reservationService.hasOverlappingRequests(reservation)) {
+            System.out.println("UDJE2");
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        }
+        System.out.println("UDJE3");
+        ReservationDTO reservationDTO = reservationService.create(reservation);
+        return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
+    }
+
 }
