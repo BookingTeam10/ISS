@@ -2,33 +2,31 @@ package com.booking.ProjectISS.controller.accomodations;
 
 import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
-import com.booking.ProjectISS.model.users.Token;
+import com.booking.ProjectISS.model.accomodations.Amenity;
 import com.booking.ProjectISS.service.accommodation.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/accommodations")
-@CrossOrigin(origins = "http://localhost:4200")
 public class AccommodationController {
     @Autowired
     private IAccommodationService accommodationService;
 
     //GET ALL ACCOMMODATIONS
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    //@CrossOrigin(origins = "http://localhost:4200")
-
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsDTO() {
         System.out.println(accommodationService.findAll());
-        System.out.println("A123456");
         Collection<AccommodationDTO> accommodationDTOS = accommodationService.findAllDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOS, HttpStatus.OK);
     }
@@ -45,8 +43,6 @@ public class AccommodationController {
     }
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> createAccommodation(@RequestBody Accommodation accommodation) throws Exception {
-        System.out.println(accommodation);
-        System.out.println("A123");
         AccommodationDTO accommodationDTO =accommodationService.create(accommodation);
         return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.CREATED);
     }
@@ -81,15 +77,43 @@ public class AccommodationController {
     }
 
     //3.9 for unregisted user
+//    @GetMapping(value = "/accommodationsSearch")
+//    @CrossOrigin(origins = "http://localhost:4200")
+//    public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
+//            @RequestParam(required = false) String location,
+//            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
+//            @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")  Date end,
+//            @RequestParam(required = false) int numPeople){
+//        Collection<AccommodationDTO> accommodationDTOS = accommodationService.getAccommodationsSearched(start,end,numPeople,location);
+//        if(accommodationDTOS == null)
+//            return new ResponseEntity<Collection<AccommodationDTO>>(HttpStatus.NOT_FOUND);
+//        return ResponseEntity.ok(accommodationDTOS);
+//    }
+
     @GetMapping(value = "/accommodationsSearch")
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
             @RequestParam(required = false) String location,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
             @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")  Date end,
-            @RequestParam(required = false) int numPeople){
+            @RequestParam(required = false) int numPeople,
+            @RequestParam(required = false) int minPrice,
+            @RequestParam(required = false) int maxPrice,
+            @RequestParam(required = false) List<String> ammenities){
         Collection<AccommodationDTO> accommodationDTOS = accommodationService.getAccommodationsSearched(start,end,numPeople,location);
         if(accommodationDTOS == null)
             return new ResponseEntity<Collection<AccommodationDTO>>(HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(accommodationDTOS);
     }
+
+    @GetMapping(value = "/{id}/amenity", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<Collection<Amenity>> getAmenityByAccommodation(@PathVariable("id") Long id) {
+        Accommodation accommodation = accommodationService.findOne(id);
+        if (accommodation!= null) {
+            return new ResponseEntity<Collection<Amenity>>(accommodation.getAmenities(), HttpStatus.OK);
+        }
+        return new ResponseEntity<Collection<Amenity>>(HttpStatus.NOT_FOUND);
+    }
+
 }

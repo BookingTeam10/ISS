@@ -202,4 +202,18 @@ public class GuestController {
         Collection<AccommodationDTO> accommodationDTOS = accommodationService.findAllDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOS, HttpStatus.OK);
     }
+    @CrossOrigin(origins = "http://localhost:4200")
+    @PostMapping(value="/reservations")
+    public ResponseEntity<ReservationDTO> createReservation(@RequestBody Reservation reservation) throws Exception {
+
+        System.out.println("UDJE1");
+        System.out.println(reservation);
+        if (reservationService.hasOverlappingRequests(reservation)) {
+            System.out.println("UDJE2");
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        }
+        System.out.println("UDJE3");
+        ReservationDTO reservationDTO = reservationService.create(reservation);
+        return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
+    }
 }

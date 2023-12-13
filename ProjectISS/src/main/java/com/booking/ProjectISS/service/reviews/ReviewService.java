@@ -98,4 +98,10 @@ public class ReviewService implements IReviewService {
 //            reviewRepository.delete(id);
 //        }
     }
+    @Override
+    public ReviewDTO findByReservation(Long reservationId) {
+        if (reviewRepository.findByReservation(reservationId)!=null)
+            return new ReviewDTO(reviewRepository.findByReservation(reservationId));
+        return null;
+    }
 }

@@ -26,15 +26,46 @@ VALUES (3, 0, 'false');
 INSERT INTO administrators (id)
 VALUES (2);
 
-INSERT INTO accommodations(description,accepted,automatic_activation,cancel_deadline, min_people,max_people,rating,location_id,type_acc,owner_id,photo)
-VALUES ('Apartman','true','true', 24,3,6,0,1,'Apartment',1,'assets/images/apartment1.png'),
-       ('Apartman','true','true', 24,2,4,0,1,'Apartment',1,'assets/images/apartment1.png');
+insert into taken_date(first_date,last_date)
+VALUES ('2023-01-01', '2023-01-05'),
+       ('2023-02-01', '2023-02-05');
+
+INSERT INTO accommodations(description,accepted,automatic_activation,cancel_deadline, min_people,max_people,rating,location_id,type_acc,owner_id)
+VALUES ('Apartman','true','true', 24,3,6,0,1,'Apartment',1),
+       ('Apartman','true','true', 24,2,4,0,1,'Apartment',1),
+       ('Apartman','true','true', 24,2,4,0,2,'Apartment',1);
+
+INSERT INTO accommodation_photoes (accommodation_accommodation_id, photo)
+VALUES (1,'assets/images/apartment1.png'),
+       (1,'assets/images/apartment2.png'),
+       (1,'assets/images/apartment3.png'),
+       (2,'assets/images/apartment4.png'),
+       (2,'assets/images/apartment5.png'),
+       (3,'assets/images/apartment6.png'),
+       (3,'assets/images/apartment7.png');
+
+
+insert into amenity(amenity_name)
+VALUES  ('WIFI'),
+        ('Parking'),
+        ('Air-conditioning'),
+        ('Kitchen');
+
+INSERT INTO accommodation_taken_dates (accommodation_id, first_date, last_date)
+VALUES (1, '2023-01-01', '2023-01-05'),
+       (1, '2023-02-01', '2023-02-05');
+
+INSERT INTO accommodation_amenity (accommodation_id,amenity_name)
+VALUES (1,'WIFI'),
+       (1, 'Parking');
 
 INSERT INTO reservations (total_price, reservation_status, start_date, end_date, number_of_nights, accommodation_id, guest_id)
 VALUES
-    (200, 'ACCEPTED', '2023-01-01', '2023-01-05', 5, 1, 3),
+    (200, 'ACCEPTED', '2022-12-12', '2022-12-15', 3, 1, 3),
+    (200, 'ACCEPTED', '2023-10-10', '2023-10-15', 5, 1, 3),
     (100, 'REJECTED', '2023-01-01', '2023-01-03', 3, 1, 3),
-    (50, 'WAITING', '2023-01-01', '2023-01-02', 1, 1, 3);
+    (50, 'WAITING', '2023-01-01', '2023-01-02', 1, 1, 3),
+    (150, 'WAITING', '2023-02-01', '2023-02-02', 2, 2, 3);
 
 INSERT INTO notifications (text, notification_status, guest_id, owner_id, sent_date)
 VALUES
@@ -42,9 +73,7 @@ VALUES
     ('Your reservation has been rejected.', 'VISIBLE', 3, 1, '2023-01-02'),
     ('New reservation request received.', 'NOT_VISIBLE', 3, 1, '2023-01-03');
 
--- Insert Reviews
 INSERT INTO review (rate, review_comment, status, reservation_id)
 VALUES
-    (1, 'Great experience!', 'ACTIVE', 1),
-    (2, 'Could be better.', 'DELETED', 2),
-    (3, 'Amazing service!', 'REPORTED', 3);
+     (10, 'Great experience!', 'ACTIVE', 1),
+     (10, 'Great experience!', 'ACTIVE', 2);
