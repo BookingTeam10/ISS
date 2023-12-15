@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -92,17 +93,19 @@ public class AccommodationController {
 
     @GetMapping(value = "/accommodationsSearch")
     @CrossOrigin(origins = "http://localhost:4200")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
             @RequestParam(required = false) String location,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
             @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")  Date end,
-            @RequestParam(required = false) int numPeople,
-            @RequestParam(required = false) int minPrice,
-            @RequestParam(required = false) int maxPrice,
-            @RequestParam(required = false) List<String> ammenities){
+            @RequestParam(required = false) int numPeople){
+        System.out.println("USLO OVDE ABC");
         Collection<AccommodationDTO> accommodationDTOS = accommodationService.getAccommodationsSearched(start,end,numPeople,location);
-        if(accommodationDTOS == null)
+
+        if(accommodationDTOS == null) {
+            System.out.println("USLO OVDE 123");
             return new ResponseEntity<Collection<AccommodationDTO>>(HttpStatus.NOT_FOUND);
+        }
         return ResponseEntity.ok(accommodationDTOS);
     }
 

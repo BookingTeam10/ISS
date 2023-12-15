@@ -1,5 +1,6 @@
 package com.booking.ProjectISS.model.users;
 
+import com.booking.ProjectISS.enums.Role;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
@@ -51,7 +52,11 @@ public class User implements Serializable {
         this.jwt = jwt;
     }
 
-    public User(Long id,String email, String password, String name, String surname, String phone, String address) {
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Role role;
+
+    public User(Long id,String email, String password, String name, String surname, String phone, String address,Role role) {
         this.id=id;
         this.email = email;
         this.password = password;
@@ -61,9 +66,10 @@ public class User implements Serializable {
         this.address = address;
         this.blocked = false;
         this.isReported=false;
+        this.role = role;
     }
 
-    public User(Long id,String email, String password, String name, String surname, String phone, String address,boolean rep,boolean blocked) {
+    public User(Long id,String email, String password, String name, String surname, String phone, String address,boolean rep,boolean blocked,Role role) {
         this.id=id;
         this.email = email;
         this.password = password;
@@ -73,6 +79,7 @@ public class User implements Serializable {
         this.address = address;
         this.isReported=rep;
         this.blocked = blocked;
+        this.role=role;
     }
 
     public User() {
@@ -92,6 +99,7 @@ public class User implements Serializable {
         this.address = user.address;
         this.isReported=user.isReported;
         this.blocked = user.blocked;
+        this.role=user.role;
     }
 
     public Long getId() {
@@ -186,8 +194,12 @@ public class User implements Serializable {
         this.setAddress(user.getAddress());
         this.setReported(user.isReported());
         this.setBlocked(user.isBlocked());
+        this.setRole(user.getRole1());
     }
 
+    public Role getRole1() {
+        return this.role;
+    }
     public String getRole() {
         if(this instanceof Guest){
             return "Guest";
@@ -199,6 +211,10 @@ public class User implements Serializable {
             return "Administrator";
         }
         return "User";
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public boolean isActive() {
