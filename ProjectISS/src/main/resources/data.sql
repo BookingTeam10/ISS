@@ -20,9 +20,6 @@ VALUES (3, 0, 'false');
 INSERT INTO administrators (id)
 VALUES (2);
 
-insert into taken_date(first_date,last_date)
-VALUES ('2023-01-01', '2023-01-05'),
-       ('2023-02-01', '2023-02-05');
 
 INSERT INTO accommodations(description,accepted,automatic_activation,cancel_deadline, min_people,max_people,rating,location_id,type_acc,owner_id,acc_name)
 VALUES ('Apartman','true','true', 24,3,6,0,1,'Apartment',1,'Naziv1'),
@@ -37,13 +34,6 @@ VALUES (1,'assets/images/apartment1.png'),
        (2,'assets/images/apartment5.png'),
        (3,'assets/images/apartment6.png'),
        (3,'assets/images/apartment7.png');
-
-
-insert into amenity(amenity_name)
-VALUES  ('WIFI'),
-        ('Parking'),
-        ('Air-conditioning'),
-        ('Kitchen');
 
 INSERT INTO accommodation_taken_dates (accommodation_id, first_date, last_date)
 VALUES (1, '2023-01-01', '2023-01-05'),
