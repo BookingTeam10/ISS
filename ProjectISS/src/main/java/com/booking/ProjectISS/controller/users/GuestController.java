@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/guests")
 public class GuestController {
@@ -85,7 +86,6 @@ public class GuestController {
             reservations = reservationService.filterReservations(reservations, status);
         }
 
-
         return new ResponseEntity<Collection<ReservationDTO>>(reservationService.getReservationsDTO(reservations),
         HttpStatus.OK);
     }
@@ -112,9 +112,9 @@ public class GuestController {
         return new ResponseEntity<GuestDTO>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping(value = "/{id}/request/{reqId}")
-    public ResponseEntity<ReservationDTO> deleteGuestReservation(@PathVariable("id") Long id,
-                                                                 @PathVariable("reqId") Long reqId){
+    @CrossOrigin(origins = "http://localhost:4200")
+    @DeleteMapping(value = "/request/{reqId}")
+    public ResponseEntity<ReservationDTO> deleteGuestReservation(@PathVariable("reqId") Long reqId){
         if(reservationService.findOne(reqId).getStatus() == ReservationStatus.ACCEPTED){
             return new ResponseEntity<ReservationDTO>(HttpStatus.NOT_FOUND);
         }else{
@@ -176,9 +176,6 @@ public class GuestController {
         return new ResponseEntity<>("Guest cant report", HttpStatus.BAD_REQUEST);
     }
 
-
-
-
 //    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 //    public ResponseEntity<GuestDTO> createGuest(@RequestBody Guest guest) throws Exception {
 //        GuestDTO guestDTO = guestService.create(guest);
@@ -215,5 +212,11 @@ public class GuestController {
         System.out.println("UDJE3");
         ReservationDTO reservationDTO = reservationService.create(reservation);
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
+    }
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping(value = "/request")
+    public ResponseEntity<Collection<ReservationDTO>> guestNotAcceptedReservation(){
+        Collection<ReservationDTO> reservations = reservationService.findAllNotAcceptedDTO();
+        return new ResponseEntity<Collection<ReservationDTO>>(reservations, HttpStatus.OK);
     }
 }

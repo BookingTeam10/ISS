@@ -18,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)  // <-- Obavezno za @PreAuthorize
@@ -32,8 +33,9 @@ public class WebSecurityConfiguration {
 				.requestMatchers("/").permitAll()
 				.requestMatchers("/api/users/login").permitAll()
 				.requestMatchers("/api/activate").permitAll()
-				.requestMatchers("/api/accommodations/").authenticated()
-//                .requestMatchers("/api/register/").permitAll()
+				.requestMatchers("/api/accommodations").permitAll()
+                .requestMatchers("/api/register/").permitAll()
+
 //                .requestMatchers("/api/notifications/").authenticated()
 //                .requestMatchers("/api/reservations/").authenticated()
 //                .requestMatchers("/api/reviews/").authenticated()

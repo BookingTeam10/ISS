@@ -1,5 +1,6 @@
 package com.booking.ProjectISS.model.users;
 
+import com.booking.ProjectISS.enums.Role;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Table(name="guests")
 public class Guest extends User {
+    private static final Role role = Role.GUEST;
     @Column(name="number_canceled_notification")
     private int numberCanceledReservation;
     @Column(name="turn_notification")
@@ -25,28 +27,28 @@ public class Guest extends User {
 //    }
 
     public Guest(Long id,String email, String password, String name, String surname, String phone, String address,boolean rep, boolean blocked) {
-        super(id,email, password, name, surname, phone, address,rep, blocked);
+        super(id,email, password, name, surname, phone, address,rep, blocked,role);
         this.numberCanceledReservation=0;
         this.turnOnNotification=true;
         //favouriteAccommodations = new ArrayList<>();
 
     }
     public Guest(Long id,String email, String password, String name, String surname, String phone, String address,boolean rep, boolean blocked, int numberCanceledReservation,boolean turnOnNotification) {
-        super(id,email, password, name, surname, phone, address,rep,blocked);
+        super(id,email, password, name, surname, phone, address,rep,blocked,role);
         this.numberCanceledReservation = numberCanceledReservation;
         this.turnOnNotification=turnOnNotification;
         //favouriteAccommodations = new ArrayList<>();
     }
 
     public Guest(Long id, String email, String password, String name, String surname, String phone, String address) {
-        super(id,email, password, name, surname, phone, address);
+        super(id,email, password, name, surname, phone, address,role);
         this.numberCanceledReservation=0;
         this.turnOnNotification=true;
         //favouriteAccommodations = new ArrayList<>();
     }
 
     public Guest(Long id,String email, String password, String name, String surname, String phone, String address, int numberCanceledReservation,boolean turnOnNotification) {
-        super(id,email, password, name, surname, phone, address);
+        super(id,email, password, name, surname, phone, address,role);
         this.numberCanceledReservation = numberCanceledReservation;
         this.turnOnNotification=turnOnNotification;
         //favouriteAccommodations = new ArrayList<>();
@@ -56,7 +58,7 @@ public class Guest extends User {
     }
 
     public Guest(Guest g) {
-        super(g.getId(),g.getEmail(), g.getPassword(), g.getName(), g.getSurname(), g.getPhone(), g.getAddress(),g.isReported(),g.isBlocked());
+        super(g.getId(),g.getEmail(), g.getPassword(), g.getName(), g.getSurname(), g.getPhone(), g.getAddress(),g.isReported(),g.isBlocked(),g.getRole1());
         this.numberCanceledReservation=0;
         this.turnOnNotification=true;
     }

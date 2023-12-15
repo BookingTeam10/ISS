@@ -1,5 +1,6 @@
 package com.booking.ProjectISS.model.users;
 
+import com.booking.ProjectISS.enums.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -9,6 +10,7 @@ import java.io.Serializable;
 @Entity
 @Table(name="owners")
 public class Owner extends User implements Serializable {
+    private static final Role role = Role.OWNER;
     @Column(name="total_price")
     private double totalPrice;
     @Column(name="owner_rating")
@@ -23,7 +25,7 @@ public class Owner extends User implements Serializable {
     private boolean rateAccomodationNotification;
 
     public Owner(Long id,String email, String password, String name, String surname, String phone, String address,boolean rep, boolean blocked) {
-        super(id,email, password, name, surname, phone, address, rep,blocked);
+        super(id,email, password, name, surname, phone, address, rep,blocked,role);
         this.totalPrice=0;
         this.rating=0;
         this.createdNotification=true;
@@ -33,7 +35,7 @@ public class Owner extends User implements Serializable {
     }
 
     public Owner(Long id,String email, String password, String name, String surname, String phone, String address,boolean rep, boolean blocked,double totalPrice,double rating, boolean createdNotification, boolean rateMeNotification, boolean cancelledNotification, boolean rateAccomodationNotification) {
-        super(id,email, password, name, surname, phone, address,rep, blocked);
+        super(id,email, password, name, surname, phone, address,rep, blocked,role);
         this.totalPrice=0;
         this.rating=0;
         this.createdNotification=createdNotification;
@@ -50,7 +52,7 @@ public class Owner extends User implements Serializable {
     }
 
     public Owner(Owner owner) {
-        super(owner.getId(), owner.getEmail(), owner.getPassword(), owner.getName(), owner.getSurname(), owner.getPhone(), owner.getAddress(),owner.isReported(), owner.isBlocked());
+        super(owner.getId(), owner.getEmail(), owner.getPassword(), owner.getName(), owner.getSurname(), owner.getPhone(), owner.getAddress(),owner.isReported(), owner.isBlocked(),owner.getRole1());
         this.totalPrice=0;
         this.rating=0;
         this.createdNotification=true;

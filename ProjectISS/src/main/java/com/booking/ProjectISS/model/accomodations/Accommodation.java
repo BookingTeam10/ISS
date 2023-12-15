@@ -21,13 +21,15 @@ public class Accommodation implements Serializable {
     @Column(name = "automatic_activation")
     private boolean automaticActivation = false;
     private String description;
+    @Column(name = "acc_name")
+    private String name;
     @Column(name = "min_people")
     private int minPeople;
     @Column(name = "max_people")
     private int maxPeople;
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "photo")
-    private List<String> photoes;
+    private List<String> photos;
     @Enumerated(EnumType.STRING)
     @Column(name = "type_acc")
     private TypeAccommodation typeAccomodation;
@@ -46,8 +48,6 @@ public class Accommodation implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id",referencedColumnName = "id", nullable = false)
     private Location location;
-
-    //dodati many to one
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id",referencedColumnName = "id", nullable = false)
     private Owner owner;
@@ -159,14 +159,15 @@ public class Accommodation implements Serializable {
     public Accommodation(String description) {
         this.description = description;
     }
-    public Accommodation(Long id, boolean accepted, boolean automaticActivation, String description, int minPeople, int maxPeople, List<String> photoes, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, List<Price> prices, List<TakenDate> takenDates, List<Amenity> amenities, Location location, Owner owner, List<Reservation> reservations) {
+    public Accommodation(Long id, boolean accepted, boolean automaticActivation, String description, int minPeople, int maxPeople,String name, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, List<Price> prices, List<TakenDate> takenDates, List<Amenity> amenities, Location location, Owner owner, List<Reservation> reservations) {
         this.id = id;
         this.accepted = accepted;
         this.automaticActivation = automaticActivation;
         this.description = description;
         this.minPeople = minPeople;
         this.maxPeople = maxPeople;
-        this.photoes = photoes;
+        this.photos = photos;
+        this.name = name;
         this.typeAccomodation = typeAccomodation;
         this.rating = rating;
         this.cancelDeadline = cancelDeadline;
@@ -187,7 +188,8 @@ public class Accommodation implements Serializable {
                 ", description='" + description + '\'' +
                 ", minPeople=" + minPeople +
                 ", maxPeople=" + maxPeople +
-                ", photo='" + photoes + '\'' +
+                ", photo='" + photos + '\'' +
+                ", name=" + name + '\'' +
                 ", typeAccomodation=" + typeAccomodation +
                 ", rating=" + rating +
                 ", cancelDeadline=" + cancelDeadline +
@@ -204,22 +206,23 @@ public class Accommodation implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Accommodation that)) return false;
-        return accepted == that.accepted && automaticActivation == that.automaticActivation && minPeople == that.minPeople && maxPeople == that.maxPeople && Double.compare(that.rating, rating) == 0 && cancelDeadline == that.cancelDeadline && Objects.equals(id, that.id) && Objects.equals(description, that.description) && Objects.equals(photoes, that.photoes) && typeAccomodation == that.typeAccomodation && Objects.equals(prices, that.prices) && Objects.equals(takenDates, that.takenDates) && Objects.equals(amenities, that.amenities) && Objects.equals(owner, that.owner) && Objects.equals(reservations, that.reservations);
+        return accepted == that.accepted && automaticActivation == that.automaticActivation && minPeople == that.minPeople && maxPeople == that.maxPeople && Double.compare(that.rating, rating) == 0 && cancelDeadline == that.cancelDeadline && Objects.equals(id, that.id) && Objects.equals(description, that.description) && Objects.equals(photos, that.photos) && typeAccomodation == that.typeAccomodation && Objects.equals(prices, that.prices) && Objects.equals(takenDates, that.takenDates) && Objects.equals(amenities, that.amenities) && Objects.equals(owner, that.owner) && Objects.equals(reservations, that.reservations);
     }
     @Override
     public int hashCode() {
-        return Objects.hash(id, accepted, automaticActivation, description, minPeople, maxPeople, photoes, typeAccomodation, rating, cancelDeadline, prices, takenDates, amenities, owner, reservations);
+        return Objects.hash(id, accepted, automaticActivation, description, minPeople, maxPeople, photos, typeAccomodation, rating, cancelDeadline, prices, takenDates, amenities, owner, reservations);
     }
     public void copyValues(Accommodation a) {
         this.setAccepted(a.isAccepted());
         this.description = a.getDescription();
         this.minPeople = a.getMinPeople();
         this.maxPeople = a.getMaxPeople();
-        this.photoes =a.getPhotoes();
+        this.photos =a.getPhotos();
         this.typeAccomodation = a.getTypeAccomodation();
         this.rating = a.getRating();
         this.cancelDeadline = a.getCancelDeadline();
         this.location = a.getLocation();
+        this.name = a.getName();
     }
     public Accommodation(Accommodation accommodation) {
         this.id = accommodation.id;
@@ -228,7 +231,7 @@ public class Accommodation implements Serializable {
         this.description = accommodation.description;
         this.minPeople = accommodation.minPeople;
         this.maxPeople = accommodation.maxPeople;
-        this.photoes = accommodation.photoes;
+        this.photos = accommodation.photos;
         this.typeAccomodation = accommodation.typeAccomodation;
         this.rating = accommodation.rating;
         this.cancelDeadline = accommodation.cancelDeadline;
@@ -240,11 +243,19 @@ public class Accommodation implements Serializable {
         this.reservations = accommodation.reservations;
     }
 
-    public List<String> getPhotoes() {
-        return photoes;
+    public List<String> getPhotos() {
+        return photos;
     }
 
-    public void setPhotoes(List<String> photoes) {
-        this.photoes = photoes;
+    public void setPhotos(List<String> photoes) {
+        this.photos = photoes;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
