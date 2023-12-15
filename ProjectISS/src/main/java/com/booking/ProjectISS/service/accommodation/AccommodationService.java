@@ -5,6 +5,7 @@ import com.booking.ProjectISS.dto.accomodations.LocationDTO;
 import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
+import com.booking.ProjectISS.model.accomodations.Amenity;
 import com.booking.ProjectISS.model.accomodations.Location;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.User;
@@ -15,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class AccommodationService implements IAccommodationService {
@@ -106,5 +104,16 @@ public class AccommodationService implements IAccommodationService {
     }
     private boolean containsIgnoreCase(String str, String searchTerm) {
         return str != null && str.toLowerCase().contains(searchTerm.toLowerCase());
+    }
+
+    @Override
+    public Collection<AccommodationDTO> getAccommodationsSearched(Date start, Date end, int numPeople,String location,String minPrice,String maxPrice, List<Amenity> amenities) {
+        Collection<Accommodation> accommodations = accommodationRepository.findAll();
+        Collection<AccommodationDTO> accommodationDTOS= new ArrayList<AccommodationDTO>();
+        for (Accommodation a:accommodations){
+            if(a.getMinPeople()<=numPeople && a.getMaxPeople()>=numPeople && matchesLocation(a,location))
+                accommodationDTOS.add(new AccommodationDTO(a));
+        }
+        return accommodationDTOS;
     }
 }
