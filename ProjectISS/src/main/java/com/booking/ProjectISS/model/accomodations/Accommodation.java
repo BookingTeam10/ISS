@@ -37,7 +37,7 @@ public class Accommodation implements Serializable {
     @Column(name = "cancel_deadline")
     private int cancelDeadline;
     @ElementCollection(fetch = FetchType.EAGER)
-    @Column(name = "price")
+    @CollectionTable(name = "accommodation_price", joinColumns = @JoinColumn(name = "accommodation_id"))
     private List<Price> prices;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "accommodation_taken_dates", joinColumns = @JoinColumn(name = "accommodation_id"))
