@@ -37,8 +37,21 @@ public class Accommodation implements Serializable {
     @Column(name = "cancel_deadline")
     private int cancelDeadline;
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "accommodation_price", joinColumns = @JoinColumn(name = "accommodation_id"))
+    @Column(name = "price")
     private List<Price> prices;
+
+    @Column(name = "weekend_price")
+    private double weekendPrice;
+
+    @Column(name = "holiday_price")
+    private double holidayPrice;
+
+    @Column(name = "summer_price")
+    private double summerPrice;
+
+    @Column(name = "night_person")
+    private boolean isNight;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "accommodation_taken_dates", joinColumns = @JoinColumn(name = "accommodation_id"))
     private List<TakenDate> takenDates;
@@ -156,10 +169,44 @@ public class Accommodation implements Serializable {
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }
+
+    public double getWeekendPrice() {
+        return weekendPrice;
+    }
+
+    public void setWeekendPrice(double weekendPrice) {
+        this.weekendPrice = weekendPrice;
+    }
+
+    public double getHolidayPrice() {
+        return holidayPrice;
+    }
+
+    public void setHolidayPrice(double holidayPrice) {
+        this.holidayPrice = holidayPrice;
+    }
+
+    public double getSummerPrice() {
+        return summerPrice;
+    }
+
+    public void setSummerPrice(double summerPrice) {
+        this.summerPrice = summerPrice;
+    }
+
+    public boolean isNight() {
+        return isNight;
+    }
+
+    public void setNight(boolean night) {
+        isNight = night;
+    }
+
     public Accommodation(String description) {
         this.description = description;
     }
-    public Accommodation(Long id, boolean accepted, boolean automaticActivation, String description, int minPeople, int maxPeople,String name, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, List<Price> prices, List<TakenDate> takenDates, List<Amenity> amenities, Location location, Owner owner, List<Reservation> reservations) {
+
+    public Accommodation(Long id, boolean accepted, boolean automaticActivation, String description, int minPeople, int maxPeople,String name, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, List<Price> prices, List<TakenDate> takenDates, List<Amenity> amenities, Location location, Owner owner, List<Reservation> reservations,double weekendPrice, double holidayPrice, double summerPrice,boolean isNight) {
         this.id = id;
         this.accepted = accepted;
         this.automaticActivation = automaticActivation;
@@ -177,6 +224,11 @@ public class Accommodation implements Serializable {
         this.location = location;
         this.owner = owner;
         this.reservations = reservations;
+        this.weekendPrice=weekendPrice;
+        this.holidayPrice=holidayPrice;
+        this.summerPrice=summerPrice;
+        this.isNight=isNight;
+
     }
 
     @Override
@@ -223,6 +275,10 @@ public class Accommodation implements Serializable {
         this.cancelDeadline = a.getCancelDeadline();
         this.location = a.getLocation();
         this.name = a.getName();
+        this.weekendPrice=a.getWeekendPrice();
+        this.holidayPrice=a.getHolidayPrice();
+        this.summerPrice=a.getSummerPrice();
+        this.isNight=a.isNight();
     }
     public Accommodation(Accommodation accommodation) {
         this.id = accommodation.id;
@@ -241,6 +297,10 @@ public class Accommodation implements Serializable {
         this.location = accommodation.location;
         this.owner = accommodation.owner;
         this.reservations = accommodation.reservations;
+        this.weekendPrice=accommodation.weekendPrice;
+        this.holidayPrice=accommodation.holidayPrice;
+        this.summerPrice=accommodation.summerPrice;
+        this.isNight=accommodation.isNight;
     }
 
     public List<String> getPhotos() {

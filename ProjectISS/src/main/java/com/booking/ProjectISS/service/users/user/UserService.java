@@ -136,6 +136,7 @@ public class UserService implements IUserService, UserDetailsService {
         user.setActive(true);
         user.setActivationCode("");
         user.setActivationExpiry(null);
+        System.out.println("SET!");
         if(brojac==2){
             System.out.println("USLO OVDE VAZNO!");
             UserRepository.save(user);

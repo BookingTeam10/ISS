@@ -3,7 +3,6 @@ package com.booking.ProjectISS.dto.accomodations;
 import com.booking.ProjectISS.enums.TypeAccommodation;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.accomodations.Location;
-import com.booking.ProjectISS.model.accomodations.Price;
 import com.booking.ProjectISS.model.users.Owner;
 
 import java.util.List;
@@ -20,7 +19,6 @@ public class AccommodationDTO {
     private int cancelDeadline;
     private boolean isAccepted;
     private Location location;
-    private List<Price> price;
     public Long getId() {
         return id;
     }
@@ -111,7 +109,7 @@ public class AccommodationDTO {
 
     }
 
-    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,String name,List<Price> price) {
+    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,String name) {
         this.id = id;
         this.description = description;
         this.minPeople = minPeople;
@@ -122,10 +120,9 @@ public class AccommodationDTO {
         this.cancelDeadline = cancelDeadline;
         this.isAccepted=isAccepted;
         this.name = name;
-        this.price = price;
     }
 
-    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,Location location,String name,List<Price> price) {
+    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,Location location,String name) {
         this.id = id;
         this.description = description;
         this.minPeople = minPeople;
@@ -137,7 +134,6 @@ public class AccommodationDTO {
         this.isAccepted=isAccepted;
         this.location = location;
         this.name = name;
-        this.price = price;
     }
 
     public AccommodationDTO(Accommodation a) {
@@ -153,7 +149,6 @@ public class AccommodationDTO {
         this.isAccepted = a.isAccepted();
         this.location = a.getLocation();
         this.name = a.getName();
-        this.price = a.getPrices();
     }
 
     @Override
