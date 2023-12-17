@@ -128,7 +128,7 @@ public class UserController {
         Token tokenJWT=new Token();
         UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(login.getEmail(),login.getPassword());
         Authentication auth = authenticationManager.authenticate(authReq);
-
+        System.out.println("AUTH = ===   " +  auth.getDetails());
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
         //UserDetails user= (UserDetails) auth.getPrincipal();

@@ -1,6 +1,7 @@
 package com.booking.ProjectISS.controller.accomodations;
 
 import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
+import com.booking.ProjectISS.enums.AccommodationStatus;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.accomodations.Amenity;
 import com.booking.ProjectISS.service.accommodation.IAccommodationService;
@@ -74,14 +75,21 @@ public class AccommodationController {
         AccommodationDTO updatedAcc = accommodationService.update(accomodationForUpdate);
         return new ResponseEntity<AccommodationDTO>(updatedAcc, HttpStatus.OK);
     }
-    @GetMapping(value = "/{id}/amenity", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Amenity>> getAmenityByAccommodation(@PathVariable("id") Long id) {
-        Accommodation accommodation = accommodationService.findOne(id);
-        if (accommodation!= null) {
-            return new ResponseEntity<Collection<Amenity>>(accommodation.getAmenities(), HttpStatus.OK);
-        }
-        return new ResponseEntity<Collection<Amenity>>(HttpStatus.NOT_FOUND);
-    }
+
+    //3.9 for unregisted user
+//    @GetMapping(value = "/accommodationsSearch")
+//    @CrossOrigin(origins = "http://localhost:4200")
+//    public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
+//            @RequestParam(required = false) String location,
+//            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
+//            @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")  Date end,
+//            @RequestParam(required = false) int numPeople){
+//        Collection<AccommodationDTO> accommodationDTOS = accommodationService.getAccommodationsSearched(start,end,numPeople,location);
+//        if(accommodationDTOS == null)
+//            return new ResponseEntity<Collection<AccommodationDTO>>(HttpStatus.NOT_FOUND);
+//        return ResponseEntity.ok(accommodationDTOS);
+//    }
+
     @GetMapping(value = "/accommodationsSearch")
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
@@ -89,13 +97,11 @@ public class AccommodationController {
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
             @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")  Date end,
             @RequestParam(required = false) int numPeople,
-            @RequestParam(required = false) String minPrice,
-            @RequestParam(required = false) String maxPrice,
-            @RequestParam(required = false) List<Amenity> amenities){
-        System.out.println("AC");
-        Collection<AccommodationDTO> accommodationDTOS = accommodationService.getAccommodationsSearched(start,end,numPeople,location,minPrice,maxPrice,amenities);
-
-        if(accommodationDTOS == null) {
+            @RequestParam(required = false) int minPrice,
+            @RequestParam(required = false) int maxPrice,
+            @RequestParam(required = false) List<String> ammenities){
+        Collection<AccommodationDTO> accommodationDTOS = accommodationService.getAccommodationsSearched(start,end,numPeople,location);
+        if(accommodationDTOS == null)
             return new ResponseEntity<Collection<AccommodationDTO>>(HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(accommodationDTOS);
     }
@@ -110,4 +116,28 @@ public class AccommodationController {
         return new ResponseEntity<Collection<Amenity>>(HttpStatus.NOT_FOUND);
     }
 
+
+    @PostMapping(value = "/approve/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<AccommodationDTO> setApproveAccommodation(@PathVariable("id") Long id) throws Exception {
+        Accommodation accommodation = accommodationService.findOne(id);
+        if (accommodation == null) {
+            return new ResponseEntity<AccommodationDTO>(HttpStatus.NOT_FOUND);
+        }
+        accommodation.setAccommodationStatus(AccommodationStatus.APPROVED);
+        AccommodationDTO accommodationDTO = accommodationService.update(accommodation);
+        return new ResponseEntity<AccommodationDTO>(accommodationDTO,HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/reject/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<AccommodationDTO> setRejectAccommodation(@PathVariable("id") Long id) throws Exception {
+        Accommodation accommodation = accommodationService.findOne(id);
+        if (accommodation == null) {
+            return new ResponseEntity<AccommodationDTO>(HttpStatus.NOT_FOUND);
+        }
+        accommodation.setAccommodationStatus(AccommodationStatus.REJECTED);
+        AccommodationDTO accommodationDTO = accommodationService.update(accommodation);
+        return new ResponseEntity<AccommodationDTO>(accommodationDTO,HttpStatus.OK);
+    }
 }

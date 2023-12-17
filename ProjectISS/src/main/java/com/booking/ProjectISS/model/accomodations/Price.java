@@ -1,15 +1,15 @@
 package com.booking.ProjectISS.model.accomodations;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.io.Serializable;
 import java.util.Date;
 
-@Embeddable
 public class Price implements Serializable {
-    @Column(name="price")
     private double price;
-    @Column(name="begin_date")
+
     private Date beginDate;
 
     public Price() {
@@ -33,13 +33,5 @@ public class Price implements Serializable {
 
     public void setBeginDate(Date beginDate) {
         this.beginDate = beginDate;
-    }
-
-    @Override
-    public String toString() {
-        return "Price{" +
-                "price=" + price +
-                ", beginDate=" + beginDate +
-                '}';
     }
 }

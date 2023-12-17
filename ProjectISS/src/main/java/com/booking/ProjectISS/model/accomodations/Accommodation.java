@@ -1,5 +1,6 @@
 package com.booking.ProjectISS.model.accomodations;
 
+import com.booking.ProjectISS.enums.AccommodationStatus;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.enums.TypeAccommodation;
@@ -21,23 +22,24 @@ public class Accommodation implements Serializable {
     @Column(name = "automatic_activation")
     private boolean automaticActivation = false;
     private String description;
-    @Column(name = "acc_name")
-    private String name;
     @Column(name = "min_people")
     private int minPeople;
     @Column(name = "max_people")
     private int maxPeople;
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "photo")
-    private List<String> photos;
+    private List<String> photoes;
     @Enumerated(EnumType.STRING)
     @Column(name = "type_acc")
     private TypeAccommodation typeAccomodation;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "acc_status")
+    private AccommodationStatus accommodationStatus;
     private double rating;
     @Column(name = "cancel_deadline")
     private int cancelDeadline;
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "accommodation_price", joinColumns = @JoinColumn(name = "accommodation_id"))
+    @Column(name = "price")
     private List<Price> prices;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "accommodation_taken_dates", joinColumns = @JoinColumn(name = "accommodation_id"))
@@ -48,11 +50,15 @@ public class Accommodation implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id",referencedColumnName = "id", nullable = false)
     private Location location;
+
+    //dodati many to one
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id",referencedColumnName = "id", nullable = false)
     private Owner owner;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Reservation> reservations;
+    @Column(name = "auto_conf")
+    private boolean automaticConfirmation;
     public Accommodation() {}
     public Long getId() {
         return id;
@@ -159,15 +165,14 @@ public class Accommodation implements Serializable {
     public Accommodation(String description) {
         this.description = description;
     }
-    public Accommodation(Long id, boolean accepted, boolean automaticActivation, String description, int minPeople, int maxPeople,String name, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, List<Price> prices, List<TakenDate> takenDates, List<Amenity> amenities, Location location, Owner owner, List<Reservation> reservations) {
+    public Accommodation(Long id, boolean accepted, boolean automaticActivation, String description, int minPeople, int maxPeople, List<String> photoes, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, List<Price> prices, List<TakenDate> takenDates, List<Amenity> amenities, Location location, Owner owner, List<Reservation> reservations, AccommodationStatus status) {
         this.id = id;
         this.accepted = accepted;
         this.automaticActivation = automaticActivation;
         this.description = description;
         this.minPeople = minPeople;
         this.maxPeople = maxPeople;
-        this.photos = photos;
-        this.name = name;
+        this.photoes = photoes;
         this.typeAccomodation = typeAccomodation;
         this.rating = rating;
         this.cancelDeadline = cancelDeadline;
@@ -177,6 +182,17 @@ public class Accommodation implements Serializable {
         this.location = location;
         this.owner = owner;
         this.reservations = reservations;
+        this.accommodationStatus = status;
+        this.automaticConfirmation = false;
+
+    }
+
+    public boolean isAutomaticConfirmation() {
+        return automaticConfirmation;
+    }
+
+    public void setAutomaticConfirmation(boolean automaticConfirmation) {
+        this.automaticConfirmation = automaticConfirmation;
     }
 
     @Override
@@ -188,8 +204,7 @@ public class Accommodation implements Serializable {
                 ", description='" + description + '\'' +
                 ", minPeople=" + minPeople +
                 ", maxPeople=" + maxPeople +
-                ", photo='" + photos + '\'' +
-                ", name=" + name + '\'' +
+                ", photo='" + photoes + '\'' +
                 ", typeAccomodation=" + typeAccomodation +
                 ", rating=" + rating +
                 ", cancelDeadline=" + cancelDeadline +
@@ -206,23 +221,33 @@ public class Accommodation implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Accommodation that)) return false;
-        return accepted == that.accepted && automaticActivation == that.automaticActivation && minPeople == that.minPeople && maxPeople == that.maxPeople && Double.compare(that.rating, rating) == 0 && cancelDeadline == that.cancelDeadline && Objects.equals(id, that.id) && Objects.equals(description, that.description) && Objects.equals(photos, that.photos) && typeAccomodation == that.typeAccomodation && Objects.equals(prices, that.prices) && Objects.equals(takenDates, that.takenDates) && Objects.equals(amenities, that.amenities) && Objects.equals(owner, that.owner) && Objects.equals(reservations, that.reservations);
+        return accepted == that.accepted && automaticActivation == that.automaticActivation && minPeople == that.minPeople && maxPeople == that.maxPeople && Double.compare(that.rating, rating) == 0 && cancelDeadline == that.cancelDeadline && Objects.equals(id, that.id) && Objects.equals(description, that.description) && Objects.equals(photoes, that.photoes) && typeAccomodation == that.typeAccomodation && Objects.equals(prices, that.prices) && Objects.equals(takenDates, that.takenDates) && Objects.equals(amenities, that.amenities) && Objects.equals(owner, that.owner) && Objects.equals(reservations, that.reservations);
     }
     @Override
     public int hashCode() {
-        return Objects.hash(id, accepted, automaticActivation, description, minPeople, maxPeople, photos, typeAccomodation, rating, cancelDeadline, prices, takenDates, amenities, owner, reservations);
+        return Objects.hash(id, accepted, automaticActivation, description, minPeople, maxPeople, photoes, typeAccomodation, rating, cancelDeadline, prices, takenDates, amenities, owner, reservations);
     }
+
+    public AccommodationStatus getAccommodationStatus() {
+        return accommodationStatus;
+    }
+
+    public void setAccommodationStatus(AccommodationStatus accommodationStatus) {
+        this.accommodationStatus = accommodationStatus;
+    }
+
     public void copyValues(Accommodation a) {
         this.setAccepted(a.isAccepted());
         this.description = a.getDescription();
         this.minPeople = a.getMinPeople();
         this.maxPeople = a.getMaxPeople();
-        this.photos =a.getPhotos();
+        this.photoes =a.getPhotoes();
         this.typeAccomodation = a.getTypeAccomodation();
         this.rating = a.getRating();
         this.cancelDeadline = a.getCancelDeadline();
         this.location = a.getLocation();
-        this.name = a.getName();
+        this.accommodationStatus = a.getAccommodationStatus();
+        this.automaticConfirmation = a.isAutomaticConfirmation();
     }
     public Accommodation(Accommodation accommodation) {
         this.id = accommodation.id;
@@ -231,7 +256,7 @@ public class Accommodation implements Serializable {
         this.description = accommodation.description;
         this.minPeople = accommodation.minPeople;
         this.maxPeople = accommodation.maxPeople;
-        this.photos = accommodation.photos;
+        this.photoes = accommodation.photoes;
         this.typeAccomodation = accommodation.typeAccomodation;
         this.rating = accommodation.rating;
         this.cancelDeadline = accommodation.cancelDeadline;
@@ -241,21 +266,15 @@ public class Accommodation implements Serializable {
         this.location = accommodation.location;
         this.owner = accommodation.owner;
         this.reservations = accommodation.reservations;
+        this.accommodationStatus= accommodation.accommodationStatus;
+        this.automaticConfirmation = accommodation.isAutomaticConfirmation();
     }
 
-    public List<String> getPhotos() {
-        return photos;
+    public List<String> getPhotoes() {
+        return photoes;
     }
 
-    public void setPhotos(List<String> photoes) {
-        this.photos = photoes;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setPhotoes(List<String> photoes) {
+        this.photoes = photoes;
     }
 }

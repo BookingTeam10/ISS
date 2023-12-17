@@ -1,6 +1,5 @@
 package com.booking.ProjectISS.model.users;
 
-import com.booking.ProjectISS.enums.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -11,7 +10,6 @@ import java.io.Serializable;
 @Entity
 @Table(name="owners")
 public class Owner extends User implements Serializable {
-    private static final Role role = Role.OWNER;
     @Column(name="total_price")
     private double totalPrice;
     @Column(name="owner_rating")

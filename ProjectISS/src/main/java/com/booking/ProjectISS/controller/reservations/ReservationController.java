@@ -19,12 +19,14 @@ public class ReservationController {
     private IReservationService reservationService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    //@CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Collection<ReservationDTO>> getReservationDTO(){
         System.out.println(reservationService.findAll());
         return new ResponseEntity<Collection<ReservationDTO>>(reservationService.findAllDTO(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<ReservationDTO> getReservation(@PathVariable("id") Long id) {
         ReservationDTO reservationDTO = reservationService.findOneDTO(id);
         if (reservationDTO != null) {
@@ -36,7 +38,7 @@ public class ReservationController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody Reservation reservation) throws Exception {
-        System.out.println("UDJE U POST");
+        System.out.println("VS");
         if (reservationService.hasOverlappingRequests(reservation)) {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
@@ -44,6 +46,8 @@ public class ReservationController {
         ReservationDTO reservationDTO = reservationService.create(reservation);
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
     }
+
+
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //@CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<ReservationDTO> updateReservation(@RequestBody Reservation reservation, @PathVariable Long id)
@@ -80,6 +84,7 @@ public class ReservationController {
         return new ResponseEntity<>(reservationService.update(reservation), HttpStatus.OK);
     }
 
+
     @DeleteMapping(value = "/{id}")
     //@CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<ReservationDTO> deleteReservation(@PathVariable("id") Long id) {
@@ -95,6 +100,7 @@ public class ReservationController {
         if (reservationDTOS != null) {
             return new ResponseEntity<Collection<ReservationDTO>>(reservationDTOS, HttpStatus.OK);
         }
+
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

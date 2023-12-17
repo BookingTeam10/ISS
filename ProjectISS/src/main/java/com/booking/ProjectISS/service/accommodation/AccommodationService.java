@@ -5,7 +5,6 @@ import com.booking.ProjectISS.dto.accomodations.LocationDTO;
 import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
-import com.booking.ProjectISS.model.accomodations.Amenity;
 import com.booking.ProjectISS.model.accomodations.Location;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.User;
@@ -68,7 +67,34 @@ public class AccommodationService implements IAccommodationService {
         return new AccommodationDTO(accommodationRepository.save(new Accommodation(accommodation)));
     }
     @Override
-    public AccommodationDTO update(Accommodation accommodation) throws Exception {return null;}
+    public AccommodationDTO update(Accommodation accommodationForUpdate) throws Exception {
+        Optional<Accommodation> optionalAccommodation = this.accommodationRepository.findById(accommodationForUpdate.getId());
+
+        optionalAccommodation.ifPresent(oldAccommodation -> {
+            oldAccommodation.setId(accommodationForUpdate.getId());
+            oldAccommodation.setAccepted(accommodationForUpdate.isAccepted());
+            oldAccommodation.setAutomaticActivation(accommodationForUpdate.isAutomaticActivation());
+            oldAccommodation.setDescription(accommodationForUpdate.getDescription());
+            oldAccommodation.setMinPeople(accommodationForUpdate.getMinPeople());
+            oldAccommodation.setMaxPeople(accommodationForUpdate.getMaxPeople());
+            oldAccommodation.setPhotoes(accommodationForUpdate.getPhotoes());
+            oldAccommodation.setTypeAccomodation(accommodationForUpdate.getTypeAccomodation());
+            oldAccommodation.setAccommodationStatus(accommodationForUpdate.getAccommodationStatus());
+            oldAccommodation.setRating(accommodationForUpdate.getRating());
+            oldAccommodation.setCancelDeadline(accommodationForUpdate.getCancelDeadline());
+            oldAccommodation.setTakenDates(accommodationForUpdate.getTakenDates());
+            oldAccommodation.setLocation(accommodationForUpdate.getLocation());
+            oldAccommodation.setOwner(accommodationForUpdate.getOwner());
+            oldAccommodation.setReservations(accommodationForUpdate.getReservations());
+            oldAccommodation.setPrices(accommodationForUpdate.getPrices());
+            oldAccommodation.setAmenities(accommodationForUpdate.getAmenities());
+            oldAccommodation.setAutomaticConfirmation(accommodationForUpdate.isAutomaticConfirmation());
+
+            this.accommodationRepository.save(oldAccommodation);
+        });
+
+        return new AccommodationDTO(accommodationForUpdate);
+    }
 
     @Override
     public Collection<AccommodationDTO> findAllByOwnerDTO(Long id) {
@@ -115,16 +141,5 @@ public class AccommodationService implements IAccommodationService {
     }
     private boolean containsIgnoreCase(String str, String searchTerm) {
         return str != null && str.toLowerCase().contains(searchTerm.toLowerCase());
-    }
-
-    @Override
-    public Collection<AccommodationDTO> getAccommodationsSearched(Date start, Date end, int numPeople,String location,String minPrice,String maxPrice, List<Amenity> amenities) {
-        Collection<Accommodation> accommodations = accommodationRepository.findAll();
-        Collection<AccommodationDTO> accommodationDTOS= new ArrayList<AccommodationDTO>();
-        for (Accommodation a:accommodations){
-            if(a.getMinPeople()<=numPeople && a.getMaxPeople()>=numPeople && matchesLocation(a,location))
-                accommodationDTOS.add(new AccommodationDTO(a));
-        }
-        return accommodationDTOS;
     }
 }
