@@ -77,4 +77,10 @@ public class AdministratorService implements IAdministratorService {
         }
         return new AdministratorDTO(administrator.getId(),administrator.getEmail());
     }
+
+    @Override
+    public Administrator findUsername(String username) {
+
+        return administratorRepository.findByUsername(username);
+    }
 }

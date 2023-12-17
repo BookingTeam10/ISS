@@ -35,6 +35,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/owners")
+@CrossOrigin(origins = "http://localhost:4200")
 public class OwnerController {
 
     @Autowired
@@ -86,6 +87,11 @@ public class OwnerController {
                 HttpStatus.OK);
     }
 
+    @GetMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<Owner> getOwnerUsername(@PathVariable("username") String username){
+        return new ResponseEntity<Owner>(ownerService.findUsername(username), HttpStatus.OK);
+    }
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OwnerDTO> getOwner(@PathVariable("id") Long id) {
         OwnerDTO Owner = ownerService.findOneDTO(id);
@@ -99,7 +105,13 @@ public class OwnerController {
     //deleteOne, 3.4 for owner
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<OwnerDTO> deleteOwner(@PathVariable("id") Long id) {
+        List<Reservation> ownerReservations = reservationService.getOwnerReservations(id).stream().filter(reservation ->
+            reservation.getStatus() == ReservationStatus.ACCEPTED
+        ).toList();
+
+        if(!ownerReservations.isEmpty()){return new ResponseEntity<>(HttpStatus.FORBIDDEN);}
         ownerService.delete(id);
+        accommodationService.deleteAllByOwner(id);
         return new ResponseEntity<OwnerDTO>(HttpStatus.NO_CONTENT);
     }
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -116,8 +128,8 @@ public class OwnerController {
         if (OwnerForUpdate == null) {
             return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
         }
-        OwnerForUpdate.copyValues(Owner);
-        OwnerDTO updatedOwner = ownerService.update(OwnerForUpdate);
+
+        OwnerDTO updatedOwner = ownerService.update(Owner);
         return new ResponseEntity<OwnerDTO>(updatedOwner, HttpStatus.OK);
     }
 

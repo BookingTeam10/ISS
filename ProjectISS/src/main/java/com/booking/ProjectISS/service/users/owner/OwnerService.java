@@ -67,12 +67,35 @@ public class OwnerService implements IOwnerService {
     }
 
     @Override
-    public OwnerDTO update(Owner owner) throws Exception {
-        return null;
+    public OwnerDTO update(Owner ownerForUpdate) throws Exception {
+
+        Optional<Owner> optionalOwner = this.ownerRepository.findById(ownerForUpdate.id());
+        optionalOwner.ifPresent(oldOwner->{
+            oldOwner.setEmail(ownerForUpdate.getEmail());
+            oldOwner.setPassword(ownerForUpdate.getPassword());
+            oldOwner.setName(ownerForUpdate.getName());
+            oldOwner.setSurname(ownerForUpdate.getSurname());
+            oldOwner.setPhone(ownerForUpdate.getPhone());
+            oldOwner.setAddress(ownerForUpdate.getAddress());
+            oldOwner.setBlocked(ownerForUpdate.isBlocked());
+            oldOwner.setCreatedNotification(ownerForUpdate.isCreatedNotification());
+            oldOwner.setCancelledNotification(ownerForUpdate.isCancelledNotification());
+            oldOwner.setRateAccomodationNotification(ownerForUpdate.isRateAccommodationNotification());
+            oldOwner.setRateMeNotification(ownerForUpdate.isRateMeNotification());
+
+            this.ownerRepository.save(oldOwner);
+        });
+
+        return new OwnerDTO(ownerForUpdate);
     }
     @Override
     public boolean reportGuest(Long idGuest, Long idOwner) {
         return true;
+    }
+
+    @Override
+    public Owner findUsername(String username) {
+        return this.ownerRepository.findByEmail(username);
     }
 
 }

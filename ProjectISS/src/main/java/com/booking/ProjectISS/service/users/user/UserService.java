@@ -145,6 +145,10 @@ public class UserService implements IUserService, UserDetailsService {
         return user;
     }
 
+    @Override
+    public boolean doesUsernameExist(String username) {
+        return UserRepository.doesUsernameExist(username) > 0;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

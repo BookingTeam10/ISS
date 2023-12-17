@@ -24,4 +24,6 @@ public interface IOwnerService {
     OwnerDTO update(Owner owner) throws Exception;
 
     boolean reportGuest(Long idGuest, Long idOwner);
+
+    Owner findUsername(String username);
 }

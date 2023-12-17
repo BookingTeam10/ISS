@@ -16,7 +16,10 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class AccommodationService implements IAccommodationService {
@@ -93,6 +96,14 @@ public class AccommodationService implements IAccommodationService {
         }
         return accommodationDTOS;
     }
+
+    @Override
+    public boolean deleteAllByOwner(Long id) {
+
+        accommodationRepository.deleteAll(accommodationRepository.findAllByOwner(id));
+        return true;
+    }
+
     private boolean matchesLocation(Accommodation accomodation, String location) {
         if(location == null || location.isEmpty()){return true;}
         Location accomodationLocation = accomodation.getLocation();

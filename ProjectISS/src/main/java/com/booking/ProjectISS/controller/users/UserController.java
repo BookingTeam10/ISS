@@ -139,4 +139,20 @@ public class UserController {
         tokenJWT.setJwt(token);
         return tokenJWT;
     }
+
+    @PostMapping(value = "/change-password/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<String> changePassword(@PathVariable("id") Long id, @RequestBody PasswordDTO changePasswordDTO) {
+
+        User user = userService.findOne(id);
+        user.setPassword(changePasswordDTO.getPassword());
+
+        return new ResponseEntity<String>(HttpStatus.OK);
+    }
+
+    @GetMapping("/exists/{username}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public boolean doesUsernameExist(@PathVariable String username) {
+        return userService.doesUsernameExist(username);
+    }
 }

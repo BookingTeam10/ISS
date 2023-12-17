@@ -22,4 +22,6 @@ public interface IGuestService {
     GuestDTO update(Guest guest) throws Exception;
 
     boolean reportOwner(Long idGuest,Long idOwner);
+
+    Guest findUsername(String username);
 }

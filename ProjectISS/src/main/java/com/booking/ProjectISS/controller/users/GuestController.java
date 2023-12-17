@@ -9,6 +9,7 @@ import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.dto.users.OwnerDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.reviews.Review;
+import com.booking.ProjectISS.model.users.Administrator;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.service.accommodation.IAccommodationService;
@@ -27,10 +28,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/guests")
+@CrossOrigin(origins = "http://localhost:4200")
 public class GuestController {
 
     @Autowired
@@ -62,6 +64,12 @@ public class GuestController {
         }
 
         return new ResponseEntity<GuestDTO>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+
+    public ResponseEntity<Guest> getGuestUsername(@PathVariable("username") String username){
+        return new ResponseEntity<Guest>(guestService.findUsername(username), HttpStatus.OK);
     }
 
     //delete one, 3.4 for guest
@@ -108,6 +116,11 @@ public class GuestController {
     //deleteOne
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<GuestDTO> deleteGuest(@PathVariable("id") Long id) {
+        List<Reservation> acceptedReservations = reservationService.getGuestReservations(id).stream()
+                .filter(reservation -> reservation.getStatus() == ReservationStatus.ACCEPTED)
+                .toList();
+
+        if(!acceptedReservations.isEmpty()){return  new ResponseEntity<>(HttpStatus.FORBIDDEN);}
         guestService.delete(id);
         return new ResponseEntity<GuestDTO>(HttpStatus.NO_CONTENT);
     }

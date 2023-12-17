@@ -25,4 +25,6 @@ public interface IAdministratorService {
     AdministratorDTO update(Administrator administrator) throws Exception;
 
     AdministratorDTO findAdministrator(LoginDTO login);
+
+    Administrator findUsername(String username);
 }

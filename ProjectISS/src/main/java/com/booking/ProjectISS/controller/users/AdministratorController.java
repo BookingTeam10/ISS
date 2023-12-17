@@ -61,6 +61,15 @@ public class AdministratorController {
         return new ResponseEntity<AdministratorDTO>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value = "/username/{username}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(origins = "http://localhost:4200")
+    public ResponseEntity<Administrator> getAdministratorUsername(@PathVariable("username") String username){
+        Administrator administrator = administratorService.findUsername(username);
+        if(administrator == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<Administrator>(administrator, HttpStatus.OK);
+    }
     //deleteOne
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<AdministratorDTO> deleteAdministrator(@PathVariable("id") Long id) {
