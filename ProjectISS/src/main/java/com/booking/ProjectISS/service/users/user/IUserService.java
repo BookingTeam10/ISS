@@ -31,4 +31,6 @@ public interface IUserService {
     User register(RegistrationRequestDTO registrationRequest);
 
     User activateUser(String code);
+
+    boolean doesUsernameExist(String username);
 }

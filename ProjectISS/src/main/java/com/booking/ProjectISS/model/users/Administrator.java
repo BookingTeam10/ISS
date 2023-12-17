@@ -1,6 +1,5 @@
 package com.booking.ProjectISS.model.users;
 
-import com.booking.ProjectISS.enums.Role;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import jakarta.persistence.*;
 
@@ -12,7 +11,6 @@ import java.util.List;
 @Table(name="administrators")
 public class Administrator extends User implements Serializable {
 
-    private static final Role role = Role.ADMIN;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Column(name="all_users")
     private List<User> users;
@@ -23,19 +21,19 @@ public class Administrator extends User implements Serializable {
     private Long id;
 
     public Administrator(Long id, String email, String password, String name, String surname, String phone, String address, List<User> users, List<Accommodation> accomodations) {
-        super(id, email, password, name, surname, phone, address,role);
+        super(id, email, password, name, surname, phone, address);
         this.users = users;
         this.accomodations = accomodations;
     }
 
     public Administrator(Long id, String email, String password, String name, String surname, String phone, String address) {
-        super(id, email, password, name, surname, phone, address,role);
+        super(id, email, password, name, surname, phone, address);
         this.users=new ArrayList<>();
         this.accomodations=new ArrayList<>();
     }
 
     public Administrator(Administrator a){
-        super(a.getId(),a.getEmail(),a.getPassword(),a.getName(),a.getSurname(),a.getPhone(),a.getAddress(),a.isReported(),a.isBlocked(),a.getRole1());
+        super(a.getId(),a.getEmail(),a.getPassword(),a.getName(),a.getSurname(),a.getPhone(),a.getAddress(),a.isReported(),a.isBlocked());
         this.users=a.users;
         this.accomodations=a.accomodations;
     }

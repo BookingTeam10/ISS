@@ -1,9 +1,9 @@
 package com.booking.ProjectISS.dto.accomodations;
 
+import com.booking.ProjectISS.enums.AccommodationStatus;
 import com.booking.ProjectISS.enums.TypeAccommodation;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.accomodations.Location;
-import com.booking.ProjectISS.model.accomodations.Price;
 import com.booking.ProjectISS.model.users.Owner;
 
 import java.util.List;
@@ -13,14 +13,40 @@ public class AccommodationDTO {
     private String description;
     private int minPeople;
     private int maxPeople;
-    private String name;
-    private List<String> photos;
+    private List<String> photoes;
     private TypeAccommodation typeAccomodation;
     private double rating;
     private int cancelDeadline;
     private boolean isAccepted;
     private Location location;
-    private List<Price> price;
+    private AccommodationStatus accommodationStatus;
+    private  Owner owner;
+    private boolean automaticConfirmation;
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public boolean isAutomaticConfirmation() {
+        return automaticConfirmation;
+    }
+
+    public void setAutomaticConfirmation(boolean automaticConfirmation) {
+        this.automaticConfirmation = automaticConfirmation;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    public AccommodationStatus getAccommodationStatus() {
+        return accommodationStatus;
+    }
+
+    public void setAccommodationStatus(AccommodationStatus accommodationStatus) {
+        this.accommodationStatus = accommodationStatus;
+    }
+
     public Long getId() {
         return id;
     }
@@ -54,19 +80,14 @@ public class AccommodationDTO {
     }
 
 
-    public List<String> getPhotos() {
-        return photos;
-    }
-    public void setPhotos(List<String> photos) {
-        this.photos = photos;
-    }
-    public String getName() {
-        return name;
+    public List<String> getPhotoes() {
+        return photoes;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPhotoes(List<String> photoes) {
+        this.photoes = photoes;
     }
+
     public TypeAccommodation getTypeAccomodation() {
         return typeAccomodation;
     }
@@ -111,33 +132,35 @@ public class AccommodationDTO {
 
     }
 
-    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,String name,List<Price> price) {
+    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted, AccommodationStatus status, Owner owner, boolean automaticConfirmation) {
         this.id = id;
         this.description = description;
         this.minPeople = minPeople;
         this.maxPeople = maxPeople;
-        this.photos = photos;
+        this.photoes = photos;
         this.typeAccomodation = typeAccomodation;
         this.rating = rating;
         this.cancelDeadline = cancelDeadline;
         this.isAccepted=isAccepted;
-        this.name = name;
-        this.price = price;
+        this.accommodationStatus = status;
+        this.owner = owner;
+        this.automaticConfirmation = automaticConfirmation;
     }
 
-    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,Location location,String name,List<Price> price) {
+    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,Location location, AccommodationStatus status, Owner owner, boolean automaticConfirmation) {
         this.id = id;
         this.description = description;
         this.minPeople = minPeople;
         this.maxPeople = maxPeople;
-        this.photos = photo;
+        this.photoes = photo;
         this.typeAccomodation = typeAccomodation;
         this.rating = rating;
         this.cancelDeadline = cancelDeadline;
         this.isAccepted=isAccepted;
         this.location = location;
-        this.name = name;
-        this.price = price;
+        this.accommodationStatus = status;
+        this.owner = owner;
+        this.automaticConfirmation = automaticConfirmation;
     }
 
     public AccommodationDTO(Accommodation a) {
@@ -146,14 +169,15 @@ public class AccommodationDTO {
         this.description = a.getDescription();
         this.minPeople = a.getMinPeople();
         this.maxPeople = a.getMaxPeople();
-        this.photos =a.getPhotos();
+        this.photoes =a.getPhotoes();
         this.typeAccomodation = a.getTypeAccomodation();
         this.rating = a.getRating();
         this.cancelDeadline = a.getCancelDeadline();
         this.isAccepted = a.isAccepted();
         this.location = a.getLocation();
-        this.name = a.getName();
-        this.price = a.getPrices();
+        this.accommodationStatus = a.getAccommodationStatus();
+        this.owner = a.getOwner();
+        this.automaticConfirmation = a.isAutomaticConfirmation();
     }
 
     @Override
@@ -163,13 +187,12 @@ public class AccommodationDTO {
                 ", description='" + description + '\'' +
                 ", minPeople=" + minPeople +
                 ", maxPeople=" + maxPeople +
-                ", photo='" + photos + '\'' +
+                ", photo='" + photoes + '\'' +
                 ", typeAccomodation=" + typeAccomodation +
                 ", rating=" + rating +
                 ", cancelDeadline=" + cancelDeadline +
                 ", isAccepted=" + isAccepted +
                 ", location=" + location +
-                ", name=" + name +
                 '}';
     }
 }

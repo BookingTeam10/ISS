@@ -65,12 +65,33 @@ public class GuestService implements IGuestService {
     }
 
     @Override
-    public GuestDTO update(Guest guest) throws Exception {
-        return null;
+    public GuestDTO update(Guest guestForUpdate) throws Exception {
+
+        Optional<Guest> optionalGuest = this.guestRepository.findById(guestForUpdate.getId());
+
+        optionalGuest.ifPresent(oldGuest -> {
+            oldGuest.setEmail(guestForUpdate.getEmail());
+            oldGuest.setPassword(guestForUpdate.getPassword());
+            oldGuest.setName(guestForUpdate.getName());
+            oldGuest.setSurname(guestForUpdate.getSurname());
+            oldGuest.setPhone(guestForUpdate.getPhone());
+            oldGuest.setAddress(guestForUpdate.getAddress());
+            oldGuest.setNumberCanceledReservation(guestForUpdate.getNumberCanceledReservation());
+            oldGuest.setTurnOnNotification(guestForUpdate.isTurnOnNotification());
+
+            this.guestRepository.save(oldGuest);
+        });
+
+        return new GuestDTO(guestForUpdate);
     }
 
     @Override
     public boolean reportOwner(Long idGuest,Long idOwner) {
         return true;
+    }
+
+    @Override
+    public Guest findUsername(String username) {
+        return this.guestRepository.findByEmail(username);
     }
 }

@@ -16,4 +16,7 @@ public interface IUserRepository extends JpaRepository<User,Long> {
     Optional<User> findByEmail(String email);
     @Query("select u from User u where u.activationCode = ?1")
     User findByActivationCode(String activationCode);
+
+    @Query("select count(*) from User u where u.email = ?1")
+    Long doesUsernameExist(String username);
 }

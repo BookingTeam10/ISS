@@ -3,7 +3,6 @@ package com.booking.ProjectISS.service.users.user;
 import com.booking.ProjectISS.dto.users.LoginDTO;
 import com.booking.ProjectISS.dto.users.RegistrationRequestDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
-import com.booking.ProjectISS.enums.Role;
 import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
@@ -95,7 +94,7 @@ public class UserService implements IUserService, UserDetailsService {
     public User register(RegistrationRequestDTO registrationRequest) {
         User user=null;
         System.out.println(registrationRequest.getTypeUser());
-        user=new User(0L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress(), Role.USER);
+        user=new User(0L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress());
 //        if(registrationRequest.getTypeUser()==TypeUser.GUEST){
 //            user=new Guest(0L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress());
 //        }
@@ -145,6 +144,10 @@ public class UserService implements IUserService, UserDetailsService {
         return user;
     }
 
+    @Override
+    public boolean doesUsernameExist(String username) {
+        return UserRepository.doesUsernameExist(username) > 0;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

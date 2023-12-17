@@ -28,26 +28,21 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        if (!isPermitted(request)) {
+        if (request.getRequestURL().toString().contains("/api/")) {
             System.out.println("####" + request.getMethod() + ":" + request.getRequestURL());
             System.out.println("#### Authorization: " + request.getHeader("Authorization"));
             String requestTokenHeader = request.getHeader("Authorization");
-            if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200"); // Replace with your frontend origin
-                response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE"); // Add the HTTP methods your API supports
-                response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type"); // Add the headers your API supports
-                return;
-            }
             String username = null;
             String jwtToken = null;
+            System.out.println(requestTokenHeader);
             if (requestTokenHeader != null && requestTokenHeader.contains("Bearer")) {
                 jwtToken = requestTokenHeader.substring(requestTokenHeader.indexOf("Bearer ") + 7);
                 System.out.println(">>>>>JWT TOKEN: " + jwtToken);
                 try {
                     username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-                    System.out.println(username);
                     UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
+//                    System.out.println("GRESKA");
+                    System.out.println(userDetails);
                     if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
                         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());
@@ -69,15 +64,4 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
         chain.doFilter(request, response);
     }
-    private boolean isPermitted(HttpServletRequest request){
-        String rq=request.getRequestURL().toString();
-        String[] permitted={"/api/users/login","/api/accommodations","/api/accommodations/accommodationsSearch","/api/register"};
-        for(String s : permitted){
-            if(rq.contains(s)){
-                return true;
-            }
-        }
-        return false;
-    }
-
 }
