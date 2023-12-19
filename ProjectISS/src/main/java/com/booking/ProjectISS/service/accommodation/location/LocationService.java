@@ -68,7 +68,9 @@ public class LocationService implements ILocationService{
         return new LocationDTO(locationRepository.save(new Location(location)));
     }
     @Override
-    public LocationDTO update(Location location) throws Exception {
-        return null;
+    public LocationDTO update(Location location)  {
+        this.locationRepository.save(location);
+        return new LocationDTO(location);
+
     }
 }

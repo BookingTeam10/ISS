@@ -19,10 +19,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -33,6 +35,9 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @Autowired
     public UserDetailsService userDetailsService;
@@ -124,28 +129,43 @@ public class UserController {
 
     @PostMapping("/login")
     @CrossOrigin(origins = "http://localhost:4200")
-    public Token logIn(@RequestBody LoginDTO login) {
-        Token tokenJWT=new Token();
-        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(login.getEmail(),login.getPassword());
-        Authentication auth = authenticationManager.authenticate(authReq);
-        System.out.println("AUTH = ===   " +  auth.getDetails());
-        SecurityContext sc = SecurityContextHolder.getContext();
-        sc.setAuthentication(auth);
-        //UserDetails user= (UserDetails) auth.getPrincipal();
-        UserDetails userDetails = userDetailsService.loadUserByUsername(login.getEmail());
-        System.out.println("userDetails");
-        System.out.println(userDetails);
-        String token = jwtTokenUtil.generateToken(userDetails);;
-        tokenJWT.setJwt(token);
-        return tokenJWT;
+    public Token login(@RequestBody LoginDTO login) {
+        try {
+            UsernamePasswordAuthenticationToken authReq =
+                    new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword());
+            Authentication auth = authenticationManager.authenticate(authReq);
+
+            SecurityContext sc = SecurityContextHolder.getContext();
+            sc.setAuthentication(auth);
+
+            UserDetails userDetails = userDetailsService.loadUserByUsername(login.getEmail());
+            System.out.println("userDetails");
+            System.out.println(userDetails);
+
+            String token = jwtTokenUtil.generateToken(userDetails);
+            Token tokenJWT = new Token();
+            tokenJWT.setJwt(token);
+
+            return tokenJWT;
+        } catch (AuthenticationException e) {
+            System.out.println("Authentication failed: " + e.getMessage());
+            Token tokenJWT = new Token();
+            tokenJWT.setJwt("NEUSPESNO");
+            return tokenJWT;
+        }
     }
 
-    @PostMapping(value = "/change-password/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/change-password/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<String> changePassword(@PathVariable("id") Long id, @RequestBody PasswordDTO changePasswordDTO) {
+    public ResponseEntity<String> changePassword(@PathVariable("id") Long id, @RequestBody PasswordDTO changePasswordDTO) throws Exception {
 
         User user = userService.findOne(id);
-        user.setPassword(changePasswordDTO.getPassword());
+        System.out.println("PRE ENC PASS    " + changePasswordDTO.getPassword());
+//        passwordEncoder.encode(changePasswordDTO.getPassword())
+        user.setPassword(passwordEncoder.encode(changePasswordDTO.getPassword()));
+
+        System.out.println("PASSWORDASASD  " +  user.getPassword());
+         userService.updatePassword(user);
 
         return new ResponseEntity<String>(HttpStatus.OK);
     }

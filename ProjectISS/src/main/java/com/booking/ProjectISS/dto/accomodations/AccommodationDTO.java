@@ -2,18 +2,23 @@ package com.booking.ProjectISS.dto.accomodations;
 
 import com.booking.ProjectISS.enums.AccommodationStatus;
 import com.booking.ProjectISS.enums.TypeAccommodation;
-import com.booking.ProjectISS.model.accomodations.Accommodation;
-import com.booking.ProjectISS.model.accomodations.Location;
+import com.booking.ProjectISS.model.accomodations.*;
+import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Owner;
+import jakarta.persistence.*;
 
 import java.util.List;
 
 public class AccommodationDTO {
+    private  boolean accepted;
+    private List<TakenDate> takenDates;
+    private boolean automaticActivation = false;
     private Long id;
+    private String name;
     private String description;
     private int minPeople;
     private int maxPeople;
-    private List<String> photoes;
+    private List<String> photos;
     private TypeAccommodation typeAccomodation;
     private double rating;
     private int cancelDeadline;
@@ -22,6 +27,18 @@ public class AccommodationDTO {
     private AccommodationStatus accommodationStatus;
     private  Owner owner;
     private boolean automaticConfirmation;
+    private List<Price> prices;
+
+
+    private double weekendPrice;
+
+    private double holidayPrice;
+    private List<Amenity> amenities;
+    private List<Reservation> reservations;
+
+    private double summerPrice;
+
+    private boolean isNight;
 
     public Owner getOwner() {
         return owner;
@@ -33,6 +50,78 @@ public class AccommodationDTO {
 
     public void setAutomaticConfirmation(boolean automaticConfirmation) {
         this.automaticConfirmation = automaticConfirmation;
+    }
+
+    public List<TakenDate> getTakenDates() {
+        return takenDates;
+    }
+
+    public void setTakenDates(List<TakenDate> takenDates) {
+        this.takenDates = takenDates;
+    }
+
+    public boolean isAutomaticActivation() {
+        return automaticActivation;
+    }
+
+    public void setAutomaticActivation(boolean automaticActivation) {
+        this.automaticActivation = automaticActivation;
+    }
+
+    public List<Price> getPrices() {
+        return prices;
+    }
+
+    public void setPrices(List<Price> prices) {
+        this.prices = prices;
+    }
+
+    public double getWeekendPrice() {
+        return weekendPrice;
+    }
+
+    public void setWeekendPrice(double weekendPrice) {
+        this.weekendPrice = weekendPrice;
+    }
+
+    public double getHolidayPrice() {
+        return holidayPrice;
+    }
+
+    public void setHolidayPrice(double holidayPrice) {
+        this.holidayPrice = holidayPrice;
+    }
+
+    public List<Amenity> getAmenities() {
+        return amenities;
+    }
+
+    public void setAmenities(List<Amenity> amenities) {
+        this.amenities = amenities;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    public double getSummerPrice() {
+        return summerPrice;
+    }
+
+    public void setSummerPrice(double summerPrice) {
+        this.summerPrice = summerPrice;
+    }
+
+    public boolean isNight() {
+        return isNight;
+    }
+
+    public void setNight(boolean night) {
+        isNight = night;
     }
 
     public void setOwner(Owner owner) {
@@ -79,15 +168,6 @@ public class AccommodationDTO {
         this.maxPeople = maxPeople;
     }
 
-
-    public List<String> getPhotoes() {
-        return photoes;
-    }
-
-    public void setPhotoes(List<String> photoes) {
-        this.photoes = photoes;
-    }
-
     public TypeAccommodation getTypeAccomodation() {
         return typeAccomodation;
     }
@@ -132,12 +212,13 @@ public class AccommodationDTO {
 
     }
 
-    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted, AccommodationStatus status, Owner owner, boolean automaticConfirmation) {
+    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,String name, AccommodationStatus status, Owner owner, boolean automaticConfirmation) {
+
         this.id = id;
         this.description = description;
         this.minPeople = minPeople;
         this.maxPeople = maxPeople;
-        this.photoes = photos;
+        this.photos = photos;
         this.typeAccomodation = typeAccomodation;
         this.rating = rating;
         this.cancelDeadline = cancelDeadline;
@@ -145,14 +226,41 @@ public class AccommodationDTO {
         this.accommodationStatus = status;
         this.owner = owner;
         this.automaticConfirmation = automaticConfirmation;
+        this.name = name;
+    }
+    public AccommodationDTO(Long id, boolean accepted, boolean automaticActivation, String description, int minPeople, int maxPeople, String name, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, List<Price> prices, List<TakenDate> takenDates, List<Amenity> amenities, Location location, Owner owner, List<Reservation> reservations, double weekendPrice, double holidayPrice, double summerPrice, boolean isNight, AccommodationStatus status) {
+
+        this.id = id;
+        this.accepted = accepted;
+        this.automaticActivation = automaticActivation;
+        this.description = description;
+        this.minPeople = minPeople;
+        this.maxPeople = maxPeople;
+        this.photos = photos;
+        this.typeAccomodation = typeAccomodation;
+        this.rating = rating;
+        this.cancelDeadline = cancelDeadline;
+        this.prices = prices;
+        this.takenDates = takenDates;
+        this.amenities = amenities;
+        this.location = location;
+        this.owner = owner;
+        this.reservations = reservations;
+        this.accommodationStatus = status;
+        this.automaticConfirmation = automaticActivation;
+        this.weekendPrice=weekendPrice;
+        this.holidayPrice=holidayPrice;
+        this.summerPrice=summerPrice;
+        this.isNight=isNight;
+        this.name = name;
     }
 
-    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,Location location, AccommodationStatus status, Owner owner, boolean automaticConfirmation) {
+    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,Location location,String name, AccommodationStatus status, Owner owner, boolean automaticConfirmation) {
         this.id = id;
         this.description = description;
         this.minPeople = minPeople;
         this.maxPeople = maxPeople;
-        this.photoes = photo;
+        this.photos = photo;
         this.typeAccomodation = typeAccomodation;
         this.rating = rating;
         this.cancelDeadline = cancelDeadline;
@@ -161,6 +269,7 @@ public class AccommodationDTO {
         this.accommodationStatus = status;
         this.owner = owner;
         this.automaticConfirmation = automaticConfirmation;
+        this.name = name;
     }
 
     public AccommodationDTO(Accommodation a) {
@@ -169,7 +278,7 @@ public class AccommodationDTO {
         this.description = a.getDescription();
         this.minPeople = a.getMinPeople();
         this.maxPeople = a.getMaxPeople();
-        this.photoes =a.getPhotoes();
+        this.photos = a.getPhotos();
         this.typeAccomodation = a.getTypeAccomodation();
         this.rating = a.getRating();
         this.cancelDeadline = a.getCancelDeadline();
@@ -178,21 +287,59 @@ public class AccommodationDTO {
         this.accommodationStatus = a.getAccommodationStatus();
         this.owner = a.getOwner();
         this.automaticConfirmation = a.isAutomaticConfirmation();
+        this.name = a.getName();
+        this.weekendPrice = a.getWeekendPrice();
+        this.summerPrice = a.getSummerPrice();
+        this.holidayPrice = a.getHolidayPrice();
+        this.cancelDeadline = a.getCancelDeadline();
+        this.prices = a.getPrices();
     }
 
     @Override
     public String toString() {
         return "AccommodationDTO{" +
-                "id=" + id +
+                "accepted=" + accepted +
+                ", takenDates=" + takenDates +
+                ", automaticActivation=" + automaticActivation +
+                ", id=" + id +
+                ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", minPeople=" + minPeople +
                 ", maxPeople=" + maxPeople +
-                ", photo='" + photoes + '\'' +
+                ", photos=" + photos +
                 ", typeAccomodation=" + typeAccomodation +
                 ", rating=" + rating +
                 ", cancelDeadline=" + cancelDeadline +
                 ", isAccepted=" + isAccepted +
                 ", location=" + location +
+                ", accommodationStatus=" + accommodationStatus +
+                ", owner=" + owner +
+                ", automaticConfirmation=" + automaticConfirmation +
+                ", prices=" + prices +
+                ", weekendPrice=" + weekendPrice +
+                ", holidayPrice=" + holidayPrice +
+                ", amenities=" + amenities +
+                ", reservations=" + reservations +
+                ", summerPrice=" + summerPrice +
+                ", isNight=" + isNight +
                 '}';
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<String> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<String> photos) {
+        this.photos = photos;
+    }
+
+
 }

@@ -135,6 +135,7 @@ public class UserService implements IUserService, UserDetailsService {
         user.setActive(true);
         user.setActivationCode("");
         user.setActivationExpiry(null);
+        System.out.println("SET!");
         if(brojac==2){
             System.out.println("USLO OVDE VAZNO!");
             UserRepository.save(user);
@@ -142,6 +143,15 @@ public class UserService implements IUserService, UserDetailsService {
         }
 
         return user;
+    }
+
+    @Override
+    public void updatePassword(User user) {
+        System.out.println(" UPDATE ---- -   "  + user.getPassword());
+        this.UserRepository.save(user);
+
+        User optionalUser = this.UserRepository.findOne(user.getId());
+        System.out.println(" POSLE UPDATE -- - "  + optionalUser.getPassword());
     }
 
     @Override

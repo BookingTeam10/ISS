@@ -11,9 +11,9 @@ public interface ILocationService {
 
     LocationDTO findOneDTO(Long id);
     Location findOne(Long id);
-        Collection<LocationDTO> findAllDTO();
-       Collection<Location> findAll();
-      void delete(Long id);
+    Collection<LocationDTO> findAllDTO();
+    Collection<Location> findAll();
+    void delete(Long id);
     LocationDTO create(Location location) throws Exception;
-    LocationDTO update(Location location) throws Exception;
+    LocationDTO update(Location location);
 }

@@ -67,7 +67,7 @@ public class GuestController {
     }
 
     @GetMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Guest> getGuestUsername(@PathVariable("username") String username){
         return new ResponseEntity<Guest>(guestService.findUsername(username), HttpStatus.OK);
     }
@@ -126,13 +126,15 @@ public class GuestController {
         return new ResponseEntity<GuestDTO>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping(value = "/{id}/request/{reqId}")
-    public ResponseEntity<ReservationDTO> deleteGuestReservation(@PathVariable("id") Long id,
-                                                                 @PathVariable("reqId") Long reqId){
+    @CrossOrigin(origins = "http://localhost:4200")
+    @DeleteMapping(value = "/request/{reqId}")
+    public ResponseEntity<ReservationDTO> deleteGuestReservation(@PathVariable("reqId") Long reqId){
         if(reservationService.findOne(reqId).getStatus() == ReservationStatus.ACCEPTED){
             return new ResponseEntity<ReservationDTO>(HttpStatus.NOT_FOUND);
         }else{
-            reservationService.delete(reqId);
+            if(!reservationService.delete(reqId)){
+                return new ResponseEntity<ReservationDTO>(HttpStatus.FORBIDDEN);
+            }
         }
         return new ResponseEntity<ReservationDTO>(HttpStatus.NO_CONTENT);
     }
@@ -229,5 +231,12 @@ public class GuestController {
         System.out.println("UDJE3");
         ReservationDTO reservationDTO = reservationService.create(reservation);
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping(value = "/request")
+    public ResponseEntity<Collection<ReservationDTO>> guestNotAcceptedReservation(){
+        Collection<ReservationDTO> reservations = reservationService.findAllNotAcceptedDTO();
+        return new ResponseEntity<Collection<ReservationDTO>>(reservations, HttpStatus.OK);
     }
 }

@@ -5,6 +5,7 @@ import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.enums.TypeAccommodation;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
 
 import java.io.Serializable;
 import java.util.List;
@@ -28,7 +29,7 @@ public class Accommodation implements Serializable {
     private int maxPeople;
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "photo")
-    private List<String> photoes;
+    private List<String> photos;
     @Enumerated(EnumType.STRING)
     @Column(name = "type_acc")
     private TypeAccommodation typeAccomodation;
@@ -38,9 +39,24 @@ public class Accommodation implements Serializable {
     private double rating;
     @Column(name = "cancel_deadline")
     private int cancelDeadline;
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Column(name = "price")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "accommodation_id")
     private List<Price> prices;
+
+    @Column(name = "weekend_price")
+    private double weekendPrice;
+
+    @Column(name = "holiday_price")
+    private double holidayPrice;
+
+    @Column(name = "acc_name")
+    private String name;
+    @Column(name = "summer_price")
+    private double summerPrice;
+
+    @Column(name = "night_person")
+    private boolean isNight;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "accommodation_taken_dates", joinColumns = @JoinColumn(name = "accommodation_id"))
     private List<TakenDate> takenDates;
@@ -100,6 +116,21 @@ public class Accommodation implements Serializable {
         this.maxPeople = maxPeople;
     }
 
+    public List<String> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<String> photos) {
+        this.photos = photos;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public TypeAccommodation getTypeAccomodation() {
         return typeAccomodation;
@@ -162,17 +193,53 @@ public class Accommodation implements Serializable {
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }
+
+    public double getWeekendPrice() {
+        return weekendPrice;
+    }
+
+    public void setWeekendPrice(double weekendPrice) {
+        this.weekendPrice = weekendPrice;
+    }
+
+    public double getHolidayPrice() {
+        return holidayPrice;
+    }
+
+    public void setHolidayPrice(double holidayPrice) {
+        this.holidayPrice = holidayPrice;
+    }
+
+    public double getSummerPrice() {
+        return summerPrice;
+    }
+
+    public void setSummerPrice(double summerPrice) {
+        this.summerPrice = summerPrice;
+    }
+
+    public boolean isNight() {
+        return isNight;
+    }
+
+    public void setNight(boolean night) {
+        isNight = night;
+    }
+
     public Accommodation(String description) {
         this.description = description;
     }
-    public Accommodation(Long id, boolean accepted, boolean automaticActivation, String description, int minPeople, int maxPeople, List<String> photoes, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, List<Price> prices, List<TakenDate> takenDates, List<Amenity> amenities, Location location, Owner owner, List<Reservation> reservations, AccommodationStatus status) {
+
+
+    public Accommodation(Long id, boolean accepted, boolean automaticActivation, String description, int minPeople, int maxPeople,String name, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, List<Price> prices, List<TakenDate> takenDates, List<Amenity> amenities, Location location, Owner owner, List<Reservation> reservations,double weekendPrice, double holidayPrice, double summerPrice,boolean isNight, AccommodationStatus status) {
+
         this.id = id;
         this.accepted = accepted;
         this.automaticActivation = automaticActivation;
         this.description = description;
         this.minPeople = minPeople;
         this.maxPeople = maxPeople;
-        this.photoes = photoes;
+        this.photos = photos;
         this.typeAccomodation = typeAccomodation;
         this.rating = rating;
         this.cancelDeadline = cancelDeadline;
@@ -183,8 +250,12 @@ public class Accommodation implements Serializable {
         this.owner = owner;
         this.reservations = reservations;
         this.accommodationStatus = status;
-        this.automaticConfirmation = false;
-
+        this.automaticConfirmation = automaticActivation;
+        this.weekendPrice=weekendPrice;
+        this.holidayPrice=holidayPrice;
+        this.summerPrice=summerPrice;
+        this.isNight=isNight;
+        this.name = name;
     }
 
     public boolean isAutomaticConfirmation() {
@@ -204,16 +275,22 @@ public class Accommodation implements Serializable {
                 ", description='" + description + '\'' +
                 ", minPeople=" + minPeople +
                 ", maxPeople=" + maxPeople +
-                ", photo='" + photoes + '\'' +
+                ", photos=" + photos +
                 ", typeAccomodation=" + typeAccomodation +
+                ", accommodationStatus=" + accommodationStatus +
                 ", rating=" + rating +
                 ", cancelDeadline=" + cancelDeadline +
                 ", prices=" + prices +
+                ", weekendPrice=" + weekendPrice +
+                ", holidayPrice=" + holidayPrice +
+                ", summerPrice=" + summerPrice +
+                ", isNight=" + isNight +
                 ", takenDates=" + takenDates +
                 ", amenities=" + amenities +
                 ", location=" + location +
                 ", owner=" + owner +
                 ", reservations=" + reservations +
+                ", automaticConfirmation=" + automaticConfirmation +
                 '}';
     }
 
@@ -221,11 +298,11 @@ public class Accommodation implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Accommodation that)) return false;
-        return accepted == that.accepted && automaticActivation == that.automaticActivation && minPeople == that.minPeople && maxPeople == that.maxPeople && Double.compare(that.rating, rating) == 0 && cancelDeadline == that.cancelDeadline && Objects.equals(id, that.id) && Objects.equals(description, that.description) && Objects.equals(photoes, that.photoes) && typeAccomodation == that.typeAccomodation && Objects.equals(prices, that.prices) && Objects.equals(takenDates, that.takenDates) && Objects.equals(amenities, that.amenities) && Objects.equals(owner, that.owner) && Objects.equals(reservations, that.reservations);
+        return accepted == that.accepted && automaticActivation == that.automaticActivation && minPeople == that.minPeople && maxPeople == that.maxPeople && Double.compare(that.rating, rating) == 0 && cancelDeadline == that.cancelDeadline && Objects.equals(id, that.id) && Objects.equals(description, that.description) && Objects.equals(photos, that.photos) && typeAccomodation == that.typeAccomodation && Objects.equals(prices, that.prices) && Objects.equals(takenDates, that.takenDates) && Objects.equals(amenities, that.amenities) && Objects.equals(owner, that.owner) && Objects.equals(reservations, that.reservations);
     }
     @Override
     public int hashCode() {
-        return Objects.hash(id, accepted, automaticActivation, description, minPeople, maxPeople, photoes, typeAccomodation, rating, cancelDeadline, prices, takenDates, amenities, owner, reservations);
+        return Objects.hash(id, accepted, automaticActivation, description, minPeople, maxPeople, photos, typeAccomodation, rating, cancelDeadline, prices, takenDates, amenities, owner, reservations);
     }
 
     public AccommodationStatus getAccommodationStatus() {
@@ -241,13 +318,18 @@ public class Accommodation implements Serializable {
         this.description = a.getDescription();
         this.minPeople = a.getMinPeople();
         this.maxPeople = a.getMaxPeople();
-        this.photoes =a.getPhotoes();
+        this.photos = a.getPhotos();
         this.typeAccomodation = a.getTypeAccomodation();
         this.rating = a.getRating();
         this.cancelDeadline = a.getCancelDeadline();
         this.location = a.getLocation();
         this.accommodationStatus = a.getAccommodationStatus();
         this.automaticConfirmation = a.isAutomaticConfirmation();
+        this.name = a.getName();
+        this.weekendPrice=a.getWeekendPrice();
+        this.holidayPrice=a.getHolidayPrice();
+        this.summerPrice=a.getSummerPrice();
+        this.isNight=a.isNight();
     }
     public Accommodation(Accommodation accommodation) {
         this.id = accommodation.id;
@@ -256,7 +338,7 @@ public class Accommodation implements Serializable {
         this.description = accommodation.description;
         this.minPeople = accommodation.minPeople;
         this.maxPeople = accommodation.maxPeople;
-        this.photoes = accommodation.photoes;
+        this.photos = accommodation.photos;
         this.typeAccomodation = accommodation.typeAccomodation;
         this.rating = accommodation.rating;
         this.cancelDeadline = accommodation.cancelDeadline;
@@ -266,15 +348,13 @@ public class Accommodation implements Serializable {
         this.location = accommodation.location;
         this.owner = accommodation.owner;
         this.reservations = accommodation.reservations;
+        this.name = accommodation.name;
         this.accommodationStatus= accommodation.accommodationStatus;
         this.automaticConfirmation = accommodation.isAutomaticConfirmation();
+        this.weekendPrice=accommodation.weekendPrice;
+        this.holidayPrice=accommodation.holidayPrice;
+        this.summerPrice=accommodation.summerPrice;
+        this.isNight=accommodation.isNight;
     }
 
-    public List<String> getPhotoes() {
-        return photoes;
-    }
-
-    public void setPhotoes(List<String> photoes) {
-        this.photoes = photoes;
-    }
 }

@@ -19,7 +19,7 @@ public interface IReservationService {
 
     Collection<Reservation> findAll();
 
-    void delete(Long id);
+    boolean delete(Long id);
 
     ReservationDTO create(Reservation reservation) throws Exception;
 

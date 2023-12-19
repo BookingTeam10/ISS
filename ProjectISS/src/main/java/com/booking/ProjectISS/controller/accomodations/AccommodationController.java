@@ -23,6 +23,7 @@ public class AccommodationController {
     @Autowired
     private IAccommodationService accommodationService;
 
+    //GET ALL ACCOMMODATIONS
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsDTO() {
@@ -41,21 +42,24 @@ public class AccommodationController {
 
         return new ResponseEntity<AccommodationDTO>(HttpStatus.NOT_FOUND);
     }
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value="/add" ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<AccommodationDTO> createAccommodation(@RequestBody Accommodation accommodation) throws Exception {
-        AccommodationDTO accommodationDTO =accommodationService.create(accommodation);
+        System.out.println(accommodation + " SENDOVANO");
+        AccommodationDTO accommodationDTO =accommodationService.add(accommodation);
         return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long id)
             throws Exception {
         Accommodation updateAccommodation =accommodationService.findOne(id);
         if (updateAccommodation == null) {
             return new ResponseEntity<AccommodationDTO>(HttpStatus.NOT_FOUND);
         }
-        updateAccommodation.copyValues(accommodation);
-        AccommodationDTO updatedAccommodation = accommodationService.update(updateAccommodation);
+
+        AccommodationDTO updatedAccommodation = accommodationService.update(accommodation);
         return new ResponseEntity<AccommodationDTO>(updatedAccommodation, HttpStatus.OK);
     }
     @DeleteMapping(value = "/{id}")
@@ -91,20 +95,23 @@ public class AccommodationController {
 //    }
 
     @GetMapping(value = "/accommodationsSearch")
-    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
             @RequestParam(required = false) String location,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
             @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")  Date end,
             @RequestParam(required = false) int numPeople,
-            @RequestParam(required = false) int minPrice,
-            @RequestParam(required = false) int maxPrice,
-            @RequestParam(required = false) List<String> ammenities){
-        Collection<AccommodationDTO> accommodationDTOS = accommodationService.getAccommodationsSearched(start,end,numPeople,location);
-        if(accommodationDTOS == null)
+            @RequestParam(required = false) String minPrice,
+            @RequestParam(required = false) String maxPrice,
+            @RequestParam(required = false) List<Amenity> amenities){
+        Collection<AccommodationDTO> accommodationDTOS = accommodationService.getAccommodationsSearched(start,end,numPeople,location,minPrice,maxPrice,amenities);
+
+        if(accommodationDTOS == null) {
             return new ResponseEntity<Collection<AccommodationDTO>>(HttpStatus.NOT_FOUND);
+        }
         return ResponseEntity.ok(accommodationDTOS);
     }
+
+
 
     @GetMapping(value = "/{id}/amenity", produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin(origins = "http://localhost:4200")
@@ -115,7 +122,6 @@ public class AccommodationController {
         }
         return new ResponseEntity<Collection<Amenity>>(HttpStatus.NOT_FOUND);
     }
-
 
     @PostMapping(value = "/approve/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
@@ -140,4 +146,5 @@ public class AccommodationController {
         AccommodationDTO accommodationDTO = accommodationService.update(accommodation);
         return new ResponseEntity<AccommodationDTO>(accommodationDTO,HttpStatus.OK);
     }
+
 }

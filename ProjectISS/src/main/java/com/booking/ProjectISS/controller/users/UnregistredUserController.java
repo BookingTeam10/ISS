@@ -1,9 +1,11 @@
 package com.booking.ProjectISS.controller.users;
 
+import com.booking.ProjectISS.dto.notifications.MessageDTO;
 import com.booking.ProjectISS.dto.users.RegistrationRequestDTO;
 import com.booking.ProjectISS.enums.TypeUser;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.model.users.Token;
 import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.security.jwt.JwtTokenUtil;
 import com.booking.ProjectISS.service.users.EmailService;

@@ -32,5 +32,7 @@ public interface IUserService {
 
     User activateUser(String code);
 
+    void updatePassword(User user);
+
     boolean doesUsernameExist(String username);
 }

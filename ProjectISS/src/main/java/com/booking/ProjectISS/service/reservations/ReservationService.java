@@ -76,12 +76,13 @@ public class ReservationService implements IReservationService{
     }
 
     @Override
-    public void delete(Long id) {
+    public boolean  delete(Long id) {
         //staviti ako ima review sa id od rezervacije da ne moze da se obrise
         Optional<Reservation> found = reservationRepository.findById(id);
-        if(found.isEmpty()){ return;}
+        if(found.isEmpty()){ return false;}
         reservationRepository.delete(found.get());
         reservationRepository.flush();
+        return true;
     }
 
     @Override

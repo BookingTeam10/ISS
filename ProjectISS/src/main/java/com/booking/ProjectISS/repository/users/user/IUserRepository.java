@@ -19,4 +19,8 @@ public interface IUserRepository extends JpaRepository<User,Long> {
 
     @Query("select count(*) from User u where u.email = ?1")
     Long doesUsernameExist(String username);
+
+    @Query("select u from User u where u.id = ?1")
+    User findOne(Long id);
+
 }
