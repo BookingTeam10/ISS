@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
 @RestController
 @RequestMapping("/api/locations")
+@CrossOrigin(origins = "http://localhost:4200")
 public class LocationController {
     @Autowired
     private ILocationService locationService;
@@ -34,12 +36,14 @@ public class LocationController {
         return new ResponseEntity<LocationDTO>(HttpStatus.NOT_FOUND);
     }
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Owner')") //zato sto dodaje smestaj
     public ResponseEntity<LocationDTO> createLocation(@RequestBody Location location) throws Exception {
         LocationDTO locationDTO =locationService.create(location);
         return new ResponseEntity<LocationDTO>(locationDTO, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Owner')")
     public ResponseEntity<LocationDTO> updateLocation(@RequestBody Location location, @PathVariable Long id)
             throws Exception {
         Location updateLocation =locationService.findOne(id);
@@ -50,6 +54,7 @@ public class LocationController {
         return new ResponseEntity<LocationDTO>(updatedLocation, HttpStatus.OK);
     }
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyRole('Admin', 'Owner')")
     public ResponseEntity<LocationDTO> deleteLocation(@PathVariable("id") Long id) {
         locationService.delete(id);
         return new ResponseEntity<LocationDTO>(HttpStatus.NO_CONTENT);

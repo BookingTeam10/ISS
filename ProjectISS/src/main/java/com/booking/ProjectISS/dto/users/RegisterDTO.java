@@ -10,7 +10,7 @@ public class RegisterDTO implements Serializable {
     private String password;
     private String name;
     private String surname;
-    private TypeUser typeUser;
+    private TypeUser userType;
     private String phone;
     private String address;
 
@@ -20,7 +20,7 @@ public class RegisterDTO implements Serializable {
         this.password = password;
         this.name = name;
         this.surname = surname;
-        this.typeUser = typeUser;
+        this.userType = typeUser;
         this.phone = phone;
         this.address = address;
     }
@@ -61,12 +61,12 @@ public class RegisterDTO implements Serializable {
         this.surname = surname;
     }
 
-    public TypeUser getTypeUser() {
-        return typeUser;
+    public TypeUser getUserType() {
+        return userType;
     }
 
-    public void setTypeUser(TypeUser typeUser) {
-        this.typeUser = typeUser;
+    public void setUserType(TypeUser userType) {
+        this.userType = userType;
     }
 
     public String getPhone() {

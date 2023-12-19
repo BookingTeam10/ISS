@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -18,14 +19,13 @@ import java.util.List;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/accommodations")
 public class AccommodationController {
     @Autowired
     private IAccommodationService accommodationService;
 
-    //GET ALL ACCOMMODATIONS
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsDTO() {
         System.out.println(accommodationService.findAll());
         Collection<AccommodationDTO> accommodationDTOS = accommodationService.findAllDTO();
@@ -33,7 +33,6 @@ public class AccommodationController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<AccommodationDTO> getAccommodation(@PathVariable("id") Long id) {
         AccommodationDTO accommodationDTO = accommodationService.findOneDTO(id);
         if (accommodationDTO!= null) {
@@ -43,15 +42,14 @@ public class AccommodationController {
         return new ResponseEntity<AccommodationDTO>(HttpStatus.NOT_FOUND);
     }
     @PostMapping(value="/add" ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @CrossOrigin(origins = "http://localhost:4200")
+    @PreAuthorize("hasRole('Owner')")
     public ResponseEntity<AccommodationDTO> createAccommodation(@RequestBody Accommodation accommodation) throws Exception {
-        System.out.println(accommodation + " SENDOVANO");
         AccommodationDTO accommodationDTO =accommodationService.add(accommodation);
         return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @CrossOrigin(origins = "http://localhost:4200")
+    @PreAuthorize("hasRole('Owner')")
     public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long id)
             throws Exception {
         Accommodation updateAccommodation =accommodationService.findOne(id);
@@ -63,6 +61,7 @@ public class AccommodationController {
         return new ResponseEntity<AccommodationDTO>(updatedAccommodation, HttpStatus.OK);
     }
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyRole('Admin', 'Owner')")
     public ResponseEntity<AccommodationDTO> deleteAccommodation(@PathVariable("id") Long id) {
         accommodationService.delete(id);
         return new ResponseEntity<AccommodationDTO>(HttpStatus.NO_CONTENT);
@@ -95,6 +94,7 @@ public class AccommodationController {
 //    }
 
     @GetMapping(value = "/accommodationsSearch")
+    @PreAuthorize("hasAnyRole('Guest', 'Owner', 'User')")
     public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
             @RequestParam(required = false) String location,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
@@ -114,7 +114,7 @@ public class AccommodationController {
 
 
     @GetMapping(value = "/{id}/amenity", produces = MediaType.APPLICATION_JSON_VALUE)
-    @CrossOrigin(origins = "http://localhost:4200")
+    @PreAuthorize("hasAnyRole('Admin', 'Owner', 'Guest')")
     public ResponseEntity<Collection<Amenity>> getAmenityByAccommodation(@PathVariable("id") Long id) {
         Accommodation accommodation = accommodationService.findOne(id);
         if (accommodation!= null) {
@@ -124,7 +124,7 @@ public class AccommodationController {
     }
 
     @PostMapping(value = "/approve/{id}")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<AccommodationDTO> setApproveAccommodation(@PathVariable("id") Long id) throws Exception {
         Accommodation accommodation = accommodationService.findOne(id);
         if (accommodation == null) {
@@ -136,7 +136,7 @@ public class AccommodationController {
     }
 
     @PostMapping(value = "/reject/{id}")
-    @CrossOrigin(origins = "http://localhost:4200")
+    @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<AccommodationDTO> setRejectAccommodation(@PathVariable("id") Long id) throws Exception {
         Accommodation accommodation = accommodationService.findOne(id);
         if (accommodation == null) {

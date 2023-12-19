@@ -14,6 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -21,18 +28,19 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UnregistredUserController {
 
     @Autowired
     private IUserService userService;
 
     @Autowired
-    private EmailService emailService;
+    public UserDetailsService userDetailsService;
 
     @PostMapping(value = "/register")
-    @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<User> registered(@RequestBody RegistrationRequestDTO registrationRequest){
+    public ResponseEntity<User> registered(@RequestBody RegistrationRequestDTO registrationRequest) throws Exception {
         User user = userService.register(registrationRequest);
+
         if (user != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(user);
         } else {
@@ -40,7 +48,6 @@ public class UnregistredUserController {
         }
     }
     @PostMapping("/activate/{code}")
-    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<String> activateUser(@PathVariable String code) {
         System.out.println("USLO ACTIVATE");
         User isActivated = userService.activateUser(code);
@@ -51,4 +58,6 @@ public class UnregistredUserController {
         System.out.println("NEAKT");
         return ResponseEntity.badRequest().body("Aktivacioni kod nije validan");
     }
+
+
 }

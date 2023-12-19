@@ -24,4 +24,5 @@ public interface IGuestService {
     boolean reportOwner(Long idGuest,Long idOwner);
 
     Guest findUsername(String username);
+
 }
