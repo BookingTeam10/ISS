@@ -20,14 +20,14 @@ public class ReservationController {
     private IReservationService reservationService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole( 'Admin','Owner', 'Guest')")
+    @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
     public ResponseEntity<Collection<ReservationDTO>> getReservationDTO(){
         System.out.println(reservationService.findAll());
         return new ResponseEntity<Collection<ReservationDTO>>(reservationService.findAllDTO(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole( 'Admin','Owner', 'Guest')")
+    @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
     public ResponseEntity<ReservationDTO> getReservation(@PathVariable("id") Long id) {
         ReservationDTO reservationDTO = reservationService.findOneDTO(id);
         if (reservationDTO != null) {
@@ -94,7 +94,7 @@ public class ReservationController {
     }
 
     @GetMapping(value = "/{idAccommodation}/reservations")
-    @PreAuthorize("hasAnyRole('Owner', 'Guest','Admin')")
+    @PreAuthorize("hasAnyRole('Owner', 'Guest','Administrator')")
     public ResponseEntity<Collection<ReservationDTO>> getByAccommodations(@PathVariable("idAccommodation") Long id) {
         Collection<ReservationDTO> reservationDTOS = reservationService.findByAccommodation(id);
         if (reservationDTOS != null) {

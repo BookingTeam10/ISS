@@ -24,9 +24,9 @@ VALUES (2);
 
 
 INSERT INTO accommodations(description,accepted,automatic_activation,cancel_deadline, min_people,max_people,rating,location_id,type_acc,owner_id, acc_name,weekend_price,holiday_price,summer_price,night_person, acc_status, auto_conf)
-VALUES ('Apartman','true','true', 24,3,6,0,1,'Apartment',1,'Naziv1',0,0,0,'true','CREATED', 'false'),
-       ('Apartman','true','true', 24,2,4,0,1,'Apartment',1,'Naziv2',0,0,0,'true','EDITED', 'false'),
-       ('Apartman','true','true', 24,2,4,0,2,'Apartment',1,'Naziv3',0,0,0,'true','CREATED', 'false');
+VALUES ('Apartman','true','true', 24,3,6,10,1,'Apartment',1,'Naziv1',0,0,0,'true','CREATED', 'false'),
+       ('Apartman','true','true', 24,2,4,10,1,'Apartment',1,'Naziv2',0,0,0,'true','EDITED', 'false'),
+       ('Apartman','true','true', 24,2,4,10,2,'Apartment',1,'Naziv3',0,0,0,'true','CREATED', 'false');
 
 
 INSERT INTO accommodation_photos (accommodation_accommodation_id, photo)
@@ -45,6 +45,7 @@ VALUES (1, '2023-01-01', '2023-01-05'),
 
 INSERT INTO accommodation_amenity (accommodation_id,amenity_name)
 VALUES (1,'WIFI'),
+        (2,'WIFI'),
        (1, 'Parking');
 
 INSERT INTO reservations (total_price, reservation_status, start_date, end_date, number_of_nights, accommodation_id, guest_id)

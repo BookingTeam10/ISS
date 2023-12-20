@@ -35,8 +35,6 @@ public class UserService implements IUserService, UserDetailsService {
     private IOwnerService OwnerService;
     @Autowired
     private EmailService emailService;
-    int brojac=1;
-
     @Override
     public UserDTO findOneDTO(Long id) {
         Optional<User> User=UserRepository.findById(id);
@@ -100,30 +98,25 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     public User register(RegistrationRequestDTO registrationRequest) throws Exception {
         User user=null;
-        registrationRequest.setTypeUser(TypeUser.GUEST);
-        user=new User(500L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress());
-        if(registrationRequest.getTypeUser()== TypeUser.GUEST){
+        if(registrationRequest.getUserType()== TypeUser.GUEST){
             user=new Guest(500L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress());
         }
-        if(registrationRequest.getTypeUser()==TypeUser.OWNER){
+        if(registrationRequest.getUserType()==TypeUser.OWNER){
             user=new Owner(500L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress(),false,false);
         }
         user.setActivationCode(UUID.randomUUID().toString());
         user.setActivationExpiry(LocalDateTime.now().plusHours(24));
         user.setActive(false);
         sendActivationEmail(user.getEmail(), user.getActivationCode());
-        if(brojac==1){
-            //UserDTO userDTO = create(user);
-            brojac++;
-        }
-        if(registrationRequest.getTypeUser()== TypeUser.GUEST){
+        if(registrationRequest.getUserType()== TypeUser.GUEST){
             PasswordEncoder encoder = new BCryptPasswordEncoder();
             user.setPassword(encoder.encode(registrationRequest.getPassword()));
-            System.out.println(user.getPassword());
             GuestService.create((Guest) user);
         }
-        if(registrationRequest.getTypeUser()==TypeUser.OWNER){
-            user=new Owner(500L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress(),false,false);
+        if(registrationRequest.getUserType()==TypeUser.OWNER){
+            PasswordEncoder encoder = new BCryptPasswordEncoder();
+            user.setPassword(encoder.encode(registrationRequest.getPassword()));
+            OwnerService.create((Owner) user);
         }
         return user;
     }
@@ -142,8 +135,6 @@ public class UserService implements IUserService, UserDetailsService {
             }
         }
 
-        //User user = UserRepository.findByActivationCode(activationCode);
-
         if (user == null) {
             return null;
         }
@@ -153,16 +144,8 @@ public class UserService implements IUserService, UserDetailsService {
         user.setActive(true);
         user.setActivationCode("");
         user.setActivationExpiry(null);
-        System.out.println("SET!");
-        if(brojac==2){
-            System.out.println("USLO OVDE VAZNO!");
-            UserRepository.save(user);
-            brojac=1;
-        }
-
         return user;
     }
-
     @Override
     public void updatePassword(User user) {
         System.out.println(" UPDATE ---- -   "  + user.getPassword());
@@ -171,7 +154,6 @@ public class UserService implements IUserService, UserDetailsService {
         User optionalUser = this.UserRepository.findOne(user.getId());
         System.out.println(" POSLE UPDATE -- - "  + optionalUser.getPassword());
     }
-
     @Override
     public boolean doesUsernameExist(String username) {
         return UserRepository.doesUsernameExist(username) > 0;

@@ -46,7 +46,7 @@ public class NotificationController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole( 'Admin','Owner', 'Guest')")
+    @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
     public ResponseEntity<NotificationDTO> updateNotification(@RequestBody Notification notification, @PathVariable Long id)
             throws Exception {
         Notification updateNotification = notificationService.findOne(id);
@@ -59,7 +59,7 @@ public class NotificationController {
     }
 
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAnyRole( 'Admin','Owner', 'Guest')")
+    @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
     public ResponseEntity<NotificationDTO> deleteNotification(@PathVariable("id") Long id) {
         notificationService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

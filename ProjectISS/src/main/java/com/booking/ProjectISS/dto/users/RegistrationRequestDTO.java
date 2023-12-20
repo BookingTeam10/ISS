@@ -13,14 +13,14 @@ public class RegistrationRequestDTO {
 
     private TypeUser userType;
 
-    public RegistrationRequestDTO(String email, String password, String firstName, String lastName, String phoneNumber, String address, TypeUser typeUser) {
+    public RegistrationRequestDTO(String email, String password, String firstName, String lastName, String phoneNumber, String address, TypeUser userType) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        this.userType = typeUser;
+        this.userType = userType;
     }
 
     public String getemail() {
@@ -71,13 +71,14 @@ public class RegistrationRequestDTO {
         this.address = address;
     }
 
-    public TypeUser getTypeUser() {
+    public TypeUser getUserType() {
         return userType;
     }
 
-    public void setTypeUser(TypeUser typeUser) {
-        this.userType = typeUser;
+    public void setUserType(TypeUser userType) {
+        this.userType = userType;
     }
+
     @Override
     public String toString() {
         return "RegistrationRequestDTO{" +
@@ -87,7 +88,7 @@ public class RegistrationRequestDTO {
                 ", lastName='" + lastName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address='" + address + '\'' +
-                ", typeUser=" + userType +
+                ", userType=" + userType +
                 '}';
     }
 }

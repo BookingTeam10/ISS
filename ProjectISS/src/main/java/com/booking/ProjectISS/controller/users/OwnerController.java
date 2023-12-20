@@ -45,15 +45,12 @@ public class OwnerController {
     private IReservationService reservationService;
     @Autowired
     private IGuestService guestService;
-
     @Autowired
     private IAccommodationService accommodationService;
-
     @Autowired
     private IReviewService reviewService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
     public ResponseEntity<Collection<OwnerDTO>> getOwnerDTO() {
         Collection<OwnerDTO> Owners = ownerService.findAllDTO();
         return new ResponseEntity<Collection<OwnerDTO>>(Owners, HttpStatus.OK);

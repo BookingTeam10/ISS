@@ -73,4 +73,14 @@ public class Administrator extends User implements Serializable {
         this.setUsers(administrator.getUsers());
         this.setAccomodations(administrator.getAccomodations());
     }
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

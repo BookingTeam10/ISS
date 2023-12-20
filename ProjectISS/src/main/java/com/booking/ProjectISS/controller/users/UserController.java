@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,11 +38,6 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserDetailsService userDetailsService;
 
     @Autowired
     private IGuestService guestService;
@@ -58,7 +54,12 @@ public class UserController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    //getAll
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserDetailsService userDetailsService;
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<UserDTO>> getUserDTO() {
         Collection<UserDTO> users = userService.findAllDTO();
@@ -125,8 +126,6 @@ public class UserController {
 
     @PostMapping("/login")
     public Token login(@RequestBody LoginDTO login) {
-        System.out.println("LOGIN");
-        System.out.println(login);
         System.out.println(guestService.findAll());
         try {
             UsernamePasswordAuthenticationToken authReq =
@@ -137,14 +136,12 @@ public class UserController {
             sc.setAuthentication(auth);
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(login.getEmail());
-            System.out.println("userDetails");
-            System.out.println(userDetails);
-            boolean activation=userService.findActivation(userDetails.getUsername());
-            if(!activation){
-                Token tokenJWT = new Token();
-                tokenJWT.setJwt("NEUSPESNO");
-                return tokenJWT;
-            }
+//            boolean activation=userService.findActivation(userDetails.getUsername());
+//            if(!activation){
+//                Token tokenJWT = new Token();
+//                tokenJWT.setJwt("NEUSPESNO");
+//                return tokenJWT;
+//            }
             String token = jwtTokenUtil.generateToken(userDetails);
             Token tokenJWT = new Token();
             tokenJWT.setJwt(token);
@@ -160,18 +157,28 @@ public class UserController {
 
     @PutMapping(value = "/change-password/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> changePassword(@PathVariable("id") Long id, @RequestBody PasswordDTO changePasswordDTO) throws Exception {
-
         User user = userService.findOne(id);
         System.out.println("PRE ENC PASS    " + changePasswordDTO.getPassword());
-//        passwordEncoder.encode(changePasswordDTO.getPassword())
+        System.out.println(passwordEncoder.encode(changePasswordDTO.getPassword()));
         user.setPassword(passwordEncoder.encode(changePasswordDTO.getPassword()));
          userService.updatePassword(user);
 
         return new ResponseEntity<String>(HttpStatus.OK);
     }
-
     @GetMapping("/exists/{username}")
     public boolean doesUsernameExist(@PathVariable String username) {
         return userService.doesUsernameExist(username);
+    }
+    @GetMapping(value="/logout")
+    public boolean logout() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(auth instanceof AnonymousAuthenticationToken)){
+            SecurityContextHolder.clearContext();
+            return true;
+        } else {
+            return false;
+        }
+
     }
 }

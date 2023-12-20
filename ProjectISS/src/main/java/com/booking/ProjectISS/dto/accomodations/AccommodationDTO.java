@@ -212,7 +212,7 @@ public class AccommodationDTO {
 
     }
 
-    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,String name, AccommodationStatus status, Owner owner, boolean automaticConfirmation) {
+    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,String name, AccommodationStatus status, Owner owner, boolean automaticConfirmation,List<Amenity> amenities) {
 
         this.id = id;
         this.description = description;
@@ -227,6 +227,7 @@ public class AccommodationDTO {
         this.owner = owner;
         this.automaticConfirmation = automaticConfirmation;
         this.name = name;
+        this.amenities = amenities;
     }
     public AccommodationDTO(Long id, boolean accepted, boolean automaticActivation, String description, int minPeople, int maxPeople, String name, List<String> photos, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, List<Price> prices, List<TakenDate> takenDates, List<Amenity> amenities, Location location, Owner owner, List<Reservation> reservations, double weekendPrice, double holidayPrice, double summerPrice, boolean isNight, AccommodationStatus status) {
 
@@ -255,7 +256,7 @@ public class AccommodationDTO {
         this.name = name;
     }
 
-    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,Location location,String name, AccommodationStatus status, Owner owner, boolean automaticConfirmation) {
+    public AccommodationDTO(Long id, String description, int minPeople, int maxPeople, List<String> photo, TypeAccommodation typeAccomodation, double rating, int cancelDeadline, boolean isAccepted,Location location,String name, AccommodationStatus status, Owner owner, boolean automaticConfirmation,List<Amenity> amenities) {
         this.id = id;
         this.description = description;
         this.minPeople = minPeople;
@@ -270,6 +271,7 @@ public class AccommodationDTO {
         this.owner = owner;
         this.automaticConfirmation = automaticConfirmation;
         this.name = name;
+        this.amenities = amenities;
     }
 
     public AccommodationDTO(Accommodation a) {
@@ -293,6 +295,7 @@ public class AccommodationDTO {
         this.holidayPrice = a.getHolidayPrice();
         this.cancelDeadline = a.getCancelDeadline();
         this.prices = a.getPrices();
+        this.amenities = a.getAmenities();
     }
 
     @Override

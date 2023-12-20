@@ -54,7 +54,7 @@ public class LocationController {
         return new ResponseEntity<LocationDTO>(updatedLocation, HttpStatus.OK);
     }
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAnyRole('Admin', 'Owner')")
+    @PreAuthorize("hasAnyRole('Administrator', 'Owner')")
     public ResponseEntity<LocationDTO> deleteLocation(@PathVariable("id") Long id) {
         locationService.delete(id);
         return new ResponseEntity<LocationDTO>(HttpStatus.NO_CONTENT);

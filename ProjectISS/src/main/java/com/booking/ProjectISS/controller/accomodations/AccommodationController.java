@@ -61,7 +61,7 @@ public class AccommodationController {
         return new ResponseEntity<AccommodationDTO>(updatedAccommodation, HttpStatus.OK);
     }
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAnyRole('Admin', 'Owner')")
+    @PreAuthorize("hasAnyRole('Administrator', 'Owner')")
     public ResponseEntity<AccommodationDTO> deleteAccommodation(@PathVariable("id") Long id) {
         accommodationService.delete(id);
         return new ResponseEntity<AccommodationDTO>(HttpStatus.NO_CONTENT);
@@ -94,7 +94,6 @@ public class AccommodationController {
 //    }
 
     @GetMapping(value = "/accommodationsSearch")
-    @PreAuthorize("hasAnyRole('Guest', 'Owner', 'User')")
     public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
             @RequestParam(required = false) String location,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
@@ -102,8 +101,9 @@ public class AccommodationController {
             @RequestParam(required = false) int numPeople,
             @RequestParam(required = false) String minPrice,
             @RequestParam(required = false) String maxPrice,
-            @RequestParam(required = false) List<Amenity> amenities){
-        Collection<AccommodationDTO> accommodationDTOS = accommodationService.getAccommodationsSearched(start,end,numPeople,location,minPrice,maxPrice,amenities);
+            @RequestParam(required = false) List<String> amenities){
+
+       Collection<AccommodationDTO> accommodationDTOS = accommodationService.getAccommodationsSearched(start,end,numPeople,location,minPrice,maxPrice,amenities);
 
         if(accommodationDTOS == null) {
             return new ResponseEntity<Collection<AccommodationDTO>>(HttpStatus.NOT_FOUND);
@@ -111,10 +111,8 @@ public class AccommodationController {
         return ResponseEntity.ok(accommodationDTOS);
     }
 
-
-
     @GetMapping(value = "/{id}/amenity", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole('Admin', 'Owner', 'Guest')")
+    @PreAuthorize("hasAnyRole('Administrator', 'Owner', 'Guest','User')")
     public ResponseEntity<Collection<Amenity>> getAmenityByAccommodation(@PathVariable("id") Long id) {
         Accommodation accommodation = accommodationService.findOne(id);
         if (accommodation!= null) {
@@ -122,9 +120,8 @@ public class AccommodationController {
         }
         return new ResponseEntity<Collection<Amenity>>(HttpStatus.NOT_FOUND);
     }
-
     @PostMapping(value = "/approve/{id}")
-    @PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<AccommodationDTO> setApproveAccommodation(@PathVariable("id") Long id) throws Exception {
         Accommodation accommodation = accommodationService.findOne(id);
         if (accommodation == null) {
@@ -136,7 +133,7 @@ public class AccommodationController {
     }
 
     @PostMapping(value = "/reject/{id}")
-    @PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<AccommodationDTO> setRejectAccommodation(@PathVariable("id") Long id) throws Exception {
         Accommodation accommodation = accommodationService.findOne(id);
         if (accommodation == null) {

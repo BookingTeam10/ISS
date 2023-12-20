@@ -31,6 +31,7 @@ public class AccommodationService implements IAccommodationService {
     private ILocationService locationService;
     @Autowired
     private IPriceService priceService;
+
     //ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
     @Override
     public AccommodationDTO findOneDTO(Long id) {
@@ -148,14 +149,28 @@ public class AccommodationService implements IAccommodationService {
     }
 
     @Override
-    public Collection<AccommodationDTO> getAccommodationsSearched(Date start, Date end, int numPeople,String location,String minPrice,String maxPrice, List<Amenity> amenities) {
+    public Collection<AccommodationDTO> getAccommodationsSearched(Date start, Date end, int numPeople,String location,String minPrice,String maxPrice, List<String> amenities) {
+
         Collection<Accommodation> accommodations = accommodationRepository.findAll();
         Collection<AccommodationDTO> accommodationDTOS= new ArrayList<AccommodationDTO>();
         for (Accommodation a:accommodations){
-            if(a.getMinPeople()<=numPeople && a.getMaxPeople()>=numPeople && matchesLocation(a,location))
+            if(a.getMinPeople()<=numPeople && a.getMaxPeople()>=numPeople && matchesLocation(a,location) && matchesAmenity(a,amenities))
                 accommodationDTOS.add(new AccommodationDTO(a));
         }
+        System.out.println(accommodationDTOS);
         return accommodationDTOS;
+    }
+
+    private boolean matchesAmenity(Accommodation a, List<String> amenities) {
+        List<Amenity> amenitiesList = new ArrayList<>();
+        for(String amenity:amenities){
+            System.out.println(amenity);
+            amenitiesList.add(new Amenity(amenity));
+        }
+        if(new HashSet<>(a.getAmenities()).containsAll(amenitiesList)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
