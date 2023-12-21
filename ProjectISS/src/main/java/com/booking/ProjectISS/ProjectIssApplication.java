@@ -14,11 +14,4 @@ public class ProjectIssApplication {
 
 		SpringApplication.run(ProjectIssApplication.class, args);
 	}
-//	@Bean
-//	public CommandLineRunner commandLineRunner(){
-//		return args -> {
-////			var user = RegisterR
-//		};
-//	}
-
 }

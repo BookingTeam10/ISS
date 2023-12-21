@@ -2,8 +2,10 @@ package com.booking.ProjectISS.service.users.administrator;
 
 import com.booking.ProjectISS.dto.users.AdministratorDTO;
 import com.booking.ProjectISS.dto.users.LoginDTO;
+import com.booking.ProjectISS.dto.users.OwnerDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.users.Administrator;
+import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.repository.users.administrator.IAdministratorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,8 +67,17 @@ public class AdministratorService implements IAdministratorService {
     }
 
     @Override
-    public AdministratorDTO update(Administrator administrator) throws Exception {
-        return null;
+    public AdministratorDTO update(Administrator adminForUpdate) throws Exception {
+        Optional<Administrator> optionalAdministrator = this.administratorRepository.findById(adminForUpdate.getId());
+        optionalAdministrator.ifPresent(oldAdmin-> {
+            oldAdmin.setEmail(adminForUpdate.getEmail());
+            oldAdmin.setPassword(adminForUpdate.getPassword());
+            oldAdmin.setName(adminForUpdate.getName());
+            oldAdmin.setSurname(adminForUpdate.getSurname());
+            oldAdmin.setBlocked(adminForUpdate.isBlocked());
+            this.administratorRepository.save(oldAdmin);
+        });
+        return new AdministratorDTO(adminForUpdate);
     }
 
     @Override
@@ -75,7 +86,7 @@ public class AdministratorService implements IAdministratorService {
         if(administrator==null){
             return null;
         }
-        return new AdministratorDTO(administrator.getId(),administrator.getEmail());
+        return new AdministratorDTO(administrator.getId(),administrator.getEmail(),administrator.getName(),administrator.getSurname());
     }
 
     @Override

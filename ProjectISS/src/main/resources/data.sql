@@ -7,10 +7,11 @@ VALUES
 
 INSERT INTO users (email,is_blocked, firstname, surname,is_reported, phone, address, password,is_active,activationc,activatione)
 VALUES
-    ('popovic.sv4.2021@uns.ac.rs','false','Luka','Popovic','false', '0655197633', 'Adresa1','$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i',true,null,null),
-    ('popovic.sv5.2021@uns.ac.rs','false','Matija','Popovic','false', '0655197633', 'Adresa12','$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i',true,null,null),
-    ('aleksa@gmail.com', 'false', 'Aleksa', 'Janjic', 'false', '854574324', 'Bulevar', '$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i',true,null,null),
-    ('abc@gmail.com', 'false', 'Aleksa', 'Janjic', 'false', '854574324', 'Bulevar', '$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i',true,null,null);
+    ('popovic.sv4.2021@uns.ac.rs','false','Luka','Popovic','false', '0655197633', 'Adresa1','$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null),
+    ('popovic.sv5.2021@uns.ac.rs','false','Matija','Popovic','false', '0655197633', 'Adresa12','$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null),
+    ('aleksa@gmail.com', 'false', 'Aleksa', 'Janjic', 'false', '854574324', 'Bulevar', '$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null),
+    ('abc@gmail.com', 'false', 'Aleksa', 'Janjic', 'false', '854574324', 'Bulevar', '$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null),
+    ('test@gmail.com', 'false', 'Aleksa', 'Janjic', 'false', '854574324', 'Bulevar', '$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null);
 
 INSERT INTO owners (id,total_price,owner_rating,created_notification,rate_notification,cancelled_notification,accommodation_notification)
 VALUES (1,0,0,'false','false','false','false'),
@@ -24,9 +25,9 @@ VALUES (2);
 
 
 INSERT INTO accommodations(description,accepted,automatic_activation,cancel_deadline, min_people,max_people,rating,location_id,type_acc,owner_id, acc_name,weekend_price,holiday_price,summer_price,night_person, acc_status, auto_conf)
-VALUES ('Apartman','true','true', 24,3,6,0,1,'Apartment',1,'Naziv1',0,0,0,'true','CREATED', 'false'),
-       ('Apartman','true','true', 24,2,4,0,1,'Apartment',1,'Naziv2',0,0,0,'true','EDITED', 'false'),
-       ('Apartman','true','true', 24,2,4,0,2,'Apartment',1,'Naziv3',0,0,0,'true','CREATED', 'false');
+VALUES ('Apartman','true','true', 24,3,6,10,1,'Apartment',1,'Naziv1',0,0,0,'true','CREATED', 'false'),
+       ('Apartman','true','true', 24,2,4,10,1,'Apartment',4,'Naziv2',0,0,0,'true','EDITED', 'false'),
+       ('Apartman','true','true', 24,2,4,10,2,'Apartment',1,'Naziv3',0,0,0,'true','CREATED', 'false');
 
 
 INSERT INTO accommodation_photos (accommodation_accommodation_id, photo)
@@ -45,6 +46,7 @@ VALUES (1, '2023-01-01', '2023-01-05'),
 
 INSERT INTO accommodation_amenity (accommodation_id,amenity_name)
 VALUES (1,'WIFI'),
+        (2,'WIFI'),
        (1, 'Parking');
 
 INSERT INTO reservations (total_price, reservation_status, start_date, end_date, number_of_nights, accommodation_id, guest_id)
@@ -67,7 +69,6 @@ VALUES
      (10, 'Great experience!', 'ACTIVE', 2);
 
 
--- Assuming accommodation_id is a foreign key referencing the accommodation table
 INSERT INTO accommodation_price (accommodation_id, price, start_date, end_date)
 VALUES
     (1, 3000, '2001-01-01', '2001-07-01'),

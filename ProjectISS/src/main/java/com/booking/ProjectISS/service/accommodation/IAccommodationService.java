@@ -21,7 +21,7 @@ public interface IAccommodationService {
     AccommodationDTO createByOwner(Long id, Accommodation accommodation);
     Collection<AccommodationDTO> getAccommodationsSearched(Date start, Date end, int numPeople,String location);
 
-    Collection<AccommodationDTO> getAccommodationsSearched(Date start, Date end, int numPeople,String location,String minPrice,String maxPrice, List<Amenity> amenities);
+    Collection<AccommodationDTO> getAccommodationsSearched(Date start, Date end, int numPeople,String location,String minPrice,String maxPrice, List<String> amenities);
     boolean deleteAllByOwner(Long id);
 
     AccommodationDTO add(Accommodation accommodation);

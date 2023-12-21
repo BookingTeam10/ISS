@@ -3,15 +3,22 @@ package com.booking.ProjectISS.service.users.user;
 import com.booking.ProjectISS.dto.users.LoginDTO;
 import com.booking.ProjectISS.dto.users.RegistrationRequestDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
+import com.booking.ProjectISS.enums.TypeUser;
+import com.booking.ProjectISS.model.users.Guest;
+import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
 import com.booking.ProjectISS.repository.users.user.IUserRepository;
 import com.booking.ProjectISS.service.users.EmailService;
+import com.booking.ProjectISS.service.users.guest.IGuestService;
+import com.booking.ProjectISS.service.users.owner.IOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,13 +30,11 @@ public class UserService implements IUserService, UserDetailsService {
     @Autowired
     private IUserRepository UserRepository;
     @Autowired
-    private IGuestRepository GuestRepository;
+    private IGuestService GuestService;
     @Autowired
-    private IOwnerRepository OwnerRepository;
+    private IOwnerService OwnerService;
     @Autowired
     private EmailService emailService;
-    int brojac=1;
-
     @Override
     public UserDTO findOneDTO(Long id) {
         Optional<User> User=UserRepository.findById(id);
@@ -72,7 +77,7 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
-    public UserDTO create(User user) throws Exception {
+    public UserDTO create(User user){
         return new UserDTO(UserRepository.save(new User(user)));
     }
 
@@ -91,23 +96,27 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
-    public User register(RegistrationRequestDTO registrationRequest) {
+    public User register(RegistrationRequestDTO registrationRequest) throws Exception {
         User user=null;
-        System.out.println(registrationRequest.getTypeUser());
-        user=new User(0L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress());
-//        if(registrationRequest.getTypeUser()==TypeUser.GUEST){
-//            user=new Guest(0L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress());
-//        }
-//        if(registrationRequest.getTypeUser()==TypeUser.OWNER){
-//            user=new Owner(0L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress(),false,false);
-//        }
+        if(registrationRequest.getUserType()== TypeUser.GUEST){
+            user=new Guest(500L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress());
+        }
+        if(registrationRequest.getUserType()==TypeUser.OWNER){
+            user=new Owner(500L,registrationRequest.getemail(),registrationRequest.getPassword(),registrationRequest.getFirstName(),registrationRequest.getLastName(),registrationRequest.getPhoneNumber(),registrationRequest.getAddress(),false,false);
+        }
         user.setActivationCode(UUID.randomUUID().toString());
         user.setActivationExpiry(LocalDateTime.now().plusHours(24));
         user.setActive(false);
         sendActivationEmail(user.getEmail(), user.getActivationCode());
-        if(brojac==1){
-            UserRepository.save(user);
-            brojac++;
+        if(registrationRequest.getUserType()== TypeUser.GUEST){
+            PasswordEncoder encoder = new BCryptPasswordEncoder();
+            user.setPassword(encoder.encode(registrationRequest.getPassword()));
+            GuestService.create((Guest) user);
+        }
+        if(registrationRequest.getUserType()==TypeUser.OWNER){
+            PasswordEncoder encoder = new BCryptPasswordEncoder();
+            user.setPassword(encoder.encode(registrationRequest.getPassword()));
+            OwnerService.create((Owner) user);
         }
         return user;
     }
@@ -126,25 +135,17 @@ public class UserService implements IUserService, UserDetailsService {
             }
         }
 
-        //User user = UserRepository.findByActivationCode(activationCode);
-
         if (user == null) {
             return null;
         }
-
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPassword(encoder.encode(user.getPassword()));
+        System.out.println(user.getPassword());
         user.setActive(true);
         user.setActivationCode("");
         user.setActivationExpiry(null);
-        System.out.println("SET!");
-        if(brojac==2){
-            System.out.println("USLO OVDE VAZNO!");
-            UserRepository.save(user);
-            brojac=1;
-        }
-
         return user;
     }
-
     @Override
     public void updatePassword(User user) {
         System.out.println(" UPDATE ---- -   "  + user.getPassword());
@@ -153,10 +154,18 @@ public class UserService implements IUserService, UserDetailsService {
         User optionalUser = this.UserRepository.findOne(user.getId());
         System.out.println(" POSLE UPDATE -- - "  + optionalUser.getPassword());
     }
-
     @Override
     public boolean doesUsernameExist(String username) {
         return UserRepository.doesUsernameExist(username) > 0;
+    }
+
+    @Override
+    public boolean findActivation(String username) {
+        Guest user=GuestService.findUsername(username);
+        if(user.isActive()){
+            return true;
+        }
+        return false;
     }
 
     @Override

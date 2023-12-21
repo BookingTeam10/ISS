@@ -28,11 +28,13 @@ public interface IUserService {
 
     User findUser(LoginDTO login);
 
-    User register(RegistrationRequestDTO registrationRequest);
+    User register(RegistrationRequestDTO registrationRequest) throws Exception;
 
     User activateUser(String code);
 
     void updatePassword(User user);
 
     boolean doesUsernameExist(String username);
+
+    boolean findActivation(String username);
 }

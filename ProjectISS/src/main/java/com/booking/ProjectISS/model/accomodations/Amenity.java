@@ -3,6 +3,8 @@ package com.booking.ProjectISS.model.accomodations;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.Objects;
+
 //@Entity
 //@Table(name="amenity")
 @Embeddable
@@ -25,5 +27,17 @@ public class Amenity implements Serializable {
         return "Amenity{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Amenity amenity)) return false;
+        return Objects.equals(name, amenity.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

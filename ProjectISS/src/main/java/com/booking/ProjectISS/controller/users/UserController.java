@@ -8,6 +8,7 @@ import com.booking.ProjectISS.model.users.Token;
 import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.security.jwt.JwtTokenUtil;
 import com.booking.ProjectISS.service.users.administrator.IAdministratorService;
+import com.booking.ProjectISS.service.users.guest.GuestService;
 import com.booking.ProjectISS.service.users.guest.IGuestService;
 import com.booking.ProjectISS.service.users.owner.IOwnerService;
 import com.booking.ProjectISS.service.users.user.IUserService;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,17 +32,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
     private IUserService userService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-
-    @Autowired
-    public UserDetailsService userDetailsService;
 
     @Autowired
     private IGuestService guestService;
@@ -57,7 +54,12 @@ public class UserController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    //getAll
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserDetailsService userDetailsService;
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<UserDTO>> getUserDTO() {
         Collection<UserDTO> users = userService.findAllDTO();
@@ -91,8 +93,6 @@ public class UserController {
         }
         return new ResponseEntity<Collection<UserDTO>>(users, HttpStatus.OK);
     }
-    //getOne
-
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> getUser(@PathVariable("id") Long id) {
         UserDTO user = userService.findOneDTO(id);
@@ -110,7 +110,6 @@ public class UserController {
         return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
     }
 
-    //deleteOne
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<UserDTO> deleteUser(@PathVariable("id") Long id) {
         userService.delete(id);
@@ -118,8 +117,6 @@ public class UserController {
         ownerService.delete(id);
         return new ResponseEntity<UserDTO>(HttpStatus.NO_CONTENT);
     }
-
-    //3.22 i promeniti status u owneru da je REPORT=TRUE
     @PostMapping(value = "/{idR}/report/{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReviewDTO> createReport(@PathVariable("idR") Long idR, @PathVariable("id") Long id, @RequestBody Review review) throws Exception {
         ReviewDTO reviewDTO=new ReviewDTO();
@@ -128,8 +125,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    @CrossOrigin(origins = "http://localhost:4200")
     public Token login(@RequestBody LoginDTO login) {
+        System.out.println(guestService.findAll());
         try {
             UsernamePasswordAuthenticationToken authReq =
                     new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword());
@@ -139,9 +136,12 @@ public class UserController {
             sc.setAuthentication(auth);
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(login.getEmail());
-            System.out.println("userDetails");
-            System.out.println(userDetails);
-
+//            boolean activation=userService.findActivation(userDetails.getUsername());
+//            if(!activation){
+//                Token tokenJWT = new Token();
+//                tokenJWT.setJwt("NEUSPESNO");
+//                return tokenJWT;
+//            }
             String token = jwtTokenUtil.generateToken(userDetails);
             Token tokenJWT = new Token();
             tokenJWT.setJwt(token);
@@ -156,23 +156,29 @@ public class UserController {
     }
 
     @PutMapping(value = "/change-password/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<String> changePassword(@PathVariable("id") Long id, @RequestBody PasswordDTO changePasswordDTO) throws Exception {
-
         User user = userService.findOne(id);
         System.out.println("PRE ENC PASS    " + changePasswordDTO.getPassword());
-//        passwordEncoder.encode(changePasswordDTO.getPassword())
+        System.out.println(passwordEncoder.encode(changePasswordDTO.getPassword()));
         user.setPassword(passwordEncoder.encode(changePasswordDTO.getPassword()));
-
-        System.out.println("PASSWORDASASD  " +  user.getPassword());
          userService.updatePassword(user);
 
         return new ResponseEntity<String>(HttpStatus.OK);
     }
-
     @GetMapping("/exists/{username}")
-    @CrossOrigin(origins = "http://localhost:4200")
     public boolean doesUsernameExist(@PathVariable String username) {
         return userService.doesUsernameExist(username);
+    }
+    @GetMapping(value="/logout")
+    public boolean logout() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(auth instanceof AnonymousAuthenticationToken)){
+            SecurityContextHolder.clearContext();
+            return true;
+        } else {
+            return false;
+        }
+
     }
 }

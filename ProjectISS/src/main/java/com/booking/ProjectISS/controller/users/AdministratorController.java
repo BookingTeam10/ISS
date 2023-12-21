@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AdministratorController {
 
     @Autowired
@@ -43,15 +45,15 @@ public class AdministratorController {
     @Autowired
     private IReservationService reservationService;
 
-    //getAll
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<Collection<AdministratorDTO>> getAdministratorDTO() {
         Collection<AdministratorDTO> administrators = administratorService.findAllDTO();
         return new ResponseEntity<Collection<AdministratorDTO>>(administrators, HttpStatus.OK);
     }
 
-    //getOne
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<AdministratorDTO> getAdministrator(@PathVariable("id") Long id) {
         AdministratorDTO administrator = administratorService.findOneDTO(id);
         if (administrator != null) {
@@ -62,7 +64,7 @@ public class AdministratorController {
     }
 
     @GetMapping(value = "/username/{username}",produces = MediaType.APPLICATION_JSON_VALUE)
-    @CrossOrigin(origins = "http://localhost:4200")
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<Administrator> getAdministratorUsername(@PathVariable("username") String username){
         Administrator administrator = administratorService.findUsername(username);
         if(administrator == null){
@@ -72,20 +74,20 @@ public class AdministratorController {
     }
     //deleteOne
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<AdministratorDTO> deleteAdministrator(@PathVariable("id") Long id) {
         administratorService.delete(id);
         return new ResponseEntity<AdministratorDTO>(HttpStatus.NO_CONTENT);
     }
 
-    //post
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<AdministratorDTO> createAdministrator(@RequestBody Administrator Administrator) throws Exception {
         AdministratorDTO administratorDTO = administratorService.create(Administrator);
         return new ResponseEntity<AdministratorDTO>(administratorDTO, HttpStatus.CREATED);
     }
-
-    //put
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<AdministratorDTO> updateAdmin(@RequestBody Administrator administrator, @PathVariable Long id)
             throws Exception {
         Administrator administratorForUpdate = administratorService.findOne(id);
@@ -97,19 +99,18 @@ public class AdministratorController {
         return new ResponseEntity<AdministratorDTO>(updatedAdministrator, HttpStatus.OK);
     }
 
-    //3.10
     @GetMapping(value = "/accomodations", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsDTO() {
         Collection<AccommodationDTO> accommodationDTOS = accommodationService.findAllDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOS, HttpStatus.OK);
     }
 
     @GetMapping(value = "/accomodations/pending", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsPendingDTO() {
         List<AccommodationDTO> accommodationPending=new ArrayList<AccommodationDTO>();
         Collection<AccommodationDTO> accommodationDTOS = accommodationService.findAllDTO();
-
-        //Seljacki nacin za trazenje pendinga, uzeti sve i samo naci ako nije odobren
 
         for(AccommodationDTO a:accommodationDTOS){
             if(!a.isAccepted()){
@@ -121,6 +122,7 @@ public class AdministratorController {
     }
 
     @PutMapping(value = "/accomodations/pending/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<AccommodationDTO> updateAccomodationPeding(@RequestBody Accommodation accommodation, @PathVariable Long id)
             throws Exception {
         Accommodation accommodationUp=accommodationService.findOne(id);
@@ -132,6 +134,7 @@ public class AdministratorController {
     }
 
     @GetMapping(value = "/reportsUsers", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<Collection<UserDTO>> getReportedUsers() {
         List<UserDTO> userReport=new ArrayList<UserDTO>();
         Collection<UserDTO> users = userService.findAllDTO();
@@ -145,6 +148,7 @@ public class AdministratorController {
     }
 
     @PutMapping(value = "/reportsUsers/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<?> blockUsers(@RequestBody User u, @PathVariable Long id)
             throws Exception {
         User user=userService.findOne(id);
@@ -162,12 +166,14 @@ public class AdministratorController {
 
     //ova 3
     @GetMapping(value = "/allComments", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<Collection<ReviewDTOComment>> allComments() {
         Collection<ReviewDTOComment> reviews = reviewService.findAllDTOComments();
         return new ResponseEntity<Collection<ReviewDTOComment>>(reviews, HttpStatus.OK);
     }
 
     @GetMapping(value = "/allComments/report", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<Collection<ReviewDTOComment>> allCommentsReport() {
         Collection<ReviewDTOComment> newReviews=new ArrayList<>();
         Collection<ReviewDTOComment> reviews = reviewService.findAllDTOComments();
@@ -180,6 +186,7 @@ public class AdministratorController {
     }
 
     @DeleteMapping(value = "/allComments/report/{id}")
+    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<ReviewDTO> deleteReview(@PathVariable("id") Long id) {
         reviewService.deleteReport(id);
         return new ResponseEntity<ReviewDTO>(HttpStatus.NO_CONTENT);
