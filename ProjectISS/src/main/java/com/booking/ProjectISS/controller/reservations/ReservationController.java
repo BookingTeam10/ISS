@@ -37,6 +37,16 @@ public class ReservationController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+
+    @GetMapping(value = "/owner/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<Collection<Reservation>> getAllOwnerReservations(@PathVariable("id") Long id){
+        Collection<Reservation> allReservations = reservationService.getOwnerReservations(id);
+        Collection<Reservation> reservations = allReservations.stream().filter( r -> r.getStatus().equals(ReservationStatus.WAITING)).toList();
+
+        return new ResponseEntity<Collection<Reservation>>(reservations, HttpStatus.OK);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('Guest')")
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody Reservation reservation) throws Exception {
@@ -47,6 +57,7 @@ public class ReservationController {
         ReservationDTO reservationDTO = reservationService.create(reservation);
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
     }
+
 
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,7 +79,9 @@ public class ReservationController {
 
         Reservation reservation = reservationService.findOne(id);
         reservation.setStatus(ReservationStatus.ACCEPTED);
-        return new ResponseEntity<>(reservationService.update(reservation), HttpStatus.OK);
+        ReservationDTO reservationDTO = reservationService.update(reservation);
+        reservationService.cancelAllWaiting(reservation);
+        return new ResponseEntity<>(reservationDTO, HttpStatus.OK);
     }
     @PutMapping(value = "/cancel/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('Owner', 'Guest')")
