@@ -42,4 +42,6 @@ public interface IReservationService {
     void cancelledAllReservation(Guest u);
     Collection<ReservationDTO> findAllNotAcceptedDTO();
     Collection<ReservationDTO> findByAccommodation(Long id);
+
+    void cancelAllWaiting(Reservation reservation) throws Exception;
 }

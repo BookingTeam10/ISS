@@ -71,6 +71,19 @@ public class ReservationService implements IReservationService{
     }
 
     @Override
+    public void cancelAllWaiting(Reservation accepptedReservation) throws Exception {
+        List<Reservation> reservations = this.reservationRepository.findAll();
+        for (Reservation r: reservations){
+            if(r.getStatus() == ReservationStatus.WAITING && r.getAccommodation().getId().equals(accepptedReservation.getAccommodation().getId())){
+                if(doDatesOverlap(accepptedReservation.getStartDate(), accepptedReservation.getEndDate(), r.getStartDate(), r.getEndDate())){
+                    r.setStatus(ReservationStatus.REJECTED);
+                    this.update(r);
+                }
+            }
+        }
+    }
+
+    @Override
     public Collection<Reservation> findAll() {
         return reservationRepository.findAll();
     }
@@ -87,16 +100,31 @@ public class ReservationService implements IReservationService{
 
     @Override
     public ReservationDTO create(Reservation reservation) throws Exception {
+        if(reservation.getAccommodation().isAutomaticConfirmation()){
+            reservation.setStatus(ReservationStatus.ACCEPTED);
+            this.cancelAllWaiting(reservation);
+        }
 
         return new ReservationDTO(reservationRepository.save(reservation));
     }
 
     @Override
-    public ReservationDTO update(Reservation reservation) throws Exception {
-        reservationRepository.delete(reservation);
-        reservationRepository.save(reservation);
+    public ReservationDTO update(Reservation reservationForUpdate) throws Exception {
+        Optional<Reservation> optionalReservation = this.reservationRepository.findById(reservationForUpdate.getId());
+        optionalReservation.ifPresent(oldReservation -> {
+            oldReservation.setStatus(reservationForUpdate.getStatus());
+            oldReservation.setAccommodation(reservationForUpdate.getAccommodation());
+            oldReservation.setGuest(reservationForUpdate.getGuest());
+            oldReservation.setReviews(reservationForUpdate.getReviews());
+            oldReservation.setEndDate(reservationForUpdate.getEndDate());
+            oldReservation.setStartDate(reservationForUpdate.getStartDate());
+            oldReservation.setNumberOfNights(reservationForUpdate.getNumberOfNights());
+            oldReservation.setTotalPrice(reservationForUpdate.getTotalPrice());
 
-        return new ReservationDTO(reservation);
+            this.reservationRepository.save(oldReservation);
+        });
+
+        return new ReservationDTO(reservationForUpdate);
     }
 
     @Override
