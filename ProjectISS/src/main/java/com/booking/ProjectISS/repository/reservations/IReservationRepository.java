@@ -1,5 +1,6 @@
 package com.booking.ProjectISS.repository.reservations;
 
+import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,5 +14,8 @@ public interface IReservationRepository  extends JpaRepository<Reservation, Long
     Reservation findByGuest(String guestId);
     @Query("select r from Reservation r where r.accommodation.id = ?1")
     Collection<Reservation> findByAccommodation(Long id);
+
+    @Query("select r from Reservation r where r.guest.id = ?1 and r.status!=?2")
+    Collection<Reservation> findByGuestId(Long guestId, ReservationStatus status);
 
 }

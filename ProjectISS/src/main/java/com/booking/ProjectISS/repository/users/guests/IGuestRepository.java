@@ -1,5 +1,6 @@
 package com.booking.ProjectISS.repository.users.guests;
 
+import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
 import org.springframework.data.jpa.repository.JpaRepository;

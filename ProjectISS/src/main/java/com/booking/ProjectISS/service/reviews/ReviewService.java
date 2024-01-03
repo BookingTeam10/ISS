@@ -3,22 +3,29 @@ package com.booking.ProjectISS.service.reviews;
 import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.dto.reviews.ReviewDTO;
 import com.booking.ProjectISS.dto.reviews.ReviewDTOComment;
+import com.booking.ProjectISS.dto.reviews.ReviewOwnerDTO;
+import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.enums.ReviewStatus;
+import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.reviews.Review;
+import com.booking.ProjectISS.model.reviews.ReviewOwner;
+import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.repository.reviews.IReviewOwnerRepository;
 import com.booking.ProjectISS.repository.reviews.IReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ReviewService implements IReviewService {
 
     @Autowired
     private IReviewRepository reviewRepository;
+
+    @Autowired
+    private IReviewOwnerRepository reviewOwnerRepository;
 
     @Override
     public ReviewDTO findOneDTO(Long id) {
@@ -103,5 +110,54 @@ public class ReviewService implements IReviewService {
         if (reviewRepository.findByReservation(reservationId)!=null)
             return new ReviewDTO(reviewRepository.findByReservation(reservationId));
         return null;
+    }
+
+    @Override
+    public ReviewOwner findReviewByOwnerGuest(Long idOwner, Long idGuest) {
+        ReviewOwner reviewOwner=reviewOwnerRepository.findByOwnerGuest(idOwner,idGuest);
+        System.out.println(reviewOwner);
+        return reviewOwner;
+    }
+
+    @Override
+    public ReviewOwner deleteByOwnerGuest(Long idOwner, Long idGuest) {
+        //reviewRepository.deleteByOwnerGuest(idOwner,idGuest);
+        ReviewOwner reviewOwner=reviewRepository.findByOwnerGuest(idOwner,idGuest);
+        System.out.println(reviewOwner.getId());
+        reviewRepository.deleteById(reviewOwner.getId());
+        return reviewOwner;
+    }
+
+    @Override
+    public ReviewOwnerDTO createOwnerRewiew(ReviewOwner review) {
+        ReviewOwner savedReview = reviewOwnerRepository.save(review);
+        return new ReviewOwnerDTO(savedReview);
+    }
+
+    @Override
+    public Collection<Owner> findReviewByGuestOwner(Long idGuest) {
+        Collection<Owner> owners=new HashSet<Owner>();
+        Collection<Reservation> reservations=reviewOwnerRepository.findReservationByGuest(idGuest,ReservationStatus.CANCELLED);
+        for(Reservation r:reservations){
+            owners.add(r.getAccommodation().getOwner());
+        }
+        System.out.println(owners);
+        return owners;
+    }
+
+    @Override
+    public ReviewOwner find(Long id) {
+        Optional<ReviewOwner> found = reviewOwnerRepository.findById(id);
+        return found.orElse(null);
+    }
+
+    @Override
+    public Collection<Accommodation> findReviewAccommodation(Long id) {
+        Collection<Accommodation> accommodations=new HashSet<Accommodation>();
+        Collection<Reservation> reservations=reviewRepository.findByGuest(id);
+        for(Reservation r:reservations){
+            accommodations.add(r.getAccommodation());   //dodati 7dana
+        }
+        return accommodations;
     }
 }

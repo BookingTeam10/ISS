@@ -2,6 +2,7 @@ package com.booking.ProjectISS.service.reservations;
 
 
 import com.booking.ProjectISS.dto.reservations.ReservationDTO;
+import com.booking.ProjectISS.dto.users.OwnerDTO;
 import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Guest;
@@ -42,4 +43,6 @@ public interface IReservationService {
     void cancelledAllReservation(Guest u);
     Collection<ReservationDTO> findAllNotAcceptedDTO();
     Collection<ReservationDTO> findByAccommodation(Long id);
+
+    Collection<OwnerDTO> findOwnerByReservationGuest(Long id);
 }

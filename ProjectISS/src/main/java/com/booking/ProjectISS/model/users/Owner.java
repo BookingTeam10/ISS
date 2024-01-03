@@ -71,6 +71,10 @@ public class Owner extends User implements Serializable {
         super(id);
     }
 
+    public double getRating() {
+        return rating;
+    }
+
     public Owner(Owner owner) {
         super(owner.getId(), owner.getEmail(), owner.getPassword(), owner.getName(), owner.getSurname(), owner.getPhone(), owner.getAddress(),owner.isReported(), owner.isBlocked());
         this.totalPrice=0;

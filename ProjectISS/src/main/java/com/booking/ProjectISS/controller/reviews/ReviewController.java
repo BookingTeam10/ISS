@@ -2,7 +2,12 @@ package com.booking.ProjectISS.controller.reviews;
 
 import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.dto.reviews.ReviewDTO;
+import com.booking.ProjectISS.dto.reviews.ReviewOwnerDTO;
+import com.booking.ProjectISS.dto.users.OwnerDTO;
+import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.reviews.Review;
+import com.booking.ProjectISS.model.reviews.ReviewOwner;
+import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.service.reviews.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @RestController
@@ -74,4 +80,57 @@ public class ReviewController {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    @GetMapping(value = "/rate/{idOwner}/{idGuest}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<ReviewOwnerDTO> rateOwner(@PathVariable("idOwner") Long idOwner, @PathVariable("idGuest") Long idGuest) {
+        ReviewOwner  reviewOwner = reviewService.findReviewByOwnerGuest(idOwner,idGuest);
+        if (reviewOwner == null) {
+            return null;
+        }
+        return new ResponseEntity<ReviewOwnerDTO>(new ReviewOwnerDTO(reviewOwner),HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/rate/reviewAccommodation/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<Collection<Accommodation>> getReviewAccommodation(@PathVariable("id") Long id) {
+        Collection<Accommodation> accommodations = reviewService.findReviewAccommodation(id);
+        return new ResponseEntity<Collection<Accommodation>>(accommodations,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/rate/reviewOwner/{idReview}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<ReviewOwner> getReviewOwner(@PathVariable("idReview") Long id) {
+        ReviewOwner reviewOwner = reviewService.find(id);
+        if(reviewOwner==null){
+            return null;
+        }
+        return new ResponseEntity<ReviewOwner>(reviewOwner,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/rate/{idGuest}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<Collection<Owner>> rateOwner(@PathVariable("idGuest") Long idGuest) {
+        Collection<Owner> owners= reviewService.findReviewByGuestOwner(idGuest);
+        return new ResponseEntity<Collection<Owner>>(owners,HttpStatus.OK);
+    }
+
+
+    @DeleteMapping(value = "/rate/{idOwner}/{idGuest}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<ReviewOwner> deleteReviewOwner(@PathVariable("idOwner") Long idOwner, @PathVariable("idGuest") Long idGuest) {
+        System.out.println("USLO JE DELETE");
+        ReviewOwner reviewOwner=reviewService.deleteByOwnerGuest(idOwner,idGuest);
+        return new ResponseEntity<ReviewOwner>(reviewOwner,HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping(value = "/rate/{idOwner}/{idGuest}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<ReviewOwnerDTO> createReview(@RequestBody ReviewOwner review) throws Exception {
+        System.out.println("UDJE");
+        System.out.println(review);
+        ReviewOwnerDTO reviewDTO = reviewService.createOwnerRewiew(review);
+        return new ResponseEntity<>(reviewDTO, HttpStatus.CREATED);
+    }
+
 }
