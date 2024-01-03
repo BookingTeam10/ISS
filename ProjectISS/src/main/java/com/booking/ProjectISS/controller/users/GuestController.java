@@ -197,4 +197,15 @@ public class GuestController {
         Collection<ReservationDTO> reservations = reservationService.findAllNotAcceptedDTO();
         return new ResponseEntity<Collection<ReservationDTO>>(reservations, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/owner-reservation/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<Collection<OwnerDTO>> getOwnerByReservationGuest(@PathVariable("id") Long id) {
+        System.out.println("USLO");
+        Collection<OwnerDTO>  owners = reservationService.findOwnerByReservationGuest(id);
+        System.out.println("USLO1");
+        return new ResponseEntity<Collection<OwnerDTO>>(owners,HttpStatus.OK);
+    }
+
+
 }

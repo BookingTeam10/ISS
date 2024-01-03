@@ -2,11 +2,13 @@ package com.booking.ProjectISS.service.reservations;
 
 import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.dto.reservations.ReservationDTO;
+import com.booking.ProjectISS.dto.users.OwnerDTO;
 import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.accomodations.Location;
 import com.booking.ProjectISS.model.users.Guest;
+import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.repository.reservations.IReservationRepository;
 import org.apache.coyote.Request;
 import org.hibernate.dialect.SimpleDatabaseVersion;
@@ -73,14 +75,31 @@ public class ReservationService implements IReservationService{
     @Override
     public void cancelAllWaiting(Reservation accepptedReservation) throws Exception {
         List<Reservation> reservations = this.reservationRepository.findAll();
-        for (Reservation r: reservations){
-            if(r.getStatus() == ReservationStatus.WAITING && r.getAccommodation().getId().equals(accepptedReservation.getAccommodation().getId())){
-                if(doDatesOverlap(accepptedReservation.getStartDate(), accepptedReservation.getEndDate(), r.getStartDate(), r.getEndDate())){
+        for (Reservation r : reservations) {
+            if (r.getStatus() == ReservationStatus.WAITING && r.getAccommodation().getId().equals(accepptedReservation.getAccommodation().getId())) {
+                if (doDatesOverlap(accepptedReservation.getStartDate(), accepptedReservation.getEndDate(), r.getStartDate(), r.getEndDate())) {
                     r.setStatus(ReservationStatus.REJECTED);
                     this.update(r);
                 }
             }
         }
+    }
+    public Collection<OwnerDTO> findOwnerByReservationGuest(Long id) {
+        List<String> lista=new ArrayList<String>();
+        Collection<OwnerDTO> ownerDTOS = new HashSet<OwnerDTO>();
+        Collection<Reservation> reservations=reservationRepository.findByGuestId(id,ReservationStatus.CANCELLED);
+        if(reservations.isEmpty()){
+            return ownerDTOS;
+        }
+        System.out.println(reservations.size());
+        for(Reservation r:reservations){
+            if(!lista.contains(r.getAccommodation().getOwner().getEmail())){
+                ownerDTOS.add(new OwnerDTO(r.getAccommodation().getOwner()));
+                lista.add(r.getAccommodation().getOwner().getEmail());
+            }
+            //ownerDTOS.add(new OwnerDTO(r.getAccommodation().getOwner()));
+        }
+        return ownerDTOS;
     }
 
     @Override

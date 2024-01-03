@@ -51,11 +51,11 @@ VALUES (1,'WIFI'),
 
 INSERT INTO reservations (total_price, reservation_status, start_date, end_date, number_of_nights, accommodation_id, guest_id)
 VALUES
-    (200, 'WAITING', '2022-12-12', '2022-12-15', 3, 2, 3),
-    (200, 'WAITING', '2023-12-10', '2023-10-15', 5, 2, 3),
-    (450, 'WAITING', '2023-01-01', '2023-01-03', 3, 1, 3),
-    (50, 'WAITING', '2023-01-01', '2023-01-02', 1, 1, 3),
-    (100, 'WAITING', '2023-02-01', '2023-02-02', 2, 3, 3);
+    (200, 'ACCEPTED', '2022-12-12', '2022-12-15', 3, 1, 3),
+    (200, 'ACCEPTED', '2023-10-10', '2023-10-15', 5, 1, 3),
+    (100, 'REJECTED', '2023-01-01', '2023-01-03', 3, 1, 3),
+    (50, 'CANCELLED', '2023-01-01', '2023-01-02', 1, 1, 3),
+    (150, 'CANCELLED', '2023-02-01', '2023-02-02', 2, 2, 3);
 
 INSERT INTO notifications (text, notification_status, guest_id, owner_id, sent_date)
 VALUES
@@ -65,8 +65,13 @@ VALUES
 
 INSERT INTO review (rate, review_comment, status, reservation_id)
 VALUES
-     (10, 'Great experience!', 'ACTIVE', 1),
-     (10, 'Great experience!', 'ACTIVE', 2);
+     (4, 'Great experience!', 'ACTIVE', 1),
+     (3, 'Great experience!', 'ACTIVE', 2);
+
+INSERT INTO review_owner (rate, review_comment,comment_date, status, owner_id, guest_id,is_reported)
+VALUES
+    (5, 'Great experience!', '2021-12-01', 'ACTIVE', 1, 3,'false'),
+    (5, 'Great experience!', '2021-12-01', 'ACTIVE', 4,3,'false');
 
 
 INSERT INTO accommodation_price (accommodation_id, price, start_date, end_date)

@@ -1,7 +1,9 @@
 package com.booking.ProjectISS.service.users.guest;
 
 import com.booking.ProjectISS.dto.users.GuestDTO;
+import com.booking.ProjectISS.dto.users.OwnerDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
+import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
@@ -94,4 +96,5 @@ public class GuestService implements IGuestService {
     public Guest findUsername(String username) {
         return this.guestRepository.findByEmail(username);
     }
+
 }

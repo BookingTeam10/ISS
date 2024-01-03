@@ -2,6 +2,7 @@ package com.booking.ProjectISS.service.reservations;
 
 
 import com.booking.ProjectISS.dto.reservations.ReservationDTO;
+import com.booking.ProjectISS.dto.users.OwnerDTO;
 import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Guest;
@@ -44,4 +45,5 @@ public interface IReservationService {
     Collection<ReservationDTO> findByAccommodation(Long id);
 
     void cancelAllWaiting(Reservation reservation) throws Exception;
+    Collection<OwnerDTO> findOwnerByReservationGuest(Long id);
 }
