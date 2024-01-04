@@ -65,7 +65,7 @@ VALUES
 
 INSERT INTO review (rate, review_comment, status, reservation_id)
 VALUES
-     (4, 'Great experience!', 'ACTIVE', 1),
+     (4, 'Great experience!', 'REPORTED', 1),
      (3, 'Great experience!', 'ACTIVE', 2);
 
 INSERT INTO review_owner (rate, review_comment,comment_date, status, owner_id, guest_id,is_reported)
@@ -79,3 +79,7 @@ VALUES
     (1, 3000, '2001-01-01', '2001-07-01'),
     (1, 2000, '2001-01-01', '2001-08-01'),
     (1, 4000, '2001-01-01', '2001-09-01');
+
+INSERT INTO report (review_comment,status,owner_id, guest_id,user_report)
+VALUES
+    ('Bad experience!','ACTIVE', 1,3,'GO');

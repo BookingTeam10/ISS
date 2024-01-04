@@ -16,4 +16,7 @@ public interface IReviewOwnerRepository extends JpaRepository<ReviewOwner, Long>
 
     @Query("select r from Reservation r where r.guest.id=?1 and r.status <> ?2")
     Collection<Reservation> findReservationByGuest(Long idGuest, ReservationStatus reservationStatus);
+
+    @Query("select r from ReviewOwner r where r.owner.id=?1")
+    Collection<ReviewOwner> findNoRep(Long id);
 }

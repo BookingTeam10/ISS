@@ -1,5 +1,6 @@
 package com.booking.ProjectISS.repository.users.owner;
 
+import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.User;

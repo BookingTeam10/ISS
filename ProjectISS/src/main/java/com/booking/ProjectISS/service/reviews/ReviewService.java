@@ -10,9 +10,14 @@ import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.reviews.ReviewOwner;
+import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.repository.accomodations.IAccommodationRepository;
+import com.booking.ProjectISS.repository.reservations.IReservationRepository;
 import com.booking.ProjectISS.repository.reviews.IReviewOwnerRepository;
 import com.booking.ProjectISS.repository.reviews.IReviewRepository;
+import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
+import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +31,18 @@ public class ReviewService implements IReviewService {
 
     @Autowired
     private IReviewOwnerRepository reviewOwnerRepository;
+
+    @Autowired
+    private IOwnerRepository ownerRepository;
+
+    @Autowired
+    private IGuestRepository guestRepository;
+
+    @Autowired
+    private IAccommodationRepository accommodationRepository;
+
+    @Autowired
+    private IReservationRepository reservationRepository;
 
     @Override
     public ReviewDTO findOneDTO(Long id) {
@@ -129,7 +146,12 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public ReviewOwnerDTO createOwnerRewiew(ReviewOwner review) {
+    public ReviewOwnerDTO createOwnerRewiew(ReviewOwner review, Long idOwner,Long idGuest) {
+        Optional<Owner> o=ownerRepository.findById(idOwner);
+        Optional<Guest> g=guestRepository.findById(idGuest);
+        review.setOwner(o.get());
+        review.setGuest(g.get());
+        review.setStatus(ReviewStatus.ACTIVE);
         ReviewOwner savedReview = reviewOwnerRepository.save(review);
         return new ReviewOwnerDTO(savedReview);
     }
@@ -159,5 +181,61 @@ public class ReviewService implements IReviewService {
             accommodations.add(r.getAccommodation());   //dodati 7dana
         }
         return accommodations;
+    }
+
+    @Override
+    public Collection<Guest> findGuestByOwner(Long id) {
+        Collection<Guest> guests=new HashSet<Guest>();
+        Collection<Accommodation> accommodations=accommodationRepository.findAllByOwner(id);
+        System.out.println(accommodations);
+        System.out.println(accommodations.size());
+        for(Accommodation a:accommodations){
+            Collection<Reservation> res=reservationRepository.findByAccommodation(a.getId());
+            for(Reservation r:res){
+                guests.add(r.getGuest());
+            }
+        }
+        System.out.println(guests);
+        return guests;
+    }
+
+    @Override
+    public Collection<ReviewOwner> findNoReported(Long id) {
+        Collection<ReviewOwner> ro=new ArrayList<ReviewOwner>();
+        Collection<ReviewOwner> reviewNoReported=reviewOwnerRepository.findNoRep(id);
+        for(ReviewOwner r:reviewNoReported){
+            if(!r.getStatus().equals(ReviewStatus.REPORTED)){   //dodati mzd i ono iz tabele true/false
+                ro.add(r);
+            }
+        }
+        System.out.println(ro);
+        System.out.println(ro.size());
+        return ro;
+    }
+
+    @Override
+    public Collection<Review> findNoReportedAcc(Long id) {
+        Collection<Review> reviews=new ArrayList<Review>();
+        Collection<Reservation> reservations=new ArrayList<Reservation>();
+        Collection<Accommodation> accommodations=accommodationRepository.findAllByOwner(id);
+        System.out.println(accommodations);
+        for(Accommodation a:accommodations){
+            Collection<Reservation> res=reservationRepository.findByAccommodation(a.getId());
+            reservations.addAll(res);
+        }
+        System.out.println(reservations);
+        for(Reservation r:reservations){
+            Review rw=reviewRepository.findByReservation(r.getId());
+            System.out.println(rw);
+            if(rw==null){
+                break;
+            }
+            if(!rw.getStatus().equals(ReviewStatus.REPORTED)){
+                reviews.add(rw);
+            }
+        }
+        System.out.println(reviews);
+        System.out.println(reviews.size());
+        return reviews;
     }
 }
