@@ -174,13 +174,13 @@ public class GuestController {
     return ResponseEntity.ok(accommodationDTOS);
     }
 
-    //3.10 for guests
     @GetMapping(value="/accommodations")
     @PreAuthorize("hasRole('Guest')")
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsDTO() {
         Collection<AccommodationDTO> accommodationDTOS = accommodationService.findAllDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOS, HttpStatus.OK);
     }
+    //ovo nesto zeza
     @PostMapping(value="/reservations")
     @PreAuthorize("hasRole('Guest')")
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody Reservation reservation) throws Exception {
@@ -192,12 +192,12 @@ public class GuestController {
     }
 
     @GetMapping(value = "/request")
-    @PreAuthorize("hasRole('Guest')")
+    //@PreAuthorize("hasRole('Guest')")
+    @PreAuthorize("hasAnyRole('Administrator', 'Owner')")
     public ResponseEntity<Collection<ReservationDTO>> guestNotAcceptedReservation(){
         Collection<ReservationDTO> reservations = reservationService.findAllNotAcceptedDTO();
         return new ResponseEntity<Collection<ReservationDTO>>(reservations, HttpStatus.OK);
     }
-
     @GetMapping(value = "/owner-reservation/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<Collection<OwnerDTO>> getOwnerByReservationGuest(@PathVariable("id") Long id) {
@@ -206,6 +206,63 @@ public class GuestController {
         System.out.println("USLO1");
         return new ResponseEntity<Collection<OwnerDTO>>(owners,HttpStatus.OK);
     }
+    @GetMapping(value = "/{id}/favouriteAccommodations", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<?> getFavouriteAccommodations(@PathVariable("id") Long id) {
+        Guest guest = guestService.findOne(id);
+        System.out.println("FAVOURITE ACCOMMODATIONS");
+        if (guest!= null) {
+            System.out.println("PRONADJEN GOST");
+            //Collection<Accommodation> accommodations=guest.getFavouriteAccommodations();
+            List<Accommodation> accommodations=guest.getFavouriteAccommodations();
+            List<AccommodationDTO> accommodationDTOs = new ArrayList<>();
+            System.out.println("NOVI FAVORITI");
+            System.out.println(accommodations);
+            if(accommodations!=null){
+                for(Accommodation accommodation:accommodations){
+                    accommodationDTOs.add(new AccommodationDTO(accommodation));
+                }
+                return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOs, HttpStatus.OK);
+            }
+            return new ResponseEntity<GuestDTO>(HttpStatus.NOT_FOUND);
+        }
 
+        return new ResponseEntity<GuestDTO>(HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping(value="/{id}/favouriteAccommodations/add" ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<GuestDTO> addFavouriteAccommodation(@PathVariable("id") Long id,@RequestBody Accommodation accommodation) throws Exception {
+        Guest guest = guestService.findOne(id);
+        //mzd posle prebaciti u service
+        List<Accommodation> favouriteAccommodations = guest.getFavouriteAccommodations();
+        favouriteAccommodations.add(accommodation);
+        guest.setFavouriteAccommodations(favouriteAccommodations);
+        System.out.println("DODAVANJE FAVOURITE ACCOMMODATIONA, GOST PRE UPDATE");
+        guestService.update(guest);
+        System.out.println("GOST POSLE UPDATE");
+        System.out.println(new GuestDTO(guest));
+
+        return new ResponseEntity<GuestDTO>(new GuestDTO(guest), HttpStatus.CREATED);
+    }
+
+
+    @DeleteMapping(value = "/{idGuest}/favouriteAccommodations/{idAccommodation}")
+    @PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<GuestDTO> deleteFavouriteAccommodation(@PathVariable("idGuest") Long idGuest,@PathVariable("idAccommodation") Long idAccommodation) throws Exception {
+        System.out.println("MAPIRA SE");
+        Guest guest = guestService.findOne(idGuest);
+        System.out.println(guest);
+
+        List<Accommodation> favouriteAccommodations = guest.getFavouriteAccommodations();
+        favouriteAccommodations.removeIf(accommodation -> accommodation.getId() == idAccommodation);
+        guest.setFavouriteAccommodations(favouriteAccommodations);
+
+        System.out.println("DELETE FAVOURITE ACCOMMODATIONA, GOST PRE UPDATE");
+        guestService.update(guest);
+        System.out.println("GOST POSLE UPDATE");
+        System.out.println(new GuestDTO(guest));
+        return new ResponseEntity<GuestDTO>(new GuestDTO(guest),HttpStatus.NO_CONTENT);
+    }
 
 }

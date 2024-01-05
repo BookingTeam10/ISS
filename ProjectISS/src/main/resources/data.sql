@@ -5,6 +5,7 @@ VALUES
     ('Srbija', 'Sabac', 'Save Mrkalja', 12),
     ('Srbija', 'Novi Sad', 'Danila Kisa', 10);
 
+--sifra kod svih je abc
 INSERT INTO users (email,is_blocked, firstname, surname,is_reported, phone, address, password,is_active,activationc,activatione)
 VALUES
     ('popovic.sv4.2021@uns.ac.rs','false','Luka','Popovic','false', '0655197633', 'Adresa1','$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null),
@@ -70,7 +71,6 @@ VALUES
 
 INSERT INTO review_owner (rate, review_comment,comment_date, status, owner_id, guest_id,is_reported)
 VALUES
-    (5, 'Great experience!', '2021-12-01', 'ACTIVE', 1, 3,'false'),
     (5, 'Great experience!', '2021-12-01', 'ACTIVE', 4,3,'false');
 
 
@@ -80,6 +80,11 @@ VALUES
     (1, 2000, '2001-01-01', '2001-08-01'),
     (1, 4000, '2001-01-01', '2001-09-01');
 
+
 INSERT INTO report (review_comment,status,owner_id, guest_id,user_report)
 VALUES
-    ('Bad experience!','ACTIVE', 1,3,'GO');
+    ('Bad experience!','ACTIVE', 1,3,'OG');
+
+--INSERT INTO guests_favourite_accommodations (guest_id,favourite_accommodations_accommodation_id)
+--VALUES (3,3);
+

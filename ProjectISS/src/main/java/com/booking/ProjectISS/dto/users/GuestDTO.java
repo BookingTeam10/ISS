@@ -1,8 +1,10 @@
 package com.booking.ProjectISS.dto.users;
 
+import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.users.Guest;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class GuestDTO implements Serializable {
 
@@ -13,17 +15,18 @@ public class GuestDTO implements Serializable {
 
     private String name;
     private String surname;
-
+    private List<Accommodation> favouriteAccommodations;
 
     public GuestDTO() {
     }
 
-    public GuestDTO(Long id,String email, String name, String surname) {
+    public GuestDTO(Long id,String email, String name, String surname,List<Accommodation> favouriteAccommodations) {
         this();
         this.id=id;
         this.email = email;
         this.name = name;
         this.surname = surname;
+        this.favouriteAccommodations = favouriteAccommodations;
     }
 
     public GuestDTO(Guest g) {
@@ -32,6 +35,7 @@ public class GuestDTO implements Serializable {
         this.email = g.getEmail();
         this.name = g.getName();
         this.surname = g.getSurname();
+        this.favouriteAccommodations= g.getFavouriteAccommodations();
     }
     public Long getId() {
         return id;
@@ -63,13 +67,23 @@ public class GuestDTO implements Serializable {
     public void setSurname(String surname) {
         this.surname = surname;
     }
+
+    public List<Accommodation> getFavouriteAccommodations() {
+        return favouriteAccommodations;
+    }
+
+    public void setFavouriteAccommodations(List<Accommodation> favouriteAccommodations) {
+        this.favouriteAccommodations = favouriteAccommodations;
+    }
+
     @Override
     public String toString() {
         return "GuestDTO{" +
-                "id='" + id + '\'' +
-                "email='" + email + '\'' +
+                "id=" + id +
+                ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
+                ", favouriteAccommodations=" + favouriteAccommodations +
                 '}';
     }
 }

@@ -80,7 +80,7 @@ public class GuestService implements IGuestService {
             oldGuest.setAddress(guestForUpdate.getAddress());
             oldGuest.setNumberCanceledReservation(guestForUpdate.getNumberCanceledReservation());
             oldGuest.setTurnOnNotification(guestForUpdate.isTurnOnNotification());
-
+            oldGuest.setFavouriteAccommodations(guestForUpdate.getFavouriteAccommodations());
             this.guestRepository.save(oldGuest);
         });
 
