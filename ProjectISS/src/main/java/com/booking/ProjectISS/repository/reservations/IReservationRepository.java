@@ -18,4 +18,6 @@ public interface IReservationRepository  extends JpaRepository<Reservation, Long
     @Query("select r from Reservation r where r.guest.id = ?1 and r.status!=?2")
     Collection<Reservation> findByGuestId(Long guestId, ReservationStatus status);
 
+    @Query("select r from Reservation r where r.guest.id = ?2 and r.id!=?1")
+    Collection<Reservation> findByAccommodationGuest(Long idAccommodation, Long idGuest);
 }
