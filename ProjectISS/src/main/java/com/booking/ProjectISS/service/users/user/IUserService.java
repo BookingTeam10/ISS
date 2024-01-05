@@ -5,6 +5,7 @@ import com.booking.ProjectISS.dto.users.LoginDTO;
 import com.booking.ProjectISS.dto.users.RegistrationRequestDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.users.Guest;
+import com.booking.ProjectISS.model.users.ReportUser;
 import com.booking.ProjectISS.model.users.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -37,4 +38,10 @@ public interface IUserService {
     boolean doesUsernameExist(String username);
 
     boolean findActivation(String username);
+
+    ReportUser createReport(ReportUser reportUser, Long idOwner, Long idGuest);
+
+    ReportUser findGuestReportOwner(Long idOwner, Long idGuest);
+
+    ReportUser findGuestReportGuest(Long idOwner, Long idGuest);
 }

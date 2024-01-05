@@ -1,14 +1,19 @@
 package com.booking.ProjectISS.service.users.user;
 
+import com.booking.ProjectISS.dto.reviews.ReviewOwnerDTO;
 import com.booking.ProjectISS.dto.users.LoginDTO;
 import com.booking.ProjectISS.dto.users.RegistrationRequestDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
+import com.booking.ProjectISS.enums.ReviewStatus;
 import com.booking.ProjectISS.enums.TypeUser;
+import com.booking.ProjectISS.model.reviews.ReviewOwner;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.model.users.ReportUser;
 import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
+import com.booking.ProjectISS.repository.users.user.IReportUserRepository;
 import com.booking.ProjectISS.repository.users.user.IUserRepository;
 import com.booking.ProjectISS.service.users.EmailService;
 import com.booking.ProjectISS.service.users.guest.IGuestService;
@@ -35,6 +40,12 @@ public class UserService implements IUserService, UserDetailsService {
     private IOwnerService OwnerService;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private IOwnerRepository OwnerRepository;
+    @Autowired
+    private IGuestRepository GuestRepository;
+    @Autowired
+    private IReportUserRepository ReportUserRepository;
     @Override
     public UserDTO findOneDTO(Long id) {
         Optional<User> User=UserRepository.findById(id);
@@ -166,6 +177,46 @@ public class UserService implements IUserService, UserDetailsService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public ReportUser createReport(ReportUser reportUser, Long idOwner, Long idGuest) {
+        Optional<Owner> o=OwnerRepository.findById(idOwner);
+        Optional<Guest> g=GuestRepository.findById(idGuest);
+        reportUser.setOwner(o.get());
+        reportUser.setGuest(g.get());
+        reportUser.setStatus(ReviewStatus.ACTIVE);
+        System.out.println(reportUser);
+        ReportUser savedReportUser = ReportUserRepository.save(reportUser);
+        return savedReportUser;
+    }
+
+    @Override
+    public ReportUser findGuestReportOwner(Long idOwner, Long idGuest) {
+        System.out.println("USLO U SERVICE");
+        Collection<ReportUser> reportUser=ReportUserRepository.findByOwnerGuestStatus1(idOwner,idGuest);
+        System.out.println(reportUser.size());
+        System.out.println(reportUser);
+        for(ReportUser ru:reportUser){
+            if(ru.getUserReportUser().equals("GO")){
+                return ru;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ReportUser findGuestReportGuest(Long idOwner, Long idGuest) {
+        System.out.println("USLO U SERVICE");
+        Collection<ReportUser> reportUser=ReportUserRepository.findByOwnerGuestStatus1(idOwner,idGuest);
+        System.out.println(reportUser.size());
+        System.out.println(reportUser);
+        for(ReportUser ru:reportUser){
+            if(ru.getUserReportUser().equals("OG")){
+                return ru;
+            }
+        }
+        return null;
     }
 
     @Override
