@@ -78,21 +78,6 @@ public class AccommodationController {
         AccommodationDTO updatedAcc = accommodationService.update(accomodationForUpdate);
         return new ResponseEntity<AccommodationDTO>(updatedAcc, HttpStatus.OK);
     }
-
-    //3.9 for unregisted user
-//    @GetMapping(value = "/accommodationsSearch")
-//    @CrossOrigin(origins = "http://localhost:4200")
-//    public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
-//            @RequestParam(required = false) String location,
-//            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
-//            @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")  Date end,
-//            @RequestParam(required = false) int numPeople){
-//        Collection<AccommodationDTO> accommodationDTOS = accommodationService.getAccommodationsSearched(start,end,numPeople,location);
-//        if(accommodationDTOS == null)
-//            return new ResponseEntity<Collection<AccommodationDTO>>(HttpStatus.NOT_FOUND);
-//        return ResponseEntity.ok(accommodationDTOS);
-//    }
-
     @GetMapping(value = "/accommodationsSearch")
     public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
             @RequestParam(required = false) String location,

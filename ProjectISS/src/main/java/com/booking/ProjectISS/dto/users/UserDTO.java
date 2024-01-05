@@ -1,9 +1,11 @@
 package com.booking.ProjectISS.dto.users;
 
+import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.users.Administrator;
 import com.booking.ProjectISS.model.users.User;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class UserDTO implements Serializable {
 
@@ -17,6 +19,7 @@ public class UserDTO implements Serializable {
     private boolean isReported;
 
     private boolean blocked;
+    private List<Accommodation> favouriteAccommodations;
 
 
     public UserDTO() {
@@ -48,6 +51,7 @@ public class UserDTO implements Serializable {
         this.email = g.getEmail();
         this.name = g.getName();
         this.surname = g.getSurname();
+        this.favouriteAccommodations = g.getFavouriteAccommodations();
     }
 
     public UserDTO(OwnerDTO g){

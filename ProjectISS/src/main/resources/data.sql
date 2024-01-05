@@ -5,6 +5,7 @@ VALUES
     ('Srbija', 'Sabac', 'Save Mrkalja', 12),
     ('Srbija', 'Novi Sad', 'Danila Kisa', 10);
 
+--sifra kod svih je abc
 INSERT INTO users (email,is_blocked, firstname, surname,is_reported, phone, address, password,is_active,activationc,activatione)
 VALUES
     ('popovic.sv4.2021@uns.ac.rs','false','Luka','Popovic','false', '0655197633', 'Adresa1','$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null),
@@ -74,3 +75,6 @@ VALUES
     (1, 3000, '2001-01-01', '2001-07-01'),
     (1, 2000, '2001-01-01', '2001-08-01'),
     (1, 4000, '2001-01-01', '2001-09-01');
+
+--INSERT INTO guests_favourite_accommodations (guest_id,favourite_accommodations_accommodation_id)
+--VALUES (3,3);

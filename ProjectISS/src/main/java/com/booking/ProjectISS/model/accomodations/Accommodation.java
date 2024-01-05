@@ -13,6 +13,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "accommodations")
+@Embeddable
 public class Accommodation implements Serializable {
 
     @Id
