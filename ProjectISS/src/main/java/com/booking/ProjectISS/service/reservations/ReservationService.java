@@ -1,6 +1,5 @@
 package com.booking.ProjectISS.service.reservations;
 
-import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.dto.users.OwnerDTO;
 import com.booking.ProjectISS.enums.ReservationStatus;
@@ -8,10 +7,8 @@ import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.accomodations.Location;
 import com.booking.ProjectISS.model.users.Guest;
-import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.repository.accomodations.IAccommodationRepository;
 import com.booking.ProjectISS.repository.reservations.IReservationRepository;
-import org.apache.coyote.Request;
-import org.hibernate.dialect.SimpleDatabaseVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +22,13 @@ public class ReservationService implements IReservationService{
 
     @Autowired
     private IReservationRepository reservationRepository;
+    @Autowired
+    private IAccommodationRepository accommodationService;
     @Override
     public ReservationDTO findOneDTO(Long id) {
         Optional<Reservation> found = reservationRepository.findById(id);
         return found.map(ReservationDTO::new).orElse(null);
-
     }
-
     @Override
     public Reservation findOne(Long id) {
         Optional<Reservation> found = reservationRepository.findById(id);
@@ -101,7 +98,6 @@ public class ReservationService implements IReservationService{
         }
         return ownerDTOS;
     }
-
     @Override
     public Collection<Reservation> findAll() {
         return reservationRepository.findAll();
@@ -116,17 +112,15 @@ public class ReservationService implements IReservationService{
         reservationRepository.flush();
         return true;
     }
-
     @Override
     public ReservationDTO create(Reservation reservation) throws Exception {
         if(reservation.getAccommodation().isAutomaticConfirmation()){
             reservation.setStatus(ReservationStatus.ACCEPTED);
             this.cancelAllWaiting(reservation);
         }
-
+        System.out.println(reservation);
         return new ReservationDTO(reservationRepository.save(reservation));
     }
-
     @Override
     public ReservationDTO update(Reservation reservationForUpdate) throws Exception {
         Optional<Reservation> optionalReservation = this.reservationRepository.findById(reservationForUpdate.getId());
@@ -243,10 +237,70 @@ public class ReservationService implements IReservationService{
 
     }
     @Override
+    public Collection<ReservationDTO> getOwnersRequests(Long idOwner) {
+        Collection<Accommodation> accommodations = accommodationService.findAll();
+        Collection<Accommodation> ownerAccommodations = new ArrayList<>();
+        Collection<Reservation> reservations = findAll();
+        Collection<ReservationDTO> ownerReservations = new ArrayList<>();
+
+        for(Accommodation accommodation:accommodations){
+            if (accommodation.getOwner().getId()==idOwner)
+                ownerAccommodations.add(accommodation);
+        }
+
+        for(Reservation reservation:reservations){
+            for(Accommodation accommodation:ownerAccommodations){
+                if (reservation.getAccommodation().getId()==accommodation.getId())
+                    ownerReservations.add(new ReservationDTO(reservation));
+            }
+        }
+        return ownerReservations;
+    }
+
+    //dodati posle za datume
+    @Override
+    public Collection<ReservationDTO> searchedRequests(String type, Date start, Date end, String nameAccommodation,Long idOwner) {
+
+        Collection<ReservationDTO> ownerReservations = getOwnersRequests(idOwner);
+        Collection<ReservationDTO> ownerReservationsType;
+        Collection<ReservationDTO> ownerReservationsName;
+        if(type!=null){
+            ReservationStatus reservationStatus = ReservationStatus.valueOf(type);
+            ownerReservationsType = reservationRepository.findByStatus(reservationStatus);
+        }else{
+            //posto radimo presek ako ne bude definisano vracace uvek praznu listu zato moramo ovako da stavimo
+            ownerReservationsType = ownerReservations;
+        }
+        System.out.println(ownerReservationsType);
+        if(nameAccommodation!=null){
+
+            ownerReservationsName = reservationRepository.findByAccommodationName(nameAccommodation);;
+        }else{
+            //posto radimo presek ako ne bude definisano vracace uvek praznu listu zato moramo ovako da stavimo
+            ownerReservationsName = ownerReservations;
+        }
+        System.out.println(ownerReservationsName);
+
+        Collection<ReservationDTO> presek = ownerReservations.stream()
+                .filter(reservation -> ownerReservationsType.contains(reservation) &&
+                        ownerReservationsName.contains(reservation))
+                .collect(Collectors.toList());
+
+        System.out.println(presek);
+        return presek;
+    }
+
+    @Override
     public void cancelledAllReservation(Guest u) {
 //        Collection<Reservation> reservations=reservationRepository.findAllByGuest(u.getId());
 //        for(Reservation r:reservations){
 //            r.setStatus(ReservationStatus.DELETED);
 //        }
     }
+    @Override
+    public Collection<ReservationDTO> findByGuest(Long id) {
+        Collection<ReservationDTO> reservations=reservationRepository.findByGuest(id);
+        return reservations;
+    }
+
 }

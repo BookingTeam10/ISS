@@ -8,6 +8,7 @@ import com.booking.ProjectISS.model.users.Guest;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class ReservationDTO {
     private long id;
@@ -120,5 +121,32 @@ public class ReservationDTO {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    @Override
+    public String toString() {
+        return "ReservationDTO{" +
+                "id=" + id +
+                ", totalPrice=" + totalPrice +
+                ", status=" + status +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", numberOfNights=" + numberOfNights +
+                ", accommodation=" + accommodation +
+                ", guest=" + guest +
+                ", reviews=" + reviews +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ReservationDTO that)) return false;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

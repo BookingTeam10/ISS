@@ -184,16 +184,19 @@ public class GuestController {
     @PostMapping(value="/reservations")
     @PreAuthorize("hasRole('Guest')")
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody Reservation reservation) throws Exception {
+        System.out.println("UDJE DA KREIRA REZERVACIJU");
         if (reservationService.hasOverlappingRequests(reservation)) {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
+        System.out.println(reservation);
         ReservationDTO reservationDTO = reservationService.create(reservation);
+        System.out.println(reservationService.findAll());
+        System.out.println(reservationService.findAllDTO());
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/request")
-    //@PreAuthorize("hasRole('Guest')")
-    @PreAuthorize("hasAnyRole('Administrator', 'Owner')")
+    @PreAuthorize("hasAnyRole('Guest', 'Owner')")
     public ResponseEntity<Collection<ReservationDTO>> guestNotAcceptedReservation(){
         Collection<ReservationDTO> reservations = reservationService.findAllNotAcceptedDTO();
         return new ResponseEntity<Collection<ReservationDTO>>(reservations, HttpStatus.OK);
@@ -201,23 +204,16 @@ public class GuestController {
     @GetMapping(value = "/owner-reservation/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<Collection<OwnerDTO>> getOwnerByReservationGuest(@PathVariable("id") Long id) {
-        System.out.println("USLO");
         Collection<OwnerDTO>  owners = reservationService.findOwnerByReservationGuest(id);
-        System.out.println("USLO1");
         return new ResponseEntity<Collection<OwnerDTO>>(owners,HttpStatus.OK);
     }
     @GetMapping(value = "/{id}/favouriteAccommodations", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('Guest')")
     public ResponseEntity<?> getFavouriteAccommodations(@PathVariable("id") Long id) {
         Guest guest = guestService.findOne(id);
-        System.out.println("FAVOURITE ACCOMMODATIONS");
         if (guest!= null) {
-            System.out.println("PRONADJEN GOST");
-            //Collection<Accommodation> accommodations=guest.getFavouriteAccommodations();
             List<Accommodation> accommodations=guest.getFavouriteAccommodations();
             List<AccommodationDTO> accommodationDTOs = new ArrayList<>();
-            System.out.println("NOVI FAVORITI");
-            System.out.println(accommodations);
             if(accommodations!=null){
                 for(Accommodation accommodation:accommodations){
                     accommodationDTOs.add(new AccommodationDTO(accommodation));
@@ -234,35 +230,29 @@ public class GuestController {
     @PreAuthorize("hasRole('Guest')")
     public ResponseEntity<GuestDTO> addFavouriteAccommodation(@PathVariable("id") Long id,@RequestBody Accommodation accommodation) throws Exception {
         Guest guest = guestService.findOne(id);
-        //mzd posle prebaciti u service
         List<Accommodation> favouriteAccommodations = guest.getFavouriteAccommodations();
         favouriteAccommodations.add(accommodation);
         guest.setFavouriteAccommodations(favouriteAccommodations);
-        System.out.println("DODAVANJE FAVOURITE ACCOMMODATIONA, GOST PRE UPDATE");
         guestService.update(guest);
-        System.out.println("GOST POSLE UPDATE");
-        System.out.println(new GuestDTO(guest));
 
         return new ResponseEntity<GuestDTO>(new GuestDTO(guest), HttpStatus.CREATED);
     }
-
-
     @DeleteMapping(value = "/{idGuest}/favouriteAccommodations/{idAccommodation}")
     @PreAuthorize("hasRole('Guest')")
     public ResponseEntity<GuestDTO> deleteFavouriteAccommodation(@PathVariable("idGuest") Long idGuest,@PathVariable("idAccommodation") Long idAccommodation) throws Exception {
-        System.out.println("MAPIRA SE");
         Guest guest = guestService.findOne(idGuest);
-        System.out.println(guest);
-
         List<Accommodation> favouriteAccommodations = guest.getFavouriteAccommodations();
         favouriteAccommodations.removeIf(accommodation -> accommodation.getId() == idAccommodation);
         guest.setFavouriteAccommodations(favouriteAccommodations);
-
-        System.out.println("DELETE FAVOURITE ACCOMMODATIONA, GOST PRE UPDATE");
         guestService.update(guest);
-        System.out.println("GOST POSLE UPDATE");
-        System.out.println(new GuestDTO(guest));
         return new ResponseEntity<GuestDTO>(new GuestDTO(guest),HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(value = "/{idGuest}/requests")
+    @PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<Collection<ReservationDTO>> allGuestReservation(@PathVariable("idGuest") Long idGuest){
+        Collection<ReservationDTO> reservations = reservationService.findByGuest(idGuest);
+        return new ResponseEntity<Collection<ReservationDTO>>(reservations, HttpStatus.OK);
     }
 
 }
