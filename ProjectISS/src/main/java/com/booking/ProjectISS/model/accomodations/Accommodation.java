@@ -284,6 +284,7 @@ public class Accommodation implements Serializable {
                 ", prices=" + prices +
                 ", weekendPrice=" + weekendPrice +
                 ", holidayPrice=" + holidayPrice +
+                ", name='" + name + '\'' +
                 ", summerPrice=" + summerPrice +
                 ", isNight=" + isNight +
                 ", takenDates=" + takenDates +

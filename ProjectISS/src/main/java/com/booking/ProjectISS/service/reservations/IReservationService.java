@@ -9,6 +9,7 @@ import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.User;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 public interface IReservationService {
@@ -46,4 +47,7 @@ public interface IReservationService {
 
     void cancelAllWaiting(Reservation reservation) throws Exception;
     Collection<OwnerDTO> findOwnerByReservationGuest(Long id);
+    Collection<ReservationDTO> searchedRequests(String type, Date start, Date end, String nameAccommodation,Long idOwner);
+    Collection<ReservationDTO> getOwnersRequests(Long idOwner);
+    Collection<ReservationDTO> findByGuest(Long id);
 }
