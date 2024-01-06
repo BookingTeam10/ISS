@@ -129,12 +129,20 @@ public class ReviewController {
     }
 
 
-    @DeleteMapping(value = "/rate/{idOwner}/{idGuest}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/rateDelete/{idOwner}/{idGuest}")
     //@PreAuthorize("hasRole('Guest')")
-    public ResponseEntity<?> deleteReviewOwner(@PathVariable("idOwner") Long idOwner, @PathVariable("idGuest") Long idGuest) {
+    public ResponseEntity<ReviewOwner> deleteReviewOwner(@PathVariable("idOwner") Long idOwner, @PathVariable("idGuest") Long idGuest) {
         System.out.println("USLO JE DELETE");
         ReviewOwner reviewOwner=reviewService.deleteByOwnerGuest(idOwner,idGuest);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<ReviewOwner>(reviewOwner,HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping(value = "/rateAccDelete/{idAccommodation}/{idGuest}")
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<Review> deleteReviewAccommodation(@PathVariable("idAccommodation") Long idAccommodation, @PathVariable("idGuest") Long idGuest) {
+        System.out.println("USLO JE DELETE123");
+        Review review=reviewService.deleteByAccommodationGuest(idAccommodation,idGuest);
+        return new ResponseEntity<Review>(review,HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(value = "/rate/{idOwner}/{idGuest}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -159,6 +167,63 @@ public class ReviewController {
         Collection<Review> reviews= reviewService.findNoReportedAcc(id);
         System.out.println("USLO12345");
         return new ResponseEntity<Collection<Review>>(reviews,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<ReviewOwner> getReviewOwnerComm(@PathVariable("id") Long id) {
+        System.out.println("USLO1234");
+        ReviewOwner reviewOwner= reviewService.find(id);
+        System.out.println("USLO12345");
+        return new ResponseEntity<ReviewOwner>(reviewOwner,HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/editReviewOwner/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<ReviewOwner> putReviewOwnerComm(@PathVariable("id") Long id,@RequestBody ReviewOwner reviewOwner) {
+        //ReviewOwner reviewOwner= reviewService.find(id);
+        System.out.println(reviewOwner);
+        ReviewOwner updatedReviewOwner=reviewService.updateReviewOwner(reviewOwner);
+        System.out.println("USLO12345");
+        System.out.println(updatedReviewOwner);
+        return new ResponseEntity<ReviewOwner>(updatedReviewOwner,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAccommodation/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<Review> getReviewAccommodationComm(@PathVariable("id") Long id) {
+        System.out.println("USLO GET ACC");
+        Review review= reviewService.findOne(id);
+        System.out.println("USLO12345");
+        System.out.println(review);
+        return new ResponseEntity<Review>(review,HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/editReviewAccommodation/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<Review> putReviewAccommodationComm(@PathVariable("id") Long id,@RequestBody Review review) {
+        System.out.println(review);
+        Review updatedReview=reviewService.updateReview(review);
+        System.out.println("USLO12345");
+        System.out.println(updatedReview);
+        return new ResponseEntity<Review>(updatedReview,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/rateAccommodation/{idAccommodation}/{idGuest}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<Review> rateAccommodation(@PathVariable("idAccommodation") Long idAccommodation, @PathVariable("idGuest") Long idGuest) {
+        Review  review = reviewService.findReviewByOwnerGuestAccommodation(idAccommodation,idGuest);
+        if (review == null) {
+            return null;
+        }
+        return new ResponseEntity<Review>(review,HttpStatus.OK);
+    }
+    @PostMapping(value = "/addAccRate/{idReservation}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<Review> createReviewAccommodation(@PathVariable("idReservation") Long idRes,@RequestBody Review review) throws Exception {
+        System.out.println("USLO");
+        //ReviewOwnerDTO reviewDTO = reviewService.createOwnerRewiew(review,idOwner,idGuest);
+        return new ResponseEntity<Review>(HttpStatus.CREATED);
     }
 
 }

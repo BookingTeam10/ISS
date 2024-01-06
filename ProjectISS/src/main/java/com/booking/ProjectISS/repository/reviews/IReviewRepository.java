@@ -23,4 +23,7 @@ public interface IReviewRepository extends JpaRepository<Review, Long> {
 
     @Query("select r from Reservation r where r.guest.id=?1")
     Collection<Reservation> findByGuest(Long id);
+
+    @Query("select r from Review r where r.reservation.id=?1")
+    Review findByOwnerGuestAccommodation(Long idReservation, Long idGuest);
 }

@@ -103,6 +103,14 @@ public class ReviewOwner implements Serializable {
         this.guest = guest;
     }
 
+    public boolean isIs_reported() {
+        return is_reported;
+    }
+
+    public void setIs_reported(boolean is_reported) {
+        this.is_reported = is_reported;
+    }
+
     @Override
     public String toString() {
         return "ReviewOwner{" +
@@ -119,4 +127,5 @@ public class ReviewOwner implements Serializable {
 
     public void copyValues(Review review) {
     }
+
 }

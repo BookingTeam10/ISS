@@ -21,6 +21,9 @@ import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -53,7 +56,10 @@ public class ReviewService implements IReviewService {
 
     @Override
     public Review findOne(Long id) {
+        System.out.println("FOUND1");
         Optional<Review> found = reviewRepository.findById(id);
+        System.out.println("FOUND2");
+        System.out.println(found.get());
         return found.orElse(null);
     }
 
@@ -139,9 +145,10 @@ public class ReviewService implements IReviewService {
     @Override
     public ReviewOwner deleteByOwnerGuest(Long idOwner, Long idGuest) {
         //reviewRepository.deleteByOwnerGuest(idOwner,idGuest);
-        ReviewOwner reviewOwner=reviewRepository.findByOwnerGuest(idOwner,idGuest);
-        System.out.println(reviewOwner.getId());
-        reviewRepository.deleteById(reviewOwner.getId());
+        Collection<ReviewOwner> rw=reviewOwnerRepository.findAll();
+        System.out.println(rw.size());
+        ReviewOwner reviewOwner=reviewOwnerRepository.findByOwnerGuest(idOwner,idGuest);
+        reviewOwnerRepository.deleteById(reviewOwner.getId());
         return reviewOwner;
     }
 
@@ -176,9 +183,21 @@ public class ReviewService implements IReviewService {
     @Override
     public Collection<Accommodation> findReviewAccommodation(Long id) {
         Collection<Accommodation> accommodations=new HashSet<Accommodation>();
+        System.out.println("PRE");
         Collection<Reservation> reservations=reviewRepository.findByGuest(id);
         for(Reservation r:reservations){
-            accommodations.add(r.getAccommodation());   //dodati 7dana
+//            System.out.println(r.getEndDate());
+//            Date endDate = r.getEndDate();
+//            System.out.println("PRE1");
+//            LocalDate localEndDate = endDate.toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+//            System.out.println("PRE2");
+//            LocalDate endRateDate = localEndDate.plus(7, ChronoUnit.DAYS);
+//            LocalDate now=LocalDate.now();
+//            System.out.println("PRE3");
+//            if (now.isAfter(localEndDate) && now.isBefore(endRateDate)) {
+//                accommodations.add(r.getAccommodation());
+//            }
+            accommodations.add(r.getAccommodation());
         }
         return accommodations;
     }
@@ -238,4 +257,49 @@ public class ReviewService implements IReviewService {
         System.out.println(reviews.size());
         return reviews;
     }
+
+    @Override
+    public ReviewOwner updateReviewOwner(ReviewOwner reviewOwner) {
+        reviewOwner.setStatus(ReviewStatus.REPORTED);
+        reviewOwner.setIs_reported(true);
+        return reviewOwnerRepository.save(reviewOwner);
+    }
+
+    @Override
+    public Review updateReview(Review review) {
+        review.setStatus(ReviewStatus.REPORTED);
+        return reviewRepository.save(review);
+    }
+
+    @Override
+    public Review findReviewByOwnerGuestAccommodation(Long idAccommodation, Long idGuest) {
+        System.out.println("USLO OVDE");
+        Collection<Reservation> reservation=reservationRepository.findByAccommodationGuest(idAccommodation,idGuest);
+        System.out.println(reservation);
+        System.out.println(reservation.size());
+        if(reservation.isEmpty()){
+            return null;
+        }
+        System.out.println("PROSLO");
+        Reservation r=reservation.iterator().next();
+        System.out.println(r);
+        Review review=reviewRepository.findByOwnerGuestAccommodation(r.getId(),idGuest);
+        System.out.println(review);
+        return review;
+    }
+
+    @Override
+    public Review deleteByAccommodationGuest(Long idAccommodation, Long idGuest) {
+        Collection<Review> rw=reviewRepository.findAll();
+        System.out.println(rw.size());
+        Collection<Reservation> reservations=reservationRepository.findByAccommodationGuest(idAccommodation,idGuest);
+        for(Reservation r1:reservations){
+            Review r=reviewRepository.findByOwnerGuestAccommodation(r1.getId(),idGuest);
+            reviewRepository.deleteById(r.getId());
+            return null;
+        }
+        return null;
+    }
+
+
 }
