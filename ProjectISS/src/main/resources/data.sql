@@ -15,7 +15,7 @@ VALUES
     ('test@gmail.com', 'false', 'Aleksa', 'Janjic', 'false', '854574324', 'Bulevar', '$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null);
 
 INSERT INTO owners (id,total_price,owner_rating,created_notification,rate_notification,cancelled_notification,accommodation_notification)
-VALUES (1,0,0,'false','false','false','false'),
+VALUES (1,0,0,'true','true','true','true'),
        (4,0,0,'false','false','false','false');
 
 INSERT INTO guests (id, number_canceled_notification,turn_notification)
@@ -70,7 +70,6 @@ VALUES
 
 INSERT INTO review_owner (rate, review_comment,comment_date, status, owner_id, guest_id,is_reported)
 VALUES
-    (5, 'Great experience!', '2021-12-01', 'ACTIVE', 1, 3,'false'),
     (5, 'Great experience!', '2021-12-01', 'ACTIVE', 4,3,'false');
 
 
@@ -87,4 +86,11 @@ VALUES
 
 --INSERT INTO guests_favourite_accommodations (guest_id,favourite_accommodations_accommodation_id)
 --VALUES (3,3);
+
+INSERT INTO notifications_visible (text, guest_id, owner_id, user_rate)
+VALUES
+    ('Your reservation has been accepted.', 3, 1, 'OG'),
+    ('Your reservation has been rejected.', 3, 4, 'OG'),
+    ('New reservation request received.', 3, 1, 'GO');
+
 

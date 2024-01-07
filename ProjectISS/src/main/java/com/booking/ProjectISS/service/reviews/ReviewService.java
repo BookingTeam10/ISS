@@ -18,9 +18,19 @@ import com.booking.ProjectISS.repository.reviews.IReviewOwnerRepository;
 import com.booking.ProjectISS.repository.reviews.IReviewRepository;
 import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -46,6 +56,9 @@ public class ReviewService implements IReviewService {
 
     @Autowired
     private IReservationRepository reservationRepository;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @Override
     public ReviewDTO findOneDTO(Long id) {
@@ -160,6 +173,9 @@ public class ReviewService implements IReviewService {
         review.setGuest(g.get());
         review.setStatus(ReviewStatus.ACTIVE);
         ReviewOwner savedReview = reviewOwnerRepository.save(review);
+        if(o.get().isRateMeNotification()){
+            System.out.println("UPALJENO");
+        }
         return new ReviewOwnerDTO(savedReview);
     }
 
@@ -301,5 +317,37 @@ public class ReviewService implements IReviewService {
         return null;
     }
 
+    @MessageMapping("/send/message")
+    public Map<String, String> broadcastNotification(String message) {
+        System.out.println(message);
+        Map<String, String> messageConverted = parseMessage(message);
+
+        if (messageConverted != null) {
+            if (messageConverted.containsKey("toId") && messageConverted.get("toId") != null
+                    && !messageConverted.get("toId").equals("")) {
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + messageConverted.get("toId"),
+                        messageConverted);
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + messageConverted.get("fromId"),
+                        messageConverted);
+            } else {
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher", messageConverted);
+            }
+        }
+
+        return messageConverted;
+    }
+
+    private Map<String, String> parseMessage(String message) {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, String> retVal;
+
+        try {
+            retVal = mapper.readValue(message, Map.class); // parsiranje JSON stringa
+        } catch (IOException e) {
+            retVal = null;
+        }
+
+        return retVal;
+    }
 
 }

@@ -2,6 +2,7 @@ package com.booking.ProjectISS.service.notifications;
 
 import com.booking.ProjectISS.dto.notifications.NotificationDTO;
 import com.booking.ProjectISS.model.notifications.Notification;
+import com.booking.ProjectISS.model.notifications.NotificationVisible;
 
 import java.util.Collection;
 
@@ -13,4 +14,8 @@ public interface INotificationService {
     void delete(Long id);
     NotificationDTO create(Notification notification) throws Exception;
     NotificationDTO update(Notification notification) throws Exception;
+
+    Collection<NotificationVisible> findAllByOwner(Long idOwner);
+
+    NotificationVisible createNot(NotificationVisible notification, Long idOwner, Long idGuest);
 }
