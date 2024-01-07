@@ -3,6 +3,7 @@ package com.booking.ProjectISS.controller.notifications;
 
 import com.booking.ProjectISS.dto.notifications.NotificationDTO;
 import com.booking.ProjectISS.model.notifications.Notification;
+import com.booking.ProjectISS.model.notifications.NotificationVisible;
 import com.booking.ProjectISS.service.notifications.INotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,5 +64,21 @@ public class NotificationController {
     public ResponseEntity<NotificationDTO> deleteNotification(@PathVariable("id") Long id) {
         notificationService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    } 
+    }
+
+    @GetMapping(value = "notifications/{idOwner}",produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasAnyRole( 'Owner', 'Guest')")
+    public ResponseEntity<Collection<NotificationVisible>> getNotificationOwner(@PathVariable("idOwner") Long idOwner){
+        System.out.println("UDJE BEK");
+        Collection<NotificationVisible> notificationVisibles=notificationService.findAllByOwner(idOwner);
+        return new ResponseEntity<Collection<NotificationVisible>>(notificationVisibles,HttpStatus.OK);
+    }
+
+    @PostMapping(value = "turnOfNot/{idOwner}/{idGuest}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasAnyRole( 'Owner', 'Guest')")
+    public ResponseEntity<NotificationVisible> createNotificationTurnOf(@PathVariable("idOwner") Long idOwner,@PathVariable("idGuest") Long idGuest,@RequestBody NotificationVisible notification) throws Exception {
+        System.out.println("USLO5300");
+        NotificationVisible notificationVisible = notificationService.createNot(notification,idOwner,idGuest);
+        return new ResponseEntity<NotificationVisible>(notificationVisible,HttpStatus.CREATED);
+    }
 }

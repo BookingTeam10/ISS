@@ -5,7 +5,14 @@ import com.booking.ProjectISS.dto.notifications.NotificationDTO;
 import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.notifications.Notification;
+import com.booking.ProjectISS.model.notifications.NotificationVisible;
+import com.booking.ProjectISS.model.reviews.ReviewOwner;
+import com.booking.ProjectISS.model.users.Guest;
+import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.repository.notifications.INotificationRepository;
+import com.booking.ProjectISS.repository.notifications.INotificationVisibleRepository;
+import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
+import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
 import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +26,15 @@ public class NotificationService implements INotificationService {
 
     @Autowired
     private INotificationRepository notificationRepository;
+
+    @Autowired
+    private INotificationVisibleRepository notificationVisibleRepository;
+
+    @Autowired
+    private IOwnerRepository ownerRepository;
+
+    @Autowired
+    private IGuestRepository guestRepository;
 
     @Override
     public NotificationDTO findOneDTO(Long id) {
@@ -66,5 +82,27 @@ public class NotificationService implements INotificationService {
     public NotificationDTO update(Notification notification) throws Exception {
 
         return null;
+    }
+
+    @Override
+    public Collection<NotificationVisible> findAllByOwner(Long idOwner) {
+        Collection<NotificationVisible> not=new ArrayList<>();
+        Collection<NotificationVisible> notificationVisibles=notificationVisibleRepository.findAllByOwner(idOwner);
+        for(NotificationVisible nv:notificationVisibles){
+            if(nv.getUserRate().equals("GO")){
+                not.add(nv);
+            }
+        }
+        return not;
+    }
+
+    @Override
+    public NotificationVisible createNot(NotificationVisible notification, Long idOwner, Long idGuest) {
+        Optional<Owner> o=ownerRepository.findById(idOwner);
+        Optional<Guest> g=guestRepository.findById(idGuest);
+        notification.setOwner(o.get());
+        notification.setGuest(g.get());
+        NotificationVisible savedNotification = notificationVisibleRepository.save(notification);
+        return  savedNotification;
     }
 }

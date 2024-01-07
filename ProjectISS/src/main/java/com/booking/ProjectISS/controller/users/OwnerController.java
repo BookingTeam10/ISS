@@ -91,6 +91,16 @@ public class OwnerController {
         return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value = "/full/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Owner> getOwnerFull(@PathVariable("id") Long id) {
+        Owner Owner = ownerService.findOne(id);
+        System.out.println(Owner);
+        if (Owner != null) {
+            return new ResponseEntity<Owner>(Owner, HttpStatus.OK);
+        }
+        return new ResponseEntity<Owner>(HttpStatus.NOT_FOUND);
+    }
+
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasRole('Owner')")
     public ResponseEntity<OwnerDTO> deleteOwner(@PathVariable("id") Long id) {

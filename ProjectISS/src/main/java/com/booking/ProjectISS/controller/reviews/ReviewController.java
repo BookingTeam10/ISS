@@ -12,17 +12,24 @@ import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.reviews.ReviewOwner;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
+import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
 import com.booking.ProjectISS.service.reviews.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -30,6 +37,15 @@ import java.util.Collection;
 public class ReviewController {
     @Autowired
     private IReviewService reviewService;
+
+    @Autowired
+    private IOwnerRepository ownerRepository;
+
+    @Autowired
+    private IGuestRepository guestRepository;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
@@ -149,7 +165,14 @@ public class ReviewController {
     //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<ReviewOwnerDTO> createReview(@PathVariable("idOwner") Long idOwner,
                                                        @PathVariable("idGuest") Long idGuest,@RequestBody ReviewOwner review) throws Exception {
+        Optional<Owner> o=ownerRepository.findById(idOwner);
+        Optional<Guest> g=guestRepository.findById(idGuest);
+        review.setOwner(o.get());
+        review.setGuest(g.get());
         ReviewOwnerDTO reviewDTO = reviewService.createOwnerRewiew(review,idOwner,idGuest);
+        if(o.get().isRateMeNotification()){
+            System.out.println("UPALJENO");
+        }
         return new ResponseEntity<>(reviewDTO, HttpStatus.CREATED);
     }
 
@@ -224,6 +247,22 @@ public class ReviewController {
         System.out.println("USLO");
         //ReviewOwnerDTO reviewDTO = reviewService.createOwnerRewiew(review,idOwner,idGuest);
         return new ResponseEntity<Review>(HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value="/sendMessageRest", method = RequestMethod.POST)
+    public ResponseEntity<?> sendMessage(@RequestBody Map<String, String> message) {
+        System.out.println("POGODI");
+        if (message.containsKey("message")) {
+            if (message.containsKey("toId") && message.get("toId") != null && !message.get("toId").equals("")) {
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + message.get("toId"), message);
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + message.get("fromId"), message);
+            } else {
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher", message);
+            }
+            return new ResponseEntity<>(message, new HttpHeaders(), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
 }
