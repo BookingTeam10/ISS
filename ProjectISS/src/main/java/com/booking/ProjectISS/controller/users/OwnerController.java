@@ -91,6 +91,16 @@ public class OwnerController {
         return new ResponseEntity<OwnerDTO>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value = "/full/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Owner> getOwnerFull(@PathVariable("id") Long id) {
+        Owner Owner = ownerService.findOne(id);
+        System.out.println(Owner);
+        if (Owner != null) {
+            return new ResponseEntity<Owner>(Owner, HttpStatus.OK);
+        }
+        return new ResponseEntity<Owner>(HttpStatus.NOT_FOUND);
+    }
+
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasRole('Owner')")
     public ResponseEntity<OwnerDTO> deleteOwner(@PathVariable("id") Long id) {
@@ -223,26 +233,7 @@ public class OwnerController {
     @GetMapping(value = "/{idOwner}/requestsReservations", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('Owner')")
     public ResponseEntity<Collection<ReservationDTO>> getOwnersRequests(@PathVariable Long idOwner) {
-        System.out.println("UDJEEE");
-        Collection<Accommodation> accommodations = accommodationService.findAll();
-        Collection<Accommodation> ownerAccommodations = new ArrayList<>();
-        Collection<Reservation> reservations = reservationService.findAll();
-        Collection<ReservationDTO> ownerReservations = new ArrayList<>();
-
-        for(Accommodation accommodation:accommodations){
-            if (accommodation.getOwner().getId()==idOwner)
-                ownerAccommodations.add(accommodation);
-        }
-
-        for(Reservation reservation:reservations){
-
-            for(Accommodation accommodation:ownerAccommodations){
-                if (reservation.getAccommodation().getId()==accommodation.getId()){
-                    ownerReservations.add(new ReservationDTO(reservation));
-                }
-            }
-        }
-
+        Collection<ReservationDTO> ownerReservations = reservationService.getOwnersRequests(idOwner);
         return new ResponseEntity<Collection<ReservationDTO>>(ownerReservations, HttpStatus.OK);
     }
 
@@ -251,15 +242,11 @@ public class OwnerController {
     public ResponseEntity<Collection<ReservationDTO>> searchedRequests(@RequestParam(required = false) String type,
                                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
                                                                        @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")  Date end,
-                                                                       @RequestParam(required = false) String nameAccommodation) {
+                                                                       @RequestParam(required = false) String nameAccommodation,
+                                                                       @RequestParam(required = false) Long idOwner
+    ) {
         Collection<ReservationDTO> ownerReservations = new ArrayList<>();
-        //samo proveriti da li pogodi
-        System.out.println("UDJEEE U ZAHTEVE");
-        System.out.println(type);
-        System.out.println(start);
-        System.out.println(end);
-        System.out.println(nameAccommodation);
-        //napraviti ceo get endpoint
-        return new ResponseEntity<Collection<ReservationDTO>>(ownerReservations, HttpStatus.OK);
+        Collection<ReservationDTO> reservationDTOS = reservationService.searchedRequests(type,start,end,nameAccommodation,idOwner);
+        return new ResponseEntity<Collection<ReservationDTO>>(reservationDTOS, HttpStatus.OK);
     }
 }

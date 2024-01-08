@@ -15,7 +15,7 @@ VALUES
     ('test@gmail.com', 'false', 'Aleksa', 'Janjic', 'false', '854574324', 'Bulevar', '$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null);
 
 INSERT INTO owners (id,total_price,owner_rating,created_notification,rate_notification,cancelled_notification,accommodation_notification)
-VALUES (1,0,0,'false','false','false','false'),
+VALUES (1,0,0,'true','true','true','true'),
        (4,0,0,'false','false','false','false');
 
 INSERT INTO guests (id, number_canceled_notification,turn_notification)
@@ -26,10 +26,10 @@ VALUES (2);
 
 
 INSERT INTO accommodations(description,accepted,automatic_activation,cancel_deadline, min_people,max_people,rating,location_id,type_acc,owner_id, acc_name,weekend_price,holiday_price,summer_price,night_person, acc_status, auto_conf)
+
 VALUES ('Apartman','true','true', 2,3,6,10,1,'Apartment',1,'Naziv1',0,0,0,'true','CREATED', 'true'),
        ('Apartman','true','true', 10,2,4,10,1,'Apartment',4,'Naziv2',0,0,0,'true','EDITED', 'false'),
        ('Apartman','true','true', 15,2,4,10,2,'Apartment',1,'Naziv3',0,0,0,'true','CREATED', 'false');
-
 
 INSERT INTO accommodation_photos (accommodation_accommodation_id, photo)
 VALUES (1,'assets/images/apartment1.png'),
@@ -47,13 +47,13 @@ VALUES (1, '2023-01-01', '2023-01-05'),
 
 INSERT INTO accommodation_amenity (accommodation_id,amenity_name)
 VALUES (1,'WIFI'),
-        (2,'WIFI'),
+       (2,'WIFI'),
        (1, 'Parking');
 
 INSERT INTO reservations (total_price, reservation_status, start_date, end_date, number_of_nights, accommodation_id, guest_id)
-VALUES
-    (200, 'CANCELLED', '2022-12-12', '2022-12-15', 3, 1, 3),
+VALUES (200, 'CANCELLED', '2022-12-12', '2022-12-15', 3, 1, 3),
     (200, 'CANCELLED', '2023-10-10', '2023-10-15', 5, 1, 3),
+
     (100, 'REJECTED', '2023-01-01', '2023-01-03', 3, 1, 3),
     (50, 'ACCEPTED', '2024-01-10', '2024-01-12', 1, 1, 3),
     (150, 'ACCEPTED', '2024-01-25', '2024-01-28', 2, 2, 3);
@@ -66,7 +66,6 @@ VALUES
 
 INSERT INTO review (rate, review_comment, status, reservation_id)
 VALUES
-     (4, 'Great experience!', 'REPORTED', 1),
      (3, 'Great experience!', 'ACTIVE', 2);
 
 INSERT INTO review_owner (rate, review_comment,comment_date, status, owner_id, guest_id,is_reported)
@@ -87,4 +86,11 @@ VALUES
 
 --INSERT INTO guests_favourite_accommodations (guest_id,favourite_accommodations_accommodation_id)
 --VALUES (3,3);
+
+INSERT INTO notifications_visible (text, guest_id, owner_id, user_rate)
+VALUES
+    ('Your reservation has been accepted.', 3, 1, 'OG'),
+    ('Your reservation has been rejected.', 3, 4, 'OG'),
+    ('New reservation request received.', 3, 1, 'GO');
+
 

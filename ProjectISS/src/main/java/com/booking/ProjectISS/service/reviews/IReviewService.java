@@ -43,4 +43,12 @@ public interface IReviewService {
     Collection<ReviewOwner> findNoReported(Long id);
 
     Collection<Review> findNoReportedAcc(Long id);
+
+    ReviewOwner updateReviewOwner(ReviewOwner reviewOwner);
+
+    Review updateReview(Review review);
+
+    Review findReviewByOwnerGuestAccommodation(Long idAccommodation, Long idGuest);
+
+    Review deleteByAccommodationGuest(Long idAccommodation, Long idGuest);
 }

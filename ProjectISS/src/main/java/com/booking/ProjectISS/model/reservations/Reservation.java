@@ -130,6 +130,9 @@ public class Reservation implements Serializable {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", numberOfNights=" + numberOfNights +
+                ", accommodation=" + accommodation +
+                ", guest=" + guest +
+                ", reviews=" + reviews +
                 '}';
     }
 

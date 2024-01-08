@@ -12,17 +12,24 @@ import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.reviews.ReviewOwner;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
+import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
 import com.booking.ProjectISS.service.reviews.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -30,6 +37,15 @@ import java.util.Collection;
 public class ReviewController {
     @Autowired
     private IReviewService reviewService;
+
+    @Autowired
+    private IOwnerRepository ownerRepository;
+
+    @Autowired
+    private IGuestRepository guestRepository;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
@@ -129,19 +145,34 @@ public class ReviewController {
     }
 
 
-    @DeleteMapping(value = "/rate/{idOwner}/{idGuest}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/rateDelete/{idOwner}/{idGuest}")
     //@PreAuthorize("hasRole('Guest')")
-    public ResponseEntity<?> deleteReviewOwner(@PathVariable("idOwner") Long idOwner, @PathVariable("idGuest") Long idGuest) {
+    public ResponseEntity<ReviewOwner> deleteReviewOwner(@PathVariable("idOwner") Long idOwner, @PathVariable("idGuest") Long idGuest) {
         System.out.println("USLO JE DELETE");
         ReviewOwner reviewOwner=reviewService.deleteByOwnerGuest(idOwner,idGuest);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<ReviewOwner>(reviewOwner,HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping(value = "/rateAccDelete/{idAccommodation}/{idGuest}")
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<Review> deleteReviewAccommodation(@PathVariable("idAccommodation") Long idAccommodation, @PathVariable("idGuest") Long idGuest) {
+        System.out.println("USLO JE DELETE123");
+        Review review=reviewService.deleteByAccommodationGuest(idAccommodation,idGuest);
+        return new ResponseEntity<Review>(review,HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(value = "/rate/{idOwner}/{idGuest}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<ReviewOwnerDTO> createReview(@PathVariable("idOwner") Long idOwner,
                                                        @PathVariable("idGuest") Long idGuest,@RequestBody ReviewOwner review) throws Exception {
+        Optional<Owner> o=ownerRepository.findById(idOwner);
+        Optional<Guest> g=guestRepository.findById(idGuest);
+        review.setOwner(o.get());
+        review.setGuest(g.get());
         ReviewOwnerDTO reviewDTO = reviewService.createOwnerRewiew(review,idOwner,idGuest);
+        if(o.get().isRateMeNotification()){
+            System.out.println("UPALJENO");
+        }
         return new ResponseEntity<>(reviewDTO, HttpStatus.CREATED);
     }
 
@@ -159,6 +190,79 @@ public class ReviewController {
         Collection<Review> reviews= reviewService.findNoReportedAcc(id);
         System.out.println("USLO12345");
         return new ResponseEntity<Collection<Review>>(reviews,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<ReviewOwner> getReviewOwnerComm(@PathVariable("id") Long id) {
+        System.out.println("USLO1234");
+        ReviewOwner reviewOwner= reviewService.find(id);
+        System.out.println("USLO12345");
+        return new ResponseEntity<ReviewOwner>(reviewOwner,HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/editReviewOwner/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<ReviewOwner> putReviewOwnerComm(@PathVariable("id") Long id,@RequestBody ReviewOwner reviewOwner) {
+        //ReviewOwner reviewOwner= reviewService.find(id);
+        System.out.println(reviewOwner);
+        ReviewOwner updatedReviewOwner=reviewService.updateReviewOwner(reviewOwner);
+        System.out.println("USLO12345");
+        System.out.println(updatedReviewOwner);
+        return new ResponseEntity<ReviewOwner>(updatedReviewOwner,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAccommodation/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<Review> getReviewAccommodationComm(@PathVariable("id") Long id) {
+        System.out.println("USLO GET ACC");
+        Review review= reviewService.findOne(id);
+        System.out.println("USLO12345");
+        System.out.println(review);
+        return new ResponseEntity<Review>(review,HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/editReviewAccommodation/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<Review> putReviewAccommodationComm(@PathVariable("id") Long id,@RequestBody Review review) {
+        System.out.println(review);
+        Review updatedReview=reviewService.updateReview(review);
+        System.out.println("USLO12345");
+        System.out.println(updatedReview);
+        return new ResponseEntity<Review>(updatedReview,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/rateAccommodation/{idAccommodation}/{idGuest}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<Review> rateAccommodation(@PathVariable("idAccommodation") Long idAccommodation, @PathVariable("idGuest") Long idGuest) {
+        Review  review = reviewService.findReviewByOwnerGuestAccommodation(idAccommodation,idGuest);
+        if (review == null) {
+            return null;
+        }
+        return new ResponseEntity<Review>(review,HttpStatus.OK);
+    }
+    @PostMapping(value = "/addAccRate/{idReservation}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<Review> createReviewAccommodation(@PathVariable("idReservation") Long idRes,@RequestBody Review review) throws Exception {
+        System.out.println("USLO");
+        //ReviewOwnerDTO reviewDTO = reviewService.createOwnerRewiew(review,idOwner,idGuest);
+        return new ResponseEntity<Review>(HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value="/sendMessageRest", method = RequestMethod.POST)
+    public ResponseEntity<?> sendMessage(@RequestBody Map<String, String> message) {
+        System.out.println("POGODI");
+        if (message.containsKey("message")) {
+            if (message.containsKey("toId") && message.get("toId") != null && !message.get("toId").equals("")) {
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + message.get("toId"), message);
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + message.get("fromId"), message);
+            } else {
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher", message);
+            }
+            return new ResponseEntity<>(message, new HttpHeaders(), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
 }

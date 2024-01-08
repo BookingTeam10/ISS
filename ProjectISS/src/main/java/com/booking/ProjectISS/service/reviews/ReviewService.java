@@ -18,9 +18,22 @@ import com.booking.ProjectISS.repository.reviews.IReviewOwnerRepository;
 import com.booking.ProjectISS.repository.reviews.IReviewRepository;
 import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -44,6 +57,9 @@ public class ReviewService implements IReviewService {
     @Autowired
     private IReservationRepository reservationRepository;
 
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     @Override
     public ReviewDTO findOneDTO(Long id) {
         Optional<Review> found = reviewRepository.findById(id);
@@ -53,7 +69,10 @@ public class ReviewService implements IReviewService {
 
     @Override
     public Review findOne(Long id) {
+        System.out.println("FOUND1");
         Optional<Review> found = reviewRepository.findById(id);
+        System.out.println("FOUND2");
+        System.out.println(found.get());
         return found.orElse(null);
     }
 
@@ -139,9 +158,10 @@ public class ReviewService implements IReviewService {
     @Override
     public ReviewOwner deleteByOwnerGuest(Long idOwner, Long idGuest) {
         //reviewRepository.deleteByOwnerGuest(idOwner,idGuest);
-        ReviewOwner reviewOwner=reviewRepository.findByOwnerGuest(idOwner,idGuest);
-        System.out.println(reviewOwner.getId());
-        reviewRepository.deleteById(reviewOwner.getId());
+        Collection<ReviewOwner> rw=reviewOwnerRepository.findAll();
+        System.out.println(rw.size());
+        ReviewOwner reviewOwner=reviewOwnerRepository.findByOwnerGuest(idOwner,idGuest);
+        reviewOwnerRepository.deleteById(reviewOwner.getId());
         return reviewOwner;
     }
 
@@ -153,6 +173,9 @@ public class ReviewService implements IReviewService {
         review.setGuest(g.get());
         review.setStatus(ReviewStatus.ACTIVE);
         ReviewOwner savedReview = reviewOwnerRepository.save(review);
+        if(o.get().isRateMeNotification()){
+            System.out.println("UPALJENO");
+        }
         return new ReviewOwnerDTO(savedReview);
     }
 
@@ -176,9 +199,21 @@ public class ReviewService implements IReviewService {
     @Override
     public Collection<Accommodation> findReviewAccommodation(Long id) {
         Collection<Accommodation> accommodations=new HashSet<Accommodation>();
+        System.out.println("PRE");
         Collection<Reservation> reservations=reviewRepository.findByGuest(id);
         for(Reservation r:reservations){
-            accommodations.add(r.getAccommodation());   //dodati 7dana
+//            System.out.println(r.getEndDate());
+//            Date endDate = r.getEndDate();
+//            System.out.println("PRE1");
+//            LocalDate localEndDate = endDate.toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+//            System.out.println("PRE2");
+//            LocalDate endRateDate = localEndDate.plus(7, ChronoUnit.DAYS);
+//            LocalDate now=LocalDate.now();
+//            System.out.println("PRE3");
+//            if (now.isAfter(localEndDate) && now.isBefore(endRateDate)) {
+//                accommodations.add(r.getAccommodation());
+//            }
+            accommodations.add(r.getAccommodation());
         }
         return accommodations;
     }
@@ -238,4 +273,81 @@ public class ReviewService implements IReviewService {
         System.out.println(reviews.size());
         return reviews;
     }
+
+    @Override
+    public ReviewOwner updateReviewOwner(ReviewOwner reviewOwner) {
+        reviewOwner.setStatus(ReviewStatus.REPORTED);
+        reviewOwner.setIs_reported(true);
+        return reviewOwnerRepository.save(reviewOwner);
+    }
+
+    @Override
+    public Review updateReview(Review review) {
+        review.setStatus(ReviewStatus.REPORTED);
+        return reviewRepository.save(review);
+    }
+
+    @Override
+    public Review findReviewByOwnerGuestAccommodation(Long idAccommodation, Long idGuest) {
+        System.out.println("USLO OVDE");
+        Collection<Reservation> reservation=reservationRepository.findByAccommodationGuest(idAccommodation,idGuest);
+        System.out.println(reservation);
+        System.out.println(reservation.size());
+        if(reservation.isEmpty()){
+            return null;
+        }
+        System.out.println("PROSLO");
+        Reservation r=reservation.iterator().next();
+        System.out.println(r);
+        Review review=reviewRepository.findByOwnerGuestAccommodation(r.getId(),idGuest);
+        System.out.println(review);
+        return review;
+    }
+
+    @Override
+    public Review deleteByAccommodationGuest(Long idAccommodation, Long idGuest) {
+        Collection<Review> rw=reviewRepository.findAll();
+        System.out.println(rw.size());
+        Collection<Reservation> reservations=reservationRepository.findByAccommodationGuest(idAccommodation,idGuest);
+        for(Reservation r1:reservations){
+            Review r=reviewRepository.findByOwnerGuestAccommodation(r1.getId(),idGuest);
+            reviewRepository.deleteById(r.getId());
+            return null;
+        }
+        return null;
+    }
+
+    @MessageMapping("/send/message")
+    public Map<String, String> broadcastNotification(String message) {
+        System.out.println(message);
+        Map<String, String> messageConverted = parseMessage(message);
+
+        if (messageConverted != null) {
+            if (messageConverted.containsKey("toId") && messageConverted.get("toId") != null
+                    && !messageConverted.get("toId").equals("")) {
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + messageConverted.get("toId"),
+                        messageConverted);
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + messageConverted.get("fromId"),
+                        messageConverted);
+            } else {
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher", messageConverted);
+            }
+        }
+
+        return messageConverted;
+    }
+
+    private Map<String, String> parseMessage(String message) {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, String> retVal;
+
+        try {
+            retVal = mapper.readValue(message, Map.class); // parsiranje JSON stringa
+        } catch (IOException e) {
+            retVal = null;
+        }
+
+        return retVal;
+    }
+
 }
