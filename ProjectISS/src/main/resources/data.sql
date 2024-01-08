@@ -26,10 +26,10 @@ VALUES (2);
 
 
 INSERT INTO accommodations(description,accepted,automatic_activation,cancel_deadline, min_people,max_people,rating,location_id,type_acc,owner_id, acc_name,weekend_price,holiday_price,summer_price,night_person, acc_status, auto_conf)
-VALUES ('Apartman','true','true', 24,3,6,5,1,'Apartment',1,'Naziv1',0,0,0,'true','CREATED', 'true'),
-       ('Apartman','true','true', 24,2,4,5,1,'Apartment',4,'Naziv2',0,0,0,'true','EDITED', 'false'),
-       ('Apartman','true','true', 24,2,4,5,2,'Apartment',1,'Naziv3',0,0,0,'true','CREATED', 'false');
 
+VALUES ('Apartman','true','true', 2,3,6,10,1,'Apartment',1,'Naziv1',0,0,0,'true','CREATED', 'true'),
+       ('Apartman','true','true', 10,2,4,10,1,'Apartment',4,'Naziv2',0,0,0,'true','EDITED', 'false'),
+       ('Apartman','true','true', 15,2,4,10,2,'Apartment',1,'Naziv3',0,0,0,'true','CREATED', 'false');
 
 INSERT INTO accommodation_photos (accommodation_accommodation_id, photo)
 VALUES (1,'assets/images/apartment1.png'),
@@ -51,12 +51,12 @@ VALUES (1,'WIFI'),
        (1, 'Parking');
 
 INSERT INTO reservations (total_price, reservation_status, start_date, end_date, number_of_nights, accommodation_id, guest_id)
-VALUES
-    (200, 'ACCEPTED', '2022-12-12', '2022-12-15', 3, 1, 3),
-    (200, 'ACCEPTED', '2023-10-10', '2023-10-15', 5, 2, 3),
+VALUES (200, 'CANCELLED', '2022-12-12', '2022-12-15', 3, 1, 3),
+    (200, 'CANCELLED', '2023-10-10', '2023-10-15', 5, 1, 3),
+
     (100, 'REJECTED', '2023-01-01', '2023-01-03', 3, 1, 3),
-    (50, 'CANCELLED', '2023-01-01', '2023-01-02', 1, 1, 3),
-    (150, 'CANCELLED', '2023-02-01', '2023-02-02', 2, 2, 3);
+    (50, 'ACCEPTED', '2024-01-10', '2024-01-12', 1, 1, 3),
+    (150, 'ACCEPTED', '2024-01-25', '2024-01-28', 2, 2, 3);
 
 INSERT INTO notifications (text, notification_status, guest_id, owner_id, sent_date)
 VALUES
