@@ -93,8 +93,26 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
-    public UserDTO update(User User) throws Exception {
-        return null;
+    public UserDTO update(User userForUpdate) throws Exception {
+        Optional<User> optionalUser = this.UserRepository.findById(userForUpdate.getId());
+        optionalUser.ifPresent(oldUser -> {
+            oldUser.setEmail(userForUpdate.getEmail());
+            oldUser.setPassword(userForUpdate.getPassword());
+            oldUser.setName(userForUpdate.getName());
+            oldUser.setSurname(userForUpdate.getSurname());
+            oldUser.setPhone(userForUpdate.getPhone());
+            oldUser.setAddress(userForUpdate.getAddress());
+            oldUser.setBlocked(userForUpdate.isBlocked());
+            oldUser.setReported(userForUpdate.isReported());
+            oldUser.setActive(userForUpdate.isActive());
+            oldUser.setActivationCode(userForUpdate.getActivationCode());
+            oldUser.setActivationExpiry(userForUpdate.getActivationExpiry());
+            oldUser.setId(oldUser.getId());
+
+            this.UserRepository.save(oldUser);
+        });
+
+        return new UserDTO(userForUpdate);
     }
 
     @Override
@@ -217,6 +235,28 @@ public class UserService implements IUserService, UserDetailsService {
             }
         }
         return null;
+    }
+
+    @Override
+    public void blockUser(Long id) throws Exception {
+       User blockedUser =  this.UserRepository.findOne(id);
+       blockedUser.setBlocked(true);
+       this.update(blockedUser);
+    }
+
+    @Override
+    public Collection<ReportUser> findAllReports() {
+        return this.ReportUserRepository.findAll();
+    }
+
+    @Override
+    public void deleteReport(Long id) {
+        this.ReportUserRepository.deleteById(id);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return this.UserRepository.findByUsername(username);
     }
 
     @Override

@@ -44,4 +44,12 @@ public interface IUserService {
     ReportUser findGuestReportOwner(Long idOwner, Long idGuest);
 
     ReportUser findGuestReportGuest(Long idOwner, Long idGuest);
+
+    void blockUser(Long id) throws Exception;
+
+    Collection<ReportUser> findAllReports();
+
+    void deleteReport(Long id);
+
+    User findByUsername(String username);
 }

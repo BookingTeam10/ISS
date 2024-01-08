@@ -12,6 +12,7 @@ import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.reviews.ReviewOwner;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
+import com.booking.ProjectISS.model.users.ReportUser;
 import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
 import com.booking.ProjectISS.service.reviews.IReviewService;
@@ -264,5 +265,4 @@ public class ReviewController {
 
         return new ResponseEntity<>(new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
-
 }
