@@ -181,4 +181,16 @@ public class UserController {
         }
 
     }
+
+
+    @PutMapping(value="/block/{id}")
+    public void blockUser(@PathVariable("id") Long id) throws Exception {
+        this.userService.blockUser(id);
+    }
+
+    @GetMapping(value="/is-blocked/{username}")
+    public ResponseEntity<Boolean> blockUser(@PathVariable("username") String username) throws Exception {
+        User user = this.userService.findByUsername(username);
+        return new ResponseEntity<Boolean>(user.isBlocked(), HttpStatus.OK);
+    }
 }

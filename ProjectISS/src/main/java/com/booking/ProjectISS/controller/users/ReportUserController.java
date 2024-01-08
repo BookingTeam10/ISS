@@ -1,6 +1,7 @@
 package com.booking.ProjectISS.controller.users;
 
 import com.booking.ProjectISS.dto.reviews.ReviewOwnerDTO;
+import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.model.reviews.ReviewOwner;
 import com.booking.ProjectISS.model.users.ReportUser;
 import com.booking.ProjectISS.service.reviews.IReviewService;
@@ -47,5 +48,18 @@ public class ReportUserController {
         ReportUser reportUser= userService.findGuestReportGuest(idOwner,idGuest);
         System.out.println(reportUser);
         return new ResponseEntity<ReportUser>(reportUser,HttpStatus.OK);
+    }
+
+    @GetMapping( produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<Collection<ReportUser>> getUserReports() {
+        Collection<ReportUser> reportUser = userService.findAllReports();
+        return new ResponseEntity<Collection<ReportUser>>(reportUser,HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<UserDTO> deleteUser(@PathVariable("id") Long id) {
+        userService.deleteReport(id);
+        return new ResponseEntity<UserDTO>(HttpStatus.NO_CONTENT);
     }
 }

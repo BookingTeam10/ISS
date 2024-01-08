@@ -317,6 +317,12 @@ public class ReviewService implements IReviewService {
         return null;
     }
 
+    @Override
+    public Collection<ReviewOwner> findAllReviewOwner() {
+        return  this.reviewOwnerRepository.findAll();
+
+    }
+
     @MessageMapping("/send/message")
     public Map<String, String> broadcastNotification(String message) {
         System.out.println(message);
