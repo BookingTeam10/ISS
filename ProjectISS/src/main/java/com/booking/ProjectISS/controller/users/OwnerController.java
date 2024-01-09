@@ -3,6 +3,8 @@ import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.dto.reviews.ReviewDTO;
 import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.reservations.Reservation;
+import com.booking.ProjectISS.model.reviews.Report;
+import com.booking.ProjectISS.model.reviews.ReportAccommodation;
 import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
@@ -36,7 +38,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/owners")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class OwnerController {
 
     @Autowired
@@ -248,5 +250,50 @@ public class OwnerController {
         Collection<ReservationDTO> ownerReservations = new ArrayList<>();
         Collection<ReservationDTO> reservationDTOS = reservationService.searchedRequests(type,start,end,nameAccommodation,idOwner);
         return new ResponseEntity<Collection<ReservationDTO>>(reservationDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/report", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<Collection<Report>> getOwnerReports(@PathVariable("id") Long id,@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
+                                                                               @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")  Date end){
+
+        Collection<Report> reports = new ArrayList<>();
+        Collection<Accommodation> accommodations = accommodationService.findAllByOwner(id);
+
+        for(Accommodation accommodation:accommodations){
+            Collection<ReservationDTO> reservationDTOS = reservationService.findByAccommodation(accommodation.getId());
+            reports.add(new Report(accommodation,reservationDTOS.size(),reservationService.totalPrice(reservationDTOS)));
+        }
+
+        return new ResponseEntity<Collection<Report>>(reports, HttpStatus.OK);
+    }
+    @GetMapping(value = "/{idAccommodation}/reportYear", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<ReportAccommodation> getOwnerReportYear(@PathVariable("idAccommodation") Long id){
+        ReportAccommodation report = new ReportAccommodation(new Accommodation(id));
+        Collection<ReservationDTO> reservationDTOS = reservationService.findByAccommodation(id);
+
+        for(ReservationDTO reservation: reservationDTOS){
+            HashMap map = report.getMap();
+            int month = reservation.getStartDate().getMonth();
+            if (map != null) {
+                if (map.containsKey(month)) {
+                    ArrayList<Integer> value = (ArrayList<Integer>) map.get(month);
+
+                    if (value != null) {
+                        int profit = value.get(0);
+                        int number = value.get(1);
+                        profit += reservation.getTotalPrice();
+                        number += 1;
+                        ArrayList<Integer> newValue = new ArrayList<>();
+                        newValue.add(profit);
+                        newValue.add(number);
+
+                        map.put(month, newValue);
+                    }
+                }
+            }
+        }
+        return new ResponseEntity<ReportAccommodation>(report, HttpStatus.OK);
     }
 }

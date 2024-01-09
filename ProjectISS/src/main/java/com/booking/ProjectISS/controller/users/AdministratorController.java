@@ -31,7 +31,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class AdministratorController {
 
     @Autowired

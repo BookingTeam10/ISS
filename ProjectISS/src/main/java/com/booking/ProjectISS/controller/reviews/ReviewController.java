@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 @RequestMapping("/api/reviews")
 public class ReviewController {
     @Autowired

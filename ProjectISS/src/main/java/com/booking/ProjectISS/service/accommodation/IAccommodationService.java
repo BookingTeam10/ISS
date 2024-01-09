@@ -18,6 +18,7 @@ public interface IAccommodationService {
     AccommodationDTO create(Accommodation accommodation) throws Exception;
     AccommodationDTO update(Accommodation accommodation) throws Exception;
     Collection<AccommodationDTO> findAllByOwnerDTO(Long id);
+    Collection<Accommodation> findAllByOwner(Long id);
     AccommodationDTO createByOwner(Long id, Accommodation accommodation);
     Collection<AccommodationDTO> getAccommodationsSearched(Date start, Date end, int numPeople,String location);
 

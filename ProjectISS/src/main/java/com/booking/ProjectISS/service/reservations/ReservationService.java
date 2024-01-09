@@ -303,4 +303,14 @@ public class ReservationService implements IReservationService{
         return reservations;
     }
 
+    @Override
+    public int totalPrice(Collection<ReservationDTO> reservationDTOS) {
+        int total = 0;
+        for(ReservationDTO reservation:reservationDTOS)
+            total+=reservation.getTotalPrice();
+
+        return total;
+    }
+
+
 }
