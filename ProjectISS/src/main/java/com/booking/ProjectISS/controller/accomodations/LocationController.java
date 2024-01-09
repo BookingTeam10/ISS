@@ -17,7 +17,7 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/api/locations")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class LocationController {
     @Autowired
     private ILocationService locationService;

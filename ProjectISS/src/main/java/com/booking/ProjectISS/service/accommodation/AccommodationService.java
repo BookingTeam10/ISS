@@ -132,6 +132,11 @@ public class AccommodationService implements IAccommodationService {
         return accommodationDTOS;
     }
     @Override
+    public Collection<Accommodation> findAllByOwner(Long id) {
+        Collection<Accommodation> accommodations = accommodationRepository.findAllByOwner(id);
+        return accommodations;
+    }
+    @Override
     public AccommodationDTO createByOwner(Long id, Accommodation accommodation) {
 //        Accommodation savedAccommodation= accommodationRepository.createByOwner(id, accommodation);
 //        return new AccommodationDTO(savedAccommodation);

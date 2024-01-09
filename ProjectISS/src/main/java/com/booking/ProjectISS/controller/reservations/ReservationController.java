@@ -12,7 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 @RestController
 @RequestMapping("/api/reservations")
 public class ReservationController {
@@ -36,7 +36,6 @@ public class ReservationController {
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
 
     @GetMapping(value = "/owner/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('Owner')")

@@ -14,40 +14,26 @@ import java.util.List;
 
 public interface IReservationService {
     ReservationDTO findOneDTO(Long id);
-
     Reservation findOne(Long id);
-
     Collection<ReservationDTO> findAllDTO();
-
     Collection<Reservation> findAll();
-
     boolean delete(Long id);
-
     ReservationDTO create(Reservation reservation) throws Exception;
-
     ReservationDTO update(Reservation reservation) throws Exception;
-
     boolean hasOverlappingRequests(Reservation reservation);
-
     List<Reservation> getGuestReservations(long guestId);
-
     List<Reservation> searchReservations(List<Reservation> reservation, String location, String date);
-
     List<Reservation> filterReservations(List<Reservation> reservations, ReservationStatus status);
-
     Collection<ReservationDTO> getReservationsDTO(List<Reservation> reservations);
-
     ReservationDTO convertToDTO(Reservation reservation);
-
     List<Reservation> getOwnerReservations(Long ownerId);
-
     void cancelledAllReservation(Guest u);
     Collection<ReservationDTO> findAllNotAcceptedDTO();
     Collection<ReservationDTO> findByAccommodation(Long id);
-
     void cancelAllWaiting(Reservation reservation) throws Exception;
     Collection<OwnerDTO> findOwnerByReservationGuest(Long id);
     Collection<ReservationDTO> searchedRequests(String type, Date start, Date end, String nameAccommodation,Long idOwner);
     Collection<ReservationDTO> getOwnersRequests(Long idOwner);
     Collection<ReservationDTO> findByGuest(Long id);
+    int totalPrice(Collection<ReservationDTO> reservationDTOS);
 }

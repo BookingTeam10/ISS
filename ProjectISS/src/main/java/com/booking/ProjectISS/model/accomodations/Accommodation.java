@@ -358,5 +358,9 @@ public class Accommodation implements Serializable {
         this.summerPrice=accommodation.summerPrice;
         this.isNight=accommodation.isNight;
     }
+    public Accommodation(Long id) {
+        this.id = id;
+
+    }
 
 }

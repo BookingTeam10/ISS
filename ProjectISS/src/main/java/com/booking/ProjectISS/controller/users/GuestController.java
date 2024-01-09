@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/guests")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class GuestController {
 
     @Autowired

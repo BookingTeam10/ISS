@@ -53,8 +53,7 @@ VALUES (1,'WIFI'),
 INSERT INTO reservations (total_price, reservation_status, start_date, end_date, number_of_nights, accommodation_id, guest_id)
 VALUES (200, 'CANCELLED', '2022-12-12', '2022-12-15', 3, 1, 3),
     (200, 'CANCELLED', '2023-10-10', '2023-10-15', 5, 1, 3),
-
-    (100, 'REJECTED', '2023-01-01', '2023-01-03', 3, 1, 3),
+    (100, 'REJECTED', '2023-01-01', '2023-01-03', 3, 3, 3),
     (50, 'ACCEPTED', '2024-01-10', '2024-01-12', 1, 1, 3),
     (150, 'ACCEPTED', '2024-01-25', '2024-01-28', 2, 2, 3);
 
