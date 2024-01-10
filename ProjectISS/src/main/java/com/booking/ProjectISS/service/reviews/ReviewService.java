@@ -108,9 +108,26 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public ReviewDTO update(Review review) throws Exception {
-        // Implement your update logic if needed
-        return null;
+    public ReviewDTO update(Review reviewForUpdate) throws Exception {
+
+        if(reviewForUpdate.getStatus() == ReviewStatus.DELETED){
+            this.reviewRepository.deleteById(reviewForUpdate.getId());
+
+            return new ReviewDTO(reviewForUpdate);
+        }
+
+        Optional<Review> optionalReview = this.reviewRepository.findById(reviewForUpdate.getId());
+        optionalReview.ifPresent(oldReview -> {
+            oldReview.setId(reviewForUpdate.getId());
+            oldReview.setRate(reviewForUpdate.getRate());
+            oldReview.setComment(reviewForUpdate.getComment());
+            oldReview.setReservation(reviewForUpdate.getReservation());
+            oldReview.setStatus(reviewForUpdate.getStatus());
+
+            this.reviewRepository.save(oldReview);
+        });
+
+        return new ReviewDTO(reviewForUpdate);
     }
 
     @Override

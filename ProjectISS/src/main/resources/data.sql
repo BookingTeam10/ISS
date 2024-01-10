@@ -52,7 +52,7 @@ VALUES (1,'WIFI'),
 
 INSERT INTO reservations (total_price, reservation_status, start_date, end_date, number_of_nights, accommodation_id, guest_id)
 VALUES (200, 'CANCELLED', '2022-12-12', '2022-12-15', 3, 1, 3),
-    (200, 'CANCELLED', '2023-10-10', '2023-10-15', 5, 1, 3),
+    (200, 'WAITING', '2023-10-10', '2023-10-15', 5, 1, 3),
 
     (100, 'REJECTED', '2023-01-01', '2023-01-03', 3, 1, 3),
     (50, 'ACCEPTED', '2024-01-10', '2024-01-12', 1, 1, 3),
@@ -66,7 +66,7 @@ VALUES
 
 INSERT INTO review (rate, review_comment, status, reservation_id)
 VALUES
-     (3, 'Great experience!', 'ACTIVE', 2);
+     (3, 'Great experience!', 'REPORTED', 2);
 
 INSERT INTO review_owner (rate, review_comment,comment_date, status, owner_id, guest_id,is_reported)
 VALUES

@@ -49,13 +49,13 @@ public class ReviewController {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
+//    @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
     public ResponseEntity<Collection<ReviewDTO>> getReviewDTO(){
         return new ResponseEntity<Collection<ReviewDTO>>(reviewService.findAllDTO(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
+//    @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
     public ResponseEntity<ReviewDTO> getReview(@PathVariable("id") Long id) {
         ReviewDTO reviewDTO = reviewService.findOneDTO(id);
         if (reviewDTO != null) {
@@ -80,8 +80,7 @@ public class ReviewController {
         if (updateReview == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        updateReview.copyValues(review);
-        ReviewDTO updatedReview = reviewService.update(updateReview);
+        ReviewDTO updatedReview = reviewService.update(review);
         return new ResponseEntity<>(updatedReview, HttpStatus.OK);
     }
 

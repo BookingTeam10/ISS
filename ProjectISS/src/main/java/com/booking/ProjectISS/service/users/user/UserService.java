@@ -242,6 +242,9 @@ public class UserService implements IUserService, UserDetailsService {
        User blockedUser =  this.UserRepository.findOne(id);
        blockedUser.setBlocked(true);
        this.update(blockedUser);
+
+       if(blockedUser instanceof Guest)
+           this.GuestService.cancelAllReservations(id);
     }
 
     @Override
