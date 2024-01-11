@@ -49,13 +49,13 @@ public class ReviewController {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
+   // @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
     public ResponseEntity<Collection<ReviewDTO>> getReviewDTO(){
         return new ResponseEntity<Collection<ReviewDTO>>(reviewService.findAllDTO(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
+    //@PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
     public ResponseEntity<ReviewDTO> getReview(@PathVariable("id") Long id) {
         ReviewDTO reviewDTO = reviewService.findOneDTO(id);
         if (reviewDTO != null) {
@@ -66,14 +66,14 @@ public class ReviewController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
+    //@PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
     public ResponseEntity<ReviewDTO> createReview(@RequestBody Review review) throws Exception {
         ReviewDTO reviewDTO = reviewService.create(review);
         return new ResponseEntity<>(reviewDTO, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
+    //@PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
     public ResponseEntity<ReviewDTO> updateReview(@RequestBody Review review, @PathVariable Long id)
             throws Exception {
         Review updateReview = reviewService.findOne(id);
@@ -86,14 +86,14 @@ public class ReviewController {
     }
 
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasRole('Administrator')")
+    //@PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<ReviewDTO> deleteReview(@PathVariable("id") Long id) {
         reviewService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/{idReservation}/reviews", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
+    //@PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
     public ResponseEntity<ReviewDTO> getByReservations(@PathVariable("idReservation") Long id) {
         ReviewDTO reviewDTO = reviewService.findByReservation(id);
         if (reviewDTO != null) {
@@ -265,4 +265,34 @@ public class ReviewController {
 
         return new ResponseEntity<>(new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
+
+    //dodao matija
+    @GetMapping(value = "/rateFull/{idOwner}/{idGuest}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<ReviewOwner> rateOwnerFull(@PathVariable("idOwner") Long idOwner, @PathVariable("idGuest") Long idGuest) {
+        ReviewOwner  reviewOwner = reviewService.findReviewByOwnerGuest(idOwner,idGuest);
+        if (reviewOwner == null) {
+            return null;
+        }
+        return new ResponseEntity<ReviewOwner>(reviewOwner,HttpStatus.OK);
+    }
+    //dodao matija
+    @GetMapping(value = "/byReservationId/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<Review> getReviewByReservationId(@PathVariable("id") Long idReservation) {
+        System.out.println("POGODI");
+        Review review= reviewService.findReviewByAccommodationId(idReservation);
+        System.out.println(review);
+        return new ResponseEntity<Review>(review,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/byReservationIdSingle/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<Review> getReviewByReservationIdSingle(@PathVariable("id") Long idReservation) {
+        System.out.println("POGODI SINGLE");
+        Review review= reviewService.findReviewByAccommodationIdSingle(idReservation);
+        System.out.println(review);
+        return new ResponseEntity<Review>(review,HttpStatus.OK);
+    }
+
 }

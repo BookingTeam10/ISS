@@ -21,6 +21,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequestMapping("/api/accommodations")
+//ZAKMENTARISANI SU AUTHORIZE ZBOG MOBILNIH PA CEMO POSLE VRATITI
 public class AccommodationController {
     @Autowired
     private IAccommodationService accommodationService;
@@ -42,14 +43,14 @@ public class AccommodationController {
         return new ResponseEntity<AccommodationDTO>(HttpStatus.NOT_FOUND);
     }
     @PostMapping(value="/add" ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<AccommodationDTO> createAccommodation(@RequestBody Accommodation accommodation) throws Exception {
         AccommodationDTO accommodationDTO =accommodationService.add(accommodation);
         return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long id)
             throws Exception {
         Accommodation updateAccommodation =accommodationService.findOne(id);
@@ -61,7 +62,7 @@ public class AccommodationController {
         return new ResponseEntity<AccommodationDTO>(updatedAccommodation, HttpStatus.OK);
     }
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAnyRole('Administrator', 'Owner')")
+   // @PreAuthorize("hasAnyRole('Administrator', 'Owner')")
     public ResponseEntity<AccommodationDTO> deleteAccommodation(@PathVariable("id") Long id) {
         accommodationService.delete(id);
         return new ResponseEntity<AccommodationDTO>(HttpStatus.NO_CONTENT);
@@ -97,7 +98,7 @@ public class AccommodationController {
     }
 
     @GetMapping(value = "/{id}/amenity", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole('Administrator', 'Owner', 'Guest','User')")
+    //@PreAuthorize("hasAnyRole('Administrator', 'Owner', 'Guest','User')")
     public ResponseEntity<Collection<Amenity>> getAmenityByAccommodation(@PathVariable("id") Long id) {
         Accommodation accommodation = accommodationService.findOne(id);
         if (accommodation!= null) {
@@ -106,7 +107,7 @@ public class AccommodationController {
         return new ResponseEntity<Collection<Amenity>>(HttpStatus.NOT_FOUND);
     }
     @PostMapping(value = "/approve/{id}")
-    @PreAuthorize("hasRole('Administrator')")
+    //@PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<AccommodationDTO> setApproveAccommodation(@PathVariable("id") Long id) throws Exception {
         Accommodation accommodation = accommodationService.findOne(id);
         if (accommodation == null) {
@@ -118,7 +119,7 @@ public class AccommodationController {
     }
 
     @PostMapping(value = "/reject/{id}")
-    @PreAuthorize("hasRole('Administrator')")
+    //@PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<AccommodationDTO> setRejectAccommodation(@PathVariable("id") Long id) throws Exception {
         Accommodation accommodation = accommodationService.findOne(id);
         if (accommodation == null) {
