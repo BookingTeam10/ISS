@@ -80,8 +80,7 @@ public class ReviewController {
         if (updateReview == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        updateReview.copyValues(review);
-        ReviewDTO updatedReview = reviewService.update(updateReview);
+        ReviewDTO updatedReview = reviewService.update(review);
         return new ResponseEntity<>(updatedReview, HttpStatus.OK);
     }
 
