@@ -18,4 +18,6 @@ public interface INotificationService {
     Collection<NotificationVisible> findAllByOwner(Long idOwner);
 
     NotificationVisible createNot(NotificationVisible notification, Long idOwner, Long idGuest);
+
+    Collection<NotificationVisible> findAllByGuest(Long idGuest);
 }

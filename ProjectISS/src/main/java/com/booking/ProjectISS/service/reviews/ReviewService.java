@@ -103,6 +103,7 @@ public class ReviewService implements IReviewService {
 
     @Override
     public ReviewDTO create(Review review) throws Exception {
+        review.setStatus(ReviewStatus.WAITING);
         Review savedReview = reviewRepository.save(review);
         return new ReviewDTO(savedReview);
     }

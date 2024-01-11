@@ -105,4 +105,16 @@ public class NotificationService implements INotificationService {
         NotificationVisible savedNotification = notificationVisibleRepository.save(notification);
         return  savedNotification;
     }
+
+    @Override
+    public Collection<NotificationVisible> findAllByGuest(Long idGuest) {
+        Collection<NotificationVisible> not=new ArrayList<>();
+        Collection<NotificationVisible> notificationVisibles=notificationVisibleRepository.findAllByGuest(idGuest);
+        for(NotificationVisible nv:notificationVisibles){
+            if(nv.getUserRate().equals("OG")){
+                not.add(nv);
+            }
+        }
+        return not;
+    }
 }

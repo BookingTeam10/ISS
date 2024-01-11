@@ -11,4 +11,7 @@ public interface INotificationVisibleRepository extends JpaRepository<Notificati
 
     @Query("select n from NotificationVisible  n where n.owner.id = ?1")
     Collection<NotificationVisible> findAllByOwner(Long idOwner);
+
+    @Query("select n from NotificationVisible  n where n.guest.id = ?1")
+    Collection<NotificationVisible> findAllByGuest(Long idGuest);
 }
