@@ -28,7 +28,7 @@ VALUES (2);
 INSERT INTO accommodations(description,accepted,automatic_activation,cancel_deadline, min_people,max_people,rating,location_id,type_acc,owner_id, acc_name,weekend_price,holiday_price,summer_price,night_person, acc_status, auto_conf)
 
 VALUES ('Apartman','true','true', 2,3,6,10,1,'Apartment',1,'Naziv1',0,0,0,'true','CREATED', 'true'),
-       ('Apartman','true','true', 10,2,4,10,1,'Apartment',4,'Naziv2',0,0,0,'true','EDITED', 'false'),
+       ('Apartman','true','true', 10,2,4,10,1,'Apartment',1,'Naziv2',0,0,0,'true','EDITED', 'false'),
        ('Apartman','true','true', 15,2,4,10,2,'Apartment',1,'Naziv3',0,0,0,'true','CREATED', 'false');
 
 INSERT INTO accommodation_photos (accommodation_accommodation_id, photo)
@@ -66,7 +66,8 @@ VALUES
 
 INSERT INTO review (rate, review_comment, status, reservation_id)
 VALUES
-     (3, 'Great experience!', 'REPORTED', 2);
+     (3, 'Great experience!', 'WAITING', 2),
+    (3, 'Bad experience!', 'REPORTED', 2);
 
 INSERT INTO review_owner (rate, review_comment,comment_date, status, owner_id, guest_id,is_reported)
 VALUES

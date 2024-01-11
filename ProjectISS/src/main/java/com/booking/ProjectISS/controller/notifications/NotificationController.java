@@ -81,4 +81,11 @@ public class NotificationController {
         NotificationVisible notificationVisible = notificationService.createNot(notification,idOwner,idGuest);
         return new ResponseEntity<NotificationVisible>(notificationVisible,HttpStatus.CREATED);
     }
+
+    @GetMapping(value = "notificationsGuest/{idGuest}",produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasAnyRole( 'Owner', 'Guest')")
+    public ResponseEntity<Collection<NotificationVisible>> getNotificationGuest(@PathVariable("idGuest") Long idGuest){
+        Collection<NotificationVisible> notificationVisibles=notificationService.findAllByGuest(idGuest);
+        return new ResponseEntity<Collection<NotificationVisible>>(notificationVisibles,HttpStatus.OK);
+    }
 }
