@@ -373,4 +373,30 @@ public class ReviewService implements IReviewService {
         return retVal;
     }
 
+    @Override
+    public Review findReviewByAccommodationId(Long idReservation) {
+        Optional<Reservation> r=reservationRepository.findById(idReservation);
+        Reservation reservation=r.get();
+        Accommodation accommodation=reservation.getAccommodation();
+
+        Collection<Review> reviews=reviewRepository.findAll();
+        for(Review review:reviews){
+            if(r.get().getAccommodation().getId()==review.getReservation().getAccommodation().getId()){
+                return review;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Review findReviewByAccommodationIdSingle(Long idReservation) {
+        Optional<Reservation> r=reservationRepository.findById(idReservation);
+        Collection<Review> reviews=reviewRepository.findAll();
+        for(Review review:reviews){
+            if(r.get().getId()==review.getReservation().getId()){
+                return review;
+            }
+        }
+        return null;
+    }
 }

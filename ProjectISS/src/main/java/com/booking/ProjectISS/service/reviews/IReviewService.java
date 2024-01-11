@@ -53,4 +53,7 @@ public interface IReviewService {
     Review deleteByAccommodationGuest(Long idAccommodation, Long idGuest);
 
     Collection<ReviewOwner> findAllReviewOwner();
+    Review findReviewByAccommodationId(Long idReservation);
+
+    Review findReviewByAccommodationIdSingle(Long idReservation);
 }

@@ -28,7 +28,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class UnregistredUserController {
 
     @Autowired

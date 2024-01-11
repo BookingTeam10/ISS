@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/guests")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class GuestController {
 
     @Autowired
@@ -53,7 +53,7 @@ public class GuestController {
         return new ResponseEntity<Collection<GuestDTO>>(guests, HttpStatus.OK);
     }
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Guest')")
+    //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<GuestDTO> getGuest(@PathVariable("id") Long id) {
         GuestDTO guest = guestService.findOneDTO(id);
         if (guest != null) {
@@ -64,12 +64,12 @@ public class GuestController {
     }
 
     @GetMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Guest')")
+    //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<Guest> getGuestUsername(@PathVariable("username") String username){
         return new ResponseEntity<Guest>(guestService.findUsername(username), HttpStatus.OK);
     }
     @GetMapping(value = "/{id}/requests", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Guest')")
+    //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<Collection<ReservationDTO>> getGuestReservations(
         @PathVariable("id") Long id,
         @RequestParam(name = "location", required = false) String location,
@@ -87,7 +87,7 @@ public class GuestController {
         HttpStatus.OK);
     }
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasRole('Guest')")
+    //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<GuestDTO> deleteGuest(@PathVariable("id") Long id) {
         List<Reservation> acceptedReservations = reservationService.getGuestReservations(id).stream()
                 .filter(reservation -> reservation.getStatus() == ReservationStatus.ACCEPTED)
@@ -98,7 +98,7 @@ public class GuestController {
         return new ResponseEntity<GuestDTO>(HttpStatus.NO_CONTENT);
     }
     @DeleteMapping(value = "/request/{reqId}")
-    @PreAuthorize("hasRole('Guest')")
+    //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<ReservationDTO> deleteGuestReservation(@PathVariable("reqId") Long reqId){
         if(reservationService.findOne(reqId).getStatus() == ReservationStatus.ACCEPTED){
             return new ResponseEntity<ReservationDTO>(HttpStatus.NOT_FOUND);
@@ -110,13 +110,13 @@ public class GuestController {
         return new ResponseEntity<ReservationDTO>(HttpStatus.NO_CONTENT);
     }
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Guest')")
+    //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<GuestDTO> createGuest(@RequestBody Guest guest) throws Exception {
         GuestDTO guestDTO = guestService.create(guest);
         return new ResponseEntity<GuestDTO>(guestDTO, HttpStatus.CREATED);
     }
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Guest')")
+    //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<GuestDTO> updateGuest(@RequestBody Guest guest, @PathVariable Long id)
             throws Exception {
         Guest guestForUpdate = guestService.findOne(id);
@@ -129,7 +129,7 @@ public class GuestController {
     }
 
     @GetMapping(value = "/{id}/allComments", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Guest')")
+    //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<Collection<ReviewDTO>> allComments(@PathVariable("id") Long id) {
         Collection<ReviewDTO> reviews = new ArrayList<ReviewDTO>();
         //Collection<ReviewDTO> reviews = reviewService.findAllCommentsByGuestsDTO(id);
@@ -138,20 +138,20 @@ public class GuestController {
     }
 
     @PostMapping(value = "/{id}/comment",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Guest')")
+    //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<ReviewDTO> createComment(@PathVariable("id") Long idReservation,@RequestBody Review review) throws Exception {
         ReviewDTO reviewDTO = reviewService.createByReservation(idReservation, review);
         return new ResponseEntity<ReviewDTO>(reviewDTO, HttpStatus.CREATED);
     }
     @DeleteMapping(value = "/comment/{id}")
-    @PreAuthorize("hasRole('Guest')")
+   // @PreAuthorize("hasRole('Guest')")
     public ResponseEntity<ReviewDTO> deleteComm(@PathVariable("id") Long id) {
         reviewService.delete(id);
         return new ResponseEntity<ReviewDTO>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping(value = "{idGuest}/reportOwner/{idOwner}")
-    @PreAuthorize("hasRole('Guest')")
+   // @PreAuthorize("hasRole('Guest')")
     public ResponseEntity<?> reportOwner(@PathVariable("idGuest") Long idGuest,@PathVariable("idOwner") Long idOwner) {
         boolean canReport=guestService.reportOwner(idGuest,idOwner);
         if(canReport){
@@ -162,7 +162,7 @@ public class GuestController {
         return new ResponseEntity<>("Guest cant report", HttpStatus.BAD_REQUEST);
     }
     @GetMapping(value = "/accommodationsSearch")
-    @PreAuthorize("hasRole('Guest')")
+    //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
             @RequestParam(required = false) String location,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
@@ -175,7 +175,7 @@ public class GuestController {
     }
 
     @GetMapping(value="/accommodations")
-    @PreAuthorize("hasRole('Guest')")
+   // @PreAuthorize("hasRole('Guest')")
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsDTO() {
         Collection<AccommodationDTO> accommodationDTOS = accommodationService.findAllDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOS, HttpStatus.OK);
@@ -196,7 +196,7 @@ public class GuestController {
     }
 
     @GetMapping(value = "/request")
-    @PreAuthorize("hasAnyRole('Guest', 'Owner')")
+   // @PreAuthorize("hasAnyRole('Guest', 'Owner')")
     public ResponseEntity<Collection<ReservationDTO>> guestNotAcceptedReservation(){
         Collection<ReservationDTO> reservations = reservationService.findAllNotAcceptedDTO();
         return new ResponseEntity<Collection<ReservationDTO>>(reservations, HttpStatus.OK);
@@ -208,7 +208,7 @@ public class GuestController {
         return new ResponseEntity<Collection<OwnerDTO>>(owners,HttpStatus.OK);
     }
     @GetMapping(value = "/{id}/favouriteAccommodations", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Guest')")
+   // @PreAuthorize("hasRole('Guest')")
     public ResponseEntity<?> getFavouriteAccommodations(@PathVariable("id") Long id) {
         Guest guest = guestService.findOne(id);
         if (guest!= null) {
@@ -227,7 +227,7 @@ public class GuestController {
     }
 
     @PostMapping(value="/{id}/favouriteAccommodations/add" ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Guest')")
+    //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<GuestDTO> addFavouriteAccommodation(@PathVariable("id") Long id,@RequestBody Accommodation accommodation) throws Exception {
         Guest guest = guestService.findOne(id);
         List<Accommodation> favouriteAccommodations = guest.getFavouriteAccommodations();
@@ -238,7 +238,7 @@ public class GuestController {
         return new ResponseEntity<GuestDTO>(new GuestDTO(guest), HttpStatus.CREATED);
     }
     @DeleteMapping(value = "/{idGuest}/favouriteAccommodations/{idAccommodation}")
-    @PreAuthorize("hasRole('Guest')")
+   // @PreAuthorize("hasRole('Guest')")
     public ResponseEntity<GuestDTO> deleteFavouriteAccommodation(@PathVariable("idGuest") Long idGuest,@PathVariable("idAccommodation") Long idAccommodation) throws Exception {
         Guest guest = guestService.findOne(idGuest);
         List<Accommodation> favouriteAccommodations = guest.getFavouriteAccommodations();
@@ -249,7 +249,7 @@ public class GuestController {
     }
 
     @GetMapping(value = "/{idGuest}/requests")
-    @PreAuthorize("hasRole('Guest')")
+    //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<Collection<ReservationDTO>> allGuestReservation(@PathVariable("idGuest") Long idGuest){
         Collection<ReservationDTO> reservations = reservationService.findByGuest(idGuest);
         return new ResponseEntity<Collection<ReservationDTO>>(reservations, HttpStatus.OK);

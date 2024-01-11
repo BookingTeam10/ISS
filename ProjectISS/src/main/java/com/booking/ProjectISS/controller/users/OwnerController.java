@@ -3,6 +3,8 @@ import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.dto.reviews.ReviewDTO;
 import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.reservations.Reservation;
+import com.booking.ProjectISS.model.reviews.Report;
+import com.booking.ProjectISS.model.reviews.ReportAccommodation;
 import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
@@ -36,7 +38,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/owners")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class OwnerController {
 
     @Autowired
@@ -56,7 +58,7 @@ public class OwnerController {
         return new ResponseEntity<Collection<OwnerDTO>>(Owners, HttpStatus.OK);
     }
     @GetMapping(value = "/{id}/requests", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+   // @PreAuthorize("hasRole('Owner')")
     public ResponseEntity<Collection<ReservationDTO>> getGuestReservations(
             @PathVariable("id") Long id,
             @RequestParam(name = "location", required = false) String location,
@@ -76,12 +78,12 @@ public class OwnerController {
     }
 
     @GetMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<Owner> getOwnerUsername(@PathVariable("username") String username){
         return new ResponseEntity<Owner>(ownerService.findUsername(username), HttpStatus.OK);
     }
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<OwnerDTO> getOwner(@PathVariable("id") Long id) {
         OwnerDTO Owner = ownerService.findOneDTO(id);
         if (Owner != null) {
@@ -102,7 +104,7 @@ public class OwnerController {
     }
 
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<OwnerDTO> deleteOwner(@PathVariable("id") Long id) {
         List<Reservation> ownerReservations = reservationService.getOwnerReservations(id).stream().filter(reservation ->
             reservation.getStatus() == ReservationStatus.ACCEPTED
@@ -114,14 +116,14 @@ public class OwnerController {
         return new ResponseEntity<OwnerDTO>(HttpStatus.NO_CONTENT);
     }
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<OwnerDTO> createOwner(@RequestBody Owner Owner) throws Exception {
         OwnerDTO OwnerDTO = ownerService.create(Owner);
         return new ResponseEntity<OwnerDTO>(OwnerDTO, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<OwnerDTO> updateOwner(@RequestBody Owner Owner, @PathVariable Long id)
             throws Exception {
         Owner OwnerForUpdate = ownerService.findOne(id);
@@ -134,21 +136,21 @@ public class OwnerController {
     }
 
     @PostMapping(value = "/{id}/accommodations",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<AccommodationDTO> createAccommodationByOwner(@PathVariable Long id, @RequestBody Accommodation accommodation) throws Exception {
         AccommodationDTO accommodationDTO = accommodationService.createByOwner(id, accommodation);
         return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/accommodations",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<AccommodationDTO> createAccommodation(@RequestBody Accommodation accommodation) throws Exception {
         AccommodationDTO accommodationDTO = accommodationService.create(accommodation);
         return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/{id}/accommodations", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<?> getOwnerAccomodation(@PathVariable("id") Long id) {
         OwnerDTO Owner = ownerService.findOneDTO(id);
         if (Owner != null) {
@@ -163,7 +165,7 @@ public class OwnerController {
     }
 
     @PutMapping(value = "/accommodations/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long id)
             throws Exception {
         Accommodation accommodationUpdate = accommodationService.findOne(id);
@@ -176,7 +178,7 @@ public class OwnerController {
     }
 
     @PutMapping(value = "/comment/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<ReviewDTO> updateComment(@RequestBody Review review, @PathVariable Long id)
             throws Exception {
         ReviewDTO reviewDTOForUpdate = reviewService.findOneDTO(id);
@@ -189,7 +191,7 @@ public class OwnerController {
     }
 
     @GetMapping(value = "/accommodations", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<?> getOwnerAccommodation() {
         Collection<Accommodation> accommodations = accommodationService.findAll();
         if (accommodations != null){
@@ -200,7 +202,7 @@ public class OwnerController {
     }
 
     @GetMapping(value = "/accommodationsSearch")
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<Collection<AccommodationDTO>> getSearchedAccommodations(
             @RequestParam(required = false) String location,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
@@ -212,14 +214,14 @@ public class OwnerController {
         return ResponseEntity.ok(accommodationDTOS);
     }
     @GetMapping(value="/accommodations")
-    @PreAuthorize("hasRole('Owner')")
+   // @PreAuthorize("hasRole('Owner')")
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsDTO() {
         Collection<AccommodationDTO> accommodationDTOS = accommodationService.findAllDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOS, HttpStatus.OK);
     }
 
     @PutMapping(value = "{idOwner}/reportGuest/{idGuest}")
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<?> reportOwner(@PathVariable("idGuest") Long idGuest,@PathVariable("idOwner") Long idOwner) {
         boolean canReport=ownerService.reportGuest(idGuest,idOwner);
         if(canReport){
@@ -231,14 +233,14 @@ public class OwnerController {
     }
 
     @GetMapping(value = "/{idOwner}/requestsReservations", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<Collection<ReservationDTO>> getOwnersRequests(@PathVariable Long idOwner) {
         Collection<ReservationDTO> ownerReservations = reservationService.getOwnersRequests(idOwner);
         return new ResponseEntity<Collection<ReservationDTO>>(ownerReservations, HttpStatus.OK);
     }
 
     @GetMapping(value = "/requestsSearch", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Owner')")
+    //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<Collection<ReservationDTO>> searchedRequests(@RequestParam(required = false) String type,
                                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
                                                                        @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")  Date end,
@@ -248,5 +250,57 @@ public class OwnerController {
         Collection<ReservationDTO> ownerReservations = new ArrayList<>();
         Collection<ReservationDTO> reservationDTOS = reservationService.searchedRequests(type,start,end,nameAccommodation,idOwner);
         return new ResponseEntity<Collection<ReservationDTO>>(reservationDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/report", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<Collection<Report>> getOwnerReports(@PathVariable("id") Long id,@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
+                                                                               @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")  Date end){
+
+        Collection<Report> reports = new ArrayList<>();
+        Collection<Accommodation> accommodations = accommodationService.findAllByOwner(id);
+
+        for(Accommodation accommodation:accommodations){
+            Collection<ReservationDTO> reservationDTOS = reservationService.findByAccommodation(accommodation.getId());
+            reports.add(new Report(accommodation,reservationDTOS.size(),reservationService.totalPrice(reservationDTOS)));
+        }
+
+        return new ResponseEntity<Collection<Report>>(reports, HttpStatus.OK);
+    }
+    @GetMapping(value = "/{idAccommodation}/reportYear", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<ReportAccommodation> getOwnerReportYear(@PathVariable("idAccommodation") Long id){
+        ReportAccommodation report = new ReportAccommodation(new Accommodation(id));
+        Collection<ReservationDTO> reservationDTOS = reservationService.findByAccommodation(id);
+
+        for(ReservationDTO reservation: reservationDTOS){
+            HashMap map = report.getMap();
+            int month = reservation.getStartDate().getMonth();
+            if (map != null) {
+                if (map.containsKey(month)) {
+                    ArrayList<Integer> value = (ArrayList<Integer>) map.get(month);
+
+                    if (value != null) {
+                        int profit = value.get(0);
+                        int number = value.get(1);
+                        profit += reservation.getTotalPrice();
+                        number += 1;
+                        ArrayList<Integer> newValue = new ArrayList<>();
+                        newValue.add(profit);
+                        newValue.add(number);
+
+                        map.put(month, newValue);
+                    }
+                }
+            }
+        }
+        return new ResponseEntity<ReportAccommodation>(report, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/accommodations/{idOwner}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<Collection<Accommodation>> getAccommodationByOwner(@PathVariable Long idOwner){
+        Collection<Accommodation> accommodations=accommodationService.findAllByOwner(idOwner);
+        return new ResponseEntity<Collection<Accommodation>>(accommodations, HttpStatus.OK);
     }
 }
