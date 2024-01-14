@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.Fetch;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,18 +66,20 @@ public class Accommodation implements Serializable {
     @CollectionTable(name = "accommodation_amenity", joinColumns = @JoinColumn(name = "accommodation_id"))
     private List<Amenity> amenities;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "location_id",referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "location_id",referencedColumnName = "id")
     private Location location;
 
     //dodati many to one
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "owner_id",referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "owner_id",referencedColumnName = "id")
     private Owner owner;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Reservation> reservations;
     @Column(name = "auto_conf")
     private boolean automaticConfirmation;
     public Accommodation() {}
+
+
     public Long getId() {
         return id;
     }

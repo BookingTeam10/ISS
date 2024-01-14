@@ -4,17 +4,22 @@ import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.dto.accomodations.LocationDTO;
 import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
+import com.booking.ProjectISS.enums.TypeAccommodation;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.accomodations.Amenity;
 import com.booking.ProjectISS.model.accomodations.Location;
 import com.booking.ProjectISS.model.accomodations.Price;
+import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.User;
 import com.booking.ProjectISS.repository.accomodations.IAccommodationRepository;
 import com.booking.ProjectISS.repository.accomodations.location.ILocationRepository;
+import com.booking.ProjectISS.repository.reservations.IReservationRepository;
 import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import com.booking.ProjectISS.service.accommodation.location.ILocationService;
 import com.booking.ProjectISS.service.accommodation.price.IPriceService;
+import com.booking.ProjectISS.service.reservations.IReservationService;
+import com.booking.ProjectISS.service.users.owner.IOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +36,12 @@ public class AccommodationService implements IAccommodationService {
     private ILocationService locationService;
     @Autowired
     private IPriceService priceService;
+
+    @Autowired
+    private IOwnerService ownerService;
+
+    @Autowired
+    private IReservationRepository reservationRepository;
 
     //ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
     @Override
@@ -73,43 +84,62 @@ public class AccommodationService implements IAccommodationService {
     public AccommodationDTO create(Accommodation accommodation) throws Exception {
         return new AccommodationDTO(accommodationRepository.save(new Accommodation(accommodation)));
     }
+
     @Override
-    public AccommodationDTO update(Accommodation accommodationForUpdate) throws Exception {
+    public AccommodationDTO update(Accommodation accommodation) throws Exception {
+        return null;
+    }
+
+    @Override
+    public String updateAccommodation(Accommodation accommodationForUpdate){
+
+        String message="";
+
+        System.out.println(accommodationForUpdate);
+
         Optional<Accommodation> optionalAccommodation = this.accommodationRepository.findById(accommodationForUpdate.getId());
 
-        optionalAccommodation.ifPresent(oldAccommodation -> {
-            oldAccommodation.setId(accommodationForUpdate.getId());
-            oldAccommodation.setAccepted(accommodationForUpdate.isAccepted());
-            oldAccommodation.setAutomaticActivation(accommodationForUpdate.isAutomaticActivation());
-            oldAccommodation.setDescription(accommodationForUpdate.getDescription());
-            oldAccommodation.setMinPeople(accommodationForUpdate.getMinPeople());
-            oldAccommodation.setMaxPeople(accommodationForUpdate.getMaxPeople());
-            oldAccommodation.setPhotos(accommodationForUpdate.getPhotos());
-            oldAccommodation.setTypeAccomodation(accommodationForUpdate.getTypeAccomodation());
-            oldAccommodation.setAccommodationStatus(accommodationForUpdate.getAccommodationStatus());
-            oldAccommodation.setRating(accommodationForUpdate.getRating());
-            oldAccommodation.setCancelDeadline(accommodationForUpdate.getCancelDeadline());
-            oldAccommodation.setTakenDates(accommodationForUpdate.getTakenDates());
-            oldAccommodation.setLocation(accommodationForUpdate.getLocation());
-            this.updateLocation(accommodationForUpdate.getLocation());
-            oldAccommodation.setOwner(accommodationForUpdate.getOwner());
-            oldAccommodation.setReservations(accommodationForUpdate.getReservations());
-            oldAccommodation.setPrices(accommodationForUpdate.getPrices());
-            this.updatePrices(accommodationForUpdate.getPrices());
-            oldAccommodation.setAmenities(accommodationForUpdate.getAmenities());
-            oldAccommodation.setAutomaticConfirmation(accommodationForUpdate.isAutomaticConfirmation());
-            oldAccommodation.setName(accommodationForUpdate.getName());
-            oldAccommodation.setHolidayPrice(accommodationForUpdate.getHolidayPrice());
-            oldAccommodation.setWeekendPrice(accommodationForUpdate.getWeekendPrice());
-            oldAccommodation.setSummerPrice(accommodationForUpdate.getSummerPrice());
-            oldAccommodation.setCancelDeadline(accommodationForUpdate.getCancelDeadline());
+        boolean change=canChangeDates(accommodationForUpdate);
 
-            this.accommodationRepository.save(oldAccommodation);
-        });
+        if(change){
+            optionalAccommodation.ifPresent(oldAccommodation -> {
+                oldAccommodation.setCancelDeadline(accommodationForUpdate.getCancelDeadline());
+                oldAccommodation.setPrices(accommodationForUpdate.getPrices());
+                this.updatePrices(accommodationForUpdate.getPrices());
+                oldAccommodation.setHolidayPrice(accommodationForUpdate.getHolidayPrice());
+                oldAccommodation.setWeekendPrice(accommodationForUpdate.getWeekendPrice());
+                oldAccommodation.setSummerPrice(accommodationForUpdate.getSummerPrice());
+                this.accommodationRepository.save(oldAccommodation);
+            });
+            message="Successful edit";
+        }else{
+            if(optionalAccommodation.get().getCancelDeadline()==accommodationForUpdate.getCancelDeadline()){
+                message="You can only change the cancelled deadline, due to reservations";
+            }else{
+                optionalAccommodation.ifPresent(oldAccommodation -> {
+                    oldAccommodation.setCancelDeadline(accommodationForUpdate.getCancelDeadline());
+                    this.accommodationRepository.save(oldAccommodation);
+                });
+                message="Changed only cancelled deadline, due to reservations";
+            }
+        }
+        return message;
+    }
 
-        Optional<Accommodation> a = this.accommodationRepository.findById(accommodationForUpdate.getId());
-        System.out.println(a.get());
-        return new AccommodationDTO(accommodationForUpdate);
+    private boolean canChangeDates(Accommodation accommodationForUpdate) {
+        List<Price> prices=accommodationForUpdate.getPrices();
+        Collection<Reservation> reservations= reservationRepository.findByAccommodation(accommodationForUpdate.getId());
+
+        for(Reservation reservation:reservations){
+            Date startDateReservation=reservation.getStartDate();
+            Date endDateReservation=reservation.getEndDate();
+            for(Price price:prices){
+                if((startDateReservation.after(price.getStartDate()) && startDateReservation.before(price.getEndDate())) || (endDateReservation.after(price.getStartDate()) && endDateReservation.before(price.getEndDate()))){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void updatePrices(List<Price> prices) {
@@ -187,6 +217,11 @@ public class AccommodationService implements IAccommodationService {
 
     @Override
     public AccommodationDTO add(Accommodation accommodation) {
+        System.out.println(accommodation);
+        accommodation.setTypeAccomodation(TypeAccommodation.Apartment);
+        Owner owner=ownerService.findOne(1L);
+        accommodation.setOwner(owner);
+        System.out.println(accommodation);
         return new AccommodationDTO(this.accommodationRepository.save(accommodation));
     }
 

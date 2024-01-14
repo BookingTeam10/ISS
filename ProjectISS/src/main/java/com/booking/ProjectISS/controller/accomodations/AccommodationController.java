@@ -13,9 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @RestController
@@ -45,21 +43,18 @@ public class AccommodationController {
     @PostMapping(value="/add" ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<AccommodationDTO> createAccommodation(@RequestBody Accommodation accommodation) throws Exception {
+        System.out.println("USLO123");
         AccommodationDTO accommodationDTO =accommodationService.add(accommodation);
         return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    //@PreAuthorize("hasRole('Owner')")
-    public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long id)
+    public ResponseEntity<Map<String, String>> updateAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long id)
             throws Exception {
-        Accommodation updateAccommodation =accommodationService.findOne(id);
-        if (updateAccommodation == null) {
-            return new ResponseEntity<AccommodationDTO>(HttpStatus.NOT_FOUND);
-        }
-
-        AccommodationDTO updatedAccommodation = accommodationService.update(accommodation);
-        return new ResponseEntity<AccommodationDTO>(updatedAccommodation, HttpStatus.OK);
+        Map<String, String> response = new HashMap<>();
+        String message = accommodationService.updateAccommodation(accommodation);
+        response.put("message", message);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @DeleteMapping(value = "/{id}")
    // @PreAuthorize("hasAnyRole('Administrator', 'Owner')")
