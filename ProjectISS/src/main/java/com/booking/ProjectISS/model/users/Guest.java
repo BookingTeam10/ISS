@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name="guests")
@@ -82,5 +83,18 @@ public class Guest extends User {
                 ", turnOnNotification=" + turnOnNotification +
                 ", favouriteAccommodations=" + favouriteAccommodations +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Guest guest = (Guest) obj;
+        return Objects.equals(getId(), guest.getId()); // Pretpostavljamo da je 'id' jedinstveni identifikator gosta
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

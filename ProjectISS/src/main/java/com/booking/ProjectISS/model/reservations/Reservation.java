@@ -35,11 +35,21 @@ public class Reservation implements Serializable {
     @JoinColumn(name = "accommodation_id", nullable = false)
     private Accommodation accommodation;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "guest_id", nullable = false)
+    @JoinColumn(name = "guest_id")
     private Guest guest;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Review> reviews;
     public Reservation() {
+    }
+
+    public Reservation(long id) {
+        this.id = id;
+    }
+
+    public Reservation(long id, Date startDate, Date endDate) {
+        this.id = id;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public Reservation(double totalPrice, ReservationStatus status, Date startDate, Date endDate, int numberOfNights) {

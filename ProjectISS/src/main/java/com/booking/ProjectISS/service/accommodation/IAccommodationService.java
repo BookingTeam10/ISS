@@ -26,4 +26,6 @@ public interface IAccommodationService {
     boolean deleteAllByOwner(Long id);
 
     AccommodationDTO add(Accommodation accommodation);
+
+    String updateAccommodation(Accommodation accommodation);
 }
