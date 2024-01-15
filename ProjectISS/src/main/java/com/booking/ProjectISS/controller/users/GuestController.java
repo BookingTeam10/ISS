@@ -185,6 +185,7 @@ public class GuestController {
     @PreAuthorize("hasRole('Guest')")
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody Reservation reservation) throws Exception {
         System.out.println("UDJE DA KREIRA REZERVACIJU");
+        System.out.println(reservation.getStartDate());
         if (reservationService.hasOverlappingRequests(reservation)) {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }

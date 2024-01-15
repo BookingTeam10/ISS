@@ -1,10 +1,12 @@
 package com.booking.ProjectISS.dto.reservations;
 
 import com.booking.ProjectISS.enums.ReservationStatus;
+import com.booking.ProjectISS.model.CustomDateDeserializer;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.users.Guest;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Date;
 import java.util.List;
@@ -14,7 +16,9 @@ public class ReservationDTO {
     private long id;
     private double totalPrice;
     private ReservationStatus status;
+    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date startDate;
+    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date endDate;
     private int numberOfNights;
     private Accommodation accommodation;

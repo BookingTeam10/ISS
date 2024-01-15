@@ -1,9 +1,11 @@
 package com.booking.ProjectISS.model.reservations;
 
 import com.booking.ProjectISS.enums.ReservationStatus;
+import com.booking.ProjectISS.model.CustomDateDeserializer;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.users.Guest;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -24,9 +26,11 @@ public class Reservation implements Serializable {
     private ReservationStatus status;
     @Temporal(TemporalType.DATE)
     @Column(name = "start_date")
+    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date startDate;
     @Temporal(TemporalType.DATE)
     @Column(name = "end_date")
+    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date endDate;
     @Column(name="number_of_nights")
     private int numberOfNights = 1;

@@ -27,7 +27,7 @@ VALUES (2);
 INSERT INTO accommodations(description,accepted,automatic_activation,cancel_deadline, min_people,max_people,rating,location_id,type_acc,owner_id, acc_name,weekend_price,holiday_price,summer_price,night_person, acc_status, auto_conf)
 
 VALUES ('Apartman','true','true', 2,3,6,10,1,'Apartment',1,'Naziv1',0,0,0,'true','CREATED', 'true'),
-       ('Apartman','true','true', 10,2,4,10,1,'Apartment',1,'Naziv2',0,0,0,'true','EDITED', 'false'),
+       ('Room','true','true', 10,2,4,10,1,'Room',1,'Naziv2',0,0,0,'true','EDITED', 'false'),
        ('Apartman','true','true', 15,2,4,10,2,'Apartment',1,'Naziv3',0,0,0,'true','CREATED', 'false');
 
 INSERT INTO accommodation_photos (accommodation_accommodation_id, photo)
@@ -41,8 +41,8 @@ VALUES (1,'assets/images/apartment1.png'),
 
 
 INSERT INTO accommodation_taken_dates (accommodation_id, first_date, last_date)
-VALUES (1, '2023-01-01', '2023-01-05'),
-       (1, '2023-02-01', '2023-02-05');
+VALUES (1, '2024-02-01', '2023-02-05'),
+       (1, '2024-02-10', '2024-02-15');
 
 INSERT INTO accommodation_amenity (accommodation_id,amenity_name)
 VALUES (1,'WIFI'),
@@ -74,9 +74,9 @@ VALUES
 
 INSERT INTO accommodation_price (accommodation_id, price, start_date, end_date)
 VALUES
-    (1, 3000, '2001-01-01', '2001-07-01'),
-    (1, 2000, '2001-01-01', '2001-08-01'),
-    (1, 4000, '2001-01-01', '2001-09-01');
+    (1, 3000, '2001-01-01', '2030-07-01'),
+    (2, 2000, '2001-01-01', '2030-08-01'),
+    (3, 4000, '2001-01-01', '2030-09-01');
 
 
 INSERT INTO report (review_comment,status,owner_id, guest_id,user_report)
