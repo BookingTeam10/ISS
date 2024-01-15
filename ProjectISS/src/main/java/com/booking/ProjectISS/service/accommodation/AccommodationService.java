@@ -5,10 +5,7 @@ import com.booking.ProjectISS.dto.accomodations.LocationDTO;
 import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.dto.users.UserDTO;
 import com.booking.ProjectISS.enums.TypeAccommodation;
-import com.booking.ProjectISS.model.accomodations.Accommodation;
-import com.booking.ProjectISS.model.accomodations.Amenity;
-import com.booking.ProjectISS.model.accomodations.Location;
-import com.booking.ProjectISS.model.accomodations.Price;
+import com.booking.ProjectISS.model.accomodations.*;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.User;
@@ -20,6 +17,7 @@ import com.booking.ProjectISS.service.accommodation.location.ILocationService;
 import com.booking.ProjectISS.service.accommodation.price.IPriceService;
 import com.booking.ProjectISS.service.reservations.IReservationService;
 import com.booking.ProjectISS.service.users.owner.IOwnerService;
+import jakarta.persistence.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -124,6 +122,102 @@ public class AccommodationService implements IAccommodationService {
             }
         }
         return message;
+    }
+
+    @Override
+    public Collection<AccommodationDTO> getAccommodationsSearchedFiltered(Date start, Date end, int numPeople, String location, String minPrice, String maxPrice, List<String> amenities, String type) {
+        Collection<Accommodation> accommodations = accommodationRepository.findAll();
+        Collection<AccommodationDTO> accommodationDTOS= new ArrayList<AccommodationDTO>();
+        for (Accommodation a:accommodations){
+            if(!type.equals("") && numPeople!=0){
+                TypeAccommodation typeAccommodation = TypeAccommodation.valueOf(type);
+                if(a.getMinPeople()<=numPeople && a.getMaxPeople()>=numPeople && matchesLocation(a,location) && matchesAmenity(a,amenities) && a.getTypeAccomodation().equals(typeAccommodation) && matchesPrice(a,minPrice,maxPrice) && !matchesDate(a,start,end))
+                    accommodationDTOS.add(new AccommodationDTO(a));
+            }else if (type.equals("") && numPeople==0 ){
+                //ako type nije unet pretrazujemo bez toga i broj osoba
+                if( matchesLocation(a,location) && matchesAmenity(a,amenities) && matchesPrice(a,minPrice,maxPrice) && !matchesDate(a,start,end))
+                    accommodationDTOS.add(new AccommodationDTO(a));
+            }else if(numPeople==0){
+                TypeAccommodation typeAccommodation = TypeAccommodation.valueOf(type);
+                if( matchesLocation(a,location) && matchesAmenity(a,amenities) && a.getTypeAccomodation().equals(typeAccommodation) && matchesPrice(a,minPrice,maxPrice) && !matchesDate(a,start,end))
+                    accommodationDTOS.add(new AccommodationDTO(a));
+            } else if (type.equals("")){
+                if(a.getMinPeople()<=numPeople && a.getMaxPeople()>=numPeople && matchesLocation(a,location) && matchesAmenity(a,amenities) && matchesPrice(a,minPrice,maxPrice) && !matchesDate(a,start,end))
+                    accommodationDTOS.add(new AccommodationDTO(a));
+            }
+
+        }
+        System.out.println(accommodationDTOS);
+        return accommodationDTOS;
+    }
+
+    private boolean matchesDate(Accommodation a, Date start, Date end) {
+        List<TakenDate> dates = a.getTakenDates();
+        System.out.println(start);
+        for (TakenDate takenDate:dates){
+                if(start!=null && end!= null){
+                    //ovde ima 3 slucaja kad je false
+                    System.out.println("PRVI SLUCAJ");
+                    //1.2 slucaj  2.2 - 5.2 zauzet opseg ja unesem 1.2-3.2
+
+                    if(takenDate.getFirstDate().after(start) && takenDate.getLastDate().before(end)){
+                        System.out.println("1.1");
+                        return true;
+                    }
+                    //1.1 slucaj kada se nalazi u opsegu, 1.2 - 5.2 zauzet opseg ja unesem 2.2-3.2
+                    if (takenDate.getFirstDate().after(start) && takenDate.getLastDate().after(end)){
+                        System.out.println("1.2");
+                        return true;
+                    }
+
+
+                    //1.3 slucaj 2.2 - 5.2 zauzet opseg ja unesem 4.2-7.2
+                    if (takenDate.getFirstDate().after(start) && takenDate.getLastDate().after(end))
+                    {
+                        System.out.println("1.3");
+                        return true;
+                    }
+                }
+                else if(start!=null ) {
+                    System.out.println("2 slucaj");
+                    //2 slucaj 2.2 - 5.2 zauzet opseg ja unesem 4.2
+                    if (takenDate.getFirstDate().before(start) && takenDate.getLastDate().after(start))
+                        return true;
+                }
+                else if (end!=null){
+                        System.out.println("3 slucaj");
+                    if (takenDate.getFirstDate().before(end) && takenDate.getLastDate().after(end))
+                        return true;
+                }
+
+
+        }
+        //ako nije nista vratiti true da bi se tamo u ifu odradilo sve
+        return false;
+    }
+
+    private boolean matchesPrice(Accommodation a, String minPrice, String maxPrice) {
+        List<Price> prices = a.getPrices();
+        Double min,max ;
+
+        Date today = new Date();
+        for (Price price:prices){
+            if(price.getStartDate().before(today) && price.getEndDate().after(today)){
+                if(!minPrice.equals("")) {
+                    min = Double.parseDouble(minPrice);
+                    if (min>price.getPrice())
+                        return false;
+                }
+                if(!maxPrice.equals("")) {
+                    max = Double.parseDouble(maxPrice);
+                    if (max<price.getPrice())
+                        return false;
+                }
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private boolean canChangeDates(Accommodation accommodationForUpdate) {

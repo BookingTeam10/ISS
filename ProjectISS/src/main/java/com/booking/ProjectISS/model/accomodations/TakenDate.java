@@ -1,5 +1,7 @@
 package com.booking.ProjectISS.model.accomodations;
 
+import com.booking.ProjectISS.model.CustomDateDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -8,8 +10,10 @@ import java.util.Date;
 @Embeddable
 public class TakenDate implements Serializable {
     @Column(name="first_date")
+    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date firstDate;
     @Column(name="last_date")
+    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date lastDate;
 
     public TakenDate() {
@@ -43,4 +47,7 @@ public class TakenDate implements Serializable {
                 ", lastDate=" + lastDate +
                 '}';
     }
+
+
 }
+

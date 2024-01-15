@@ -125,4 +125,21 @@ public class AccommodationController {
         return new ResponseEntity<AccommodationDTO>(accommodationDTO,HttpStatus.OK);
     }
 
+    @GetMapping(value = "/accommodationsSearchFilterAll")
+    public ResponseEntity<Collection<AccommodationDTO>> getSearchedFilteredAccommodations(
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false)  Date start,
+            @RequestParam(required = false)  Date end,
+            @RequestParam(required = false) int numPeople,
+            @RequestParam(required = false) String minPrice,
+            @RequestParam(required = false) String maxPrice,
+            @RequestParam(required = false) List<String> amenities,
+            @RequestParam(required = false) String type){
+        Collection<AccommodationDTO> accommodationDTOS = accommodationService.getAccommodationsSearchedFiltered(start,end,numPeople,location,minPrice,maxPrice,amenities,type);
+        if(accommodationDTOS == null) {
+            return new ResponseEntity<Collection<AccommodationDTO>>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(accommodationDTOS);
+    }
+
 }

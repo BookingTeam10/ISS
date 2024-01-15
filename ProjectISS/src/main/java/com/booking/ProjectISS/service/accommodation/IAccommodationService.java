@@ -28,4 +28,6 @@ public interface IAccommodationService {
     AccommodationDTO add(Accommodation accommodation);
 
     String updateAccommodation(Accommodation accommodation);
+
+    Collection<AccommodationDTO> getAccommodationsSearchedFiltered(Date start, Date end, int numPeople, String location, String minPrice, String maxPrice, List<String> amenities, String type);
 }
