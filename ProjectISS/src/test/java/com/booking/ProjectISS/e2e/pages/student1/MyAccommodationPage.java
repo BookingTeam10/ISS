@@ -1,4 +1,4 @@
-package com.booking.ProjectISS.e2e.pages;
+package com.booking.ProjectISS.e2e.pages.student1;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

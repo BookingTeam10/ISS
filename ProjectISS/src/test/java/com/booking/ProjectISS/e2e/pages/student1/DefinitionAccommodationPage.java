@@ -1,4 +1,4 @@
-package com.booking.ProjectISS.e2e.pages;
+package com.booking.ProjectISS.e2e.pages.student1;
 
 
 import com.booking.ProjectISS.service.accommodation.DatesPrice;
