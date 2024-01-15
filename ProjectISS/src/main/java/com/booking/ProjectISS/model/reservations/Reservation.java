@@ -26,11 +26,9 @@ public class Reservation implements Serializable {
     private ReservationStatus status;
     @Temporal(TemporalType.DATE)
     @Column(name = "start_date")
-    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date startDate;
     @Temporal(TemporalType.DATE)
     @Column(name = "end_date")
-    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date endDate;
     @Column(name="number_of_nights")
     private int numberOfNights = 1;

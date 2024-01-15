@@ -4,7 +4,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+
 
 public class TestBase {
 
@@ -17,7 +18,7 @@ public class TestBase {
 
         driver.manage().window().maximize();
 
-        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
     }
 
     @AfterSuite

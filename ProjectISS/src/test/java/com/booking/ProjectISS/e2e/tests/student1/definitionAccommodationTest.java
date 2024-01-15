@@ -1,7 +1,11 @@
-package com.booking.ProjectISS.e2e.tests;
+package com.booking.ProjectISS.e2e.tests.student1;
 
 
 import com.booking.ProjectISS.e2e.pages.*;
+import com.booking.ProjectISS.e2e.pages.student1.DefinitionAccommodationPage;
+import com.booking.ProjectISS.e2e.pages.student1.EditAccommodationPage;
+import com.booking.ProjectISS.e2e.pages.student1.MyAccommodationPage;
+import com.booking.ProjectISS.e2e.tests.TestBase;
 import com.booking.ProjectISS.service.accommodation.DatesPrice;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -9,7 +13,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class definitionAccommodationTest extends TestBase{
+public class definitionAccommodationTest extends TestBase {
 
     static final String EMAIL = "popovic.sv4.2021@uns.ac.rs";
     static final String PASSWORD = "abc";
