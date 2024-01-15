@@ -93,8 +93,6 @@ public class AccommodationService implements IAccommodationService {
 
         String message="";
 
-        System.out.println(accommodationForUpdate);
-
         Optional<Accommodation> optionalAccommodation = this.accommodationRepository.findById(accommodationForUpdate.getId());
 
         boolean change=canChangeDates(accommodationForUpdate);
