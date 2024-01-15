@@ -4,6 +4,7 @@ import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.dto.users.OwnerDTO;
 import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
+import com.booking.ProjectISS.model.notifications.NotificationVisible;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.accomodations.Location;
 import com.booking.ProjectISS.model.users.Guest;

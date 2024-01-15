@@ -3,8 +3,10 @@ package com.booking.ProjectISS.controller.reservations;
 import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.reservations.Reservation;
+import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.service.notifications.INotificationService;
 import com.booking.ProjectISS.service.reservations.IReservationService;
+import com.booking.ProjectISS.service.users.guest.IGuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +23,8 @@ public class ReservationController {
     private IReservationService reservationService;
     @Autowired
     private INotificationService notificationService;
+    @Autowired
+    private IGuestService guestService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     //@PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
@@ -96,7 +100,10 @@ public class ReservationController {
             reservation.setStatus(ReservationStatus.REJECTED);
         }else {
             reservation.setStatus(ReservationStatus.CANCELLED);
-
+            Guest guest = reservation.getGuest();
+            int numberCanceled = guest.getNumberCanceledReservation();
+            guest.setNumberCanceledReservation(numberCanceled+1);
+            guestService.update(guest);
         }
         return new ResponseEntity<>(reservationService.update(reservation), HttpStatus.OK);
     }

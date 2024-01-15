@@ -7,12 +7,15 @@ import com.booking.ProjectISS.dto.reviews.ReviewOwnerDTO;
 import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.enums.ReviewStatus;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
+import com.booking.ProjectISS.model.notifications.NotificationVisible;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.reviews.ReviewOwner;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.repository.accomodations.IAccommodationRepository;
+import com.booking.ProjectISS.repository.notifications.INotificationRepository;
+import com.booking.ProjectISS.repository.notifications.INotificationVisibleRepository;
 import com.booking.ProjectISS.repository.reservations.IReservationRepository;
 import com.booking.ProjectISS.repository.reviews.IReviewOwnerRepository;
 import com.booking.ProjectISS.repository.reviews.IReviewRepository;
@@ -33,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -59,6 +61,9 @@ public class ReviewService implements IReviewService {
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    private INotificationVisibleRepository notificationVisibleRepository;
 
     @Override
     public ReviewDTO findOneDTO(Long id) {
@@ -191,8 +196,11 @@ public class ReviewService implements IReviewService {
         review.setGuest(g.get());
         review.setStatus(ReviewStatus.ACTIVE);
         ReviewOwner savedReview = reviewOwnerRepository.save(review);
+        NotificationVisible notificationVisible=new NotificationVisible(100L,"aaaa",review.getGuest(),review.getOwner(),"GO");
         if(o.get().isRateMeNotification()){
             System.out.println("UPALJENO");
+            this.simpMessagingTemplate.convertAndSend( "/socket-publisher/"+idOwner,notificationVisible);
+            notificationVisibleRepository.save(notificationVisible);
         }
         return new ReviewOwnerDTO(savedReview);
     }

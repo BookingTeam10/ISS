@@ -91,5 +91,3 @@ VALUES
     ('Your reservation has been accepted.', 3, 1, 'OG'),
     ('Your reservation has been rejected.', 3, 4, 'OG'),
     ('New reservation request received.', 3, 1, 'GO');
-
-

@@ -24,4 +24,5 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         registry.setApplicationDestinationPrefixes("/socket-subscriber")
                 .enableSimpleBroker("/socket-publisher");
     }
+
 }

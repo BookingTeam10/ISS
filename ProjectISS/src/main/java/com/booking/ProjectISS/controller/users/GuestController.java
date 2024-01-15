@@ -1,6 +1,7 @@
 package com.booking.ProjectISS.controller.users;
 import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.enums.ReservationStatus;
+import com.booking.ProjectISS.model.notifications.NotificationVisible;
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.dto.reviews.ReviewDTO;
@@ -22,6 +23,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +49,8 @@ public class GuestController {
 
     @Autowired
     private IOwnerService ownerService;
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<GuestDTO>> getGuestDTO() {
         Collection<GuestDTO> guests = guestService.findAllDTO();
@@ -90,7 +94,8 @@ public class GuestController {
     //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<GuestDTO> deleteGuest(@PathVariable("id") Long id) {
         List<Reservation> acceptedReservations = reservationService.getGuestReservations(id).stream()
-                .filter(reservation -> reservation.getStatus() == ReservationStatus.ACCEPTED)
+                .filter(reservation -> reservation.getStatus() == ReservationStatus.ACCEPTED &&
+                        reservation.getEndDate().before(new Date()))
                 .toList();
 
         if(!acceptedReservations.isEmpty()){return  new ResponseEntity<>(HttpStatus.FORBIDDEN);}
@@ -185,11 +190,18 @@ public class GuestController {
     //@PreAuthorize("hasRole('Guest')")
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody Reservation reservation) throws Exception {
         System.out.println("UDJE DA KREIRA REZERVACIJU");
+
         System.out.println(reservation.getStartDate());
         if (reservationService.hasOverlappingRequests(reservation)) {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
         System.out.println(reservation);
+        NotificationVisible notificationVisible=new NotificationVisible(100L,"aaaa",null,null,"GO");
+        //if(o.get().isRateMeNotification()){
+            //System.out.println("UPALJENO");
+            this.simpMessagingTemplate.convertAndSend( "/socket-publisher/popovic.sv4.2021@uns.ac.rs",notificationVisible);
+            //notificationVisibleRepository.save(notificationVisible);
+        //}
         ReservationDTO reservationDTO = reservationService.create(reservation);
         System.out.println(reservationService.findAll());
         System.out.println(reservationService.findAllDTO());
