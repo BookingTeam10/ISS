@@ -95,6 +95,10 @@ public class AccommodationService implements IAccommodationService {
 
         Optional<Accommodation> optionalAccommodation = this.accommodationRepository.findById(accommodationForUpdate.getId());
 
+        if(optionalAccommodation.isEmpty()){
+            return "Doesn't exist this accommodation";
+        }
+
         boolean change=canChangeDates(accommodationForUpdate);
 
         if(change){
@@ -226,7 +230,7 @@ public class AccommodationService implements IAccommodationService {
             Date startDateReservation=reservation.getStartDate();
             Date endDateReservation=reservation.getEndDate();
             for(Price price:prices){
-                if((startDateReservation.after(price.getStartDate()) && startDateReservation.before(price.getEndDate())) || (endDateReservation.after(price.getStartDate()) && endDateReservation.before(price.getEndDate()))){
+                if(((startDateReservation.after(price.getStartDate()) && startDateReservation.before(price.getEndDate())) || (endDateReservation.after(price.getStartDate()) && endDateReservation.before(price.getEndDate()) ))){
                     return false;
                 }
             }

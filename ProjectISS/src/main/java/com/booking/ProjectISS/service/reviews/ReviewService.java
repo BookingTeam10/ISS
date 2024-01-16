@@ -196,7 +196,7 @@ public class ReviewService implements IReviewService {
         review.setGuest(g.get());
         review.setStatus(ReviewStatus.ACTIVE);
         ReviewOwner savedReview = reviewOwnerRepository.save(review);
-        NotificationVisible notificationVisible=new NotificationVisible(100L,"aaaa",review.getGuest(),review.getOwner(),"GO");
+        NotificationVisible notificationVisible=new NotificationVisible(100L,review.getComment(),review.getGuest(),review.getOwner(),"GO");
         if(o.get().isRateMeNotification()){
             System.out.println("UPALJENO");
             this.simpMessagingTemplate.convertAndSend( "/socket-publisher/"+idOwner,notificationVisible);

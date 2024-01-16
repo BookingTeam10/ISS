@@ -36,32 +36,6 @@ public class ReservationRepositoryTest {
     @Autowired
     private IReservationRepository reservationRepository;
 
-//    @DataProvider(name = "findReservationByAccommodationId")
-//    private Object[][] findReservationByAccommodationIdExamples() {
-//
-//        Collection<Reservation> collections1 = Arrays.asList(new Reservation(1),new Reservation(2),new Reservation(5));
-//        Collection<Reservation> collections2 = Arrays.asList(new Reservation(3),new Reservation(4));
-//        Collection<Reservation> collections3 = new ArrayList<Reservation>();
-//
-//        return new Object[][] {
-//                { 1L, collections1 },
-//                { 2L, collections2 },
-//                { 999L , collections3 }
-//        };
-//    }
-//    @Test(dataProvider = "findReservationByAccommodationId")
-//    public void findReservationByAccommodationIdTest(Long accommodationId, Collection<Reservation> expectedReservations) {
-//
-//        Collection<Reservation> reservations = reservationRepository.findByAccommodation(accommodationId);
-//
-//        System.out.println(reservations);
-//
-//        System.out.println(expectedReservations);
-//
-//        assertThat(reservations).hasSize(expectedReservations.size());
-//        //assertThat(reservations).extracting(Reservation::getId).containsExactlyElementsOf(expectedReservations.stream().map(Reservation::getId).collect(Collectors.toList()));
-//    }
-
     static Stream<Arguments> findReservationByAccommodationIdExamples() {
         Collection<Reservation> collections1 = Arrays.asList(new Reservation(1), new Reservation(2), new Reservation(5));
         Collection<Reservation> collections2 = Arrays.asList(new Reservation(3), new Reservation(4));
@@ -81,7 +55,7 @@ public class ReservationRepositoryTest {
         Collection<Reservation> reservations = reservationRepository.findByAccommodation(accommodationId);
 
         assertThat(reservations).hasSize(expectedReservations.size());
-        //assertThat(reservations).extracting(Reservation::getId).containsExactlyInAnyOrderElementsOf(expectedReservations.stream().map(Reservation::getId).collect(Collectors.toList()));
+        assertThat(reservations).extracting(Reservation::getId).containsExactlyInAnyOrder(expectedReservations.stream().map(Reservation::getId).toArray(Long[]::new));
     }
 
     @Test
