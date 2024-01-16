@@ -19,9 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,8 +31,8 @@ public class AccommodationControllerTest {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void updateAccommodationREST() {
-        Accommodation accommodation=new Accommodation(1L);
+    public void updateAccommodationREST() {             //4 slucaja ko i vamo, 4 vrste message
+        Accommodation accommodation=new Accommodation(1L,0, Arrays.asList(new Price(1L,1000, new Date(125,1,1),new Date(126,1,1)),new Price(1L,1000, new Date(127,1,1),new Date(128,1,1))),100,200,100,Arrays.asList(new Reservation(1L,new Date(125, 0, 12),new Date(125, 0, 15)),new Reservation(2L,new Date(125,1,12),new Date(125,1,15))));
         HttpEntity<Accommodation> requestEntity = new HttpEntity<Accommodation>(accommodation);
         ResponseEntity<Map<String, String>> responseEntity = restTemplate.exchange("/api/accommodation/{id}",
                 HttpMethod.PUT,
@@ -43,6 +41,8 @@ public class AccommodationControllerTest {
                 },accommodation.getId());
 
         Map<String,String> message = responseEntity.getBody();
+
+        System.out.println(message);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }

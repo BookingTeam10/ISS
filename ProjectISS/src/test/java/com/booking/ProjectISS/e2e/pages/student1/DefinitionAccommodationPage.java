@@ -167,4 +167,44 @@ public class DefinitionAccommodationPage {
         }
         return "";
     }
+
+    public boolean isChangedOnlyLimitDay(double weekendPriceDouble, double holidayPriceDouble, double summerPriceDouble, int cancelledDay, List<DatesPrice> datesPriceList) {
+        double setWeekendPriceInput=Double.parseDouble(weekendPriceInput.getAttribute("value"));
+        if(setWeekendPriceInput==weekendPriceDouble){
+            return false;
+        }
+        double setHolidayPriceInput=Double.parseDouble(holidayPriceInput.getAttribute("value"));
+        if(setHolidayPriceInput==holidayPriceDouble){
+            return false;
+        }
+        double setSummerPriceInput=Double.parseDouble(summerPriceInput.getAttribute("value"));
+        if(setSummerPriceInput==summerPriceDouble){
+            return false;
+        }
+        int cancelledDayInput=Integer.parseInt(cancelLimitInput.getAttribute("value"));
+        if(cancelledDayInput!=cancelledDay){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isChangedNothing(double weekendPriceDouble, double holidayPriceDouble, double summerPriceDouble, int cancelledDay, List<DatesPrice> datesPriceList) {
+        double setWeekendPriceInput=Double.parseDouble(weekendPriceInput.getAttribute("value"));
+        if(setWeekendPriceInput==weekendPriceDouble){
+            return false;
+        }
+        double setHolidayPriceInput=Double.parseDouble(holidayPriceInput.getAttribute("value"));
+        if(setHolidayPriceInput==holidayPriceDouble){
+            return false;
+        }
+        double setSummerPriceInput=Double.parseDouble(summerPriceInput.getAttribute("value"));
+        if(setSummerPriceInput==summerPriceDouble){
+            return false;
+        }
+        int cancelledDayInput=Integer.parseInt(cancelLimitInput.getAttribute("value"));
+        if(cancelledDayInput!=cancelledDay){
+            return false;
+        }
+        return true;
+    }
 }

@@ -79,6 +79,18 @@ public class Accommodation implements Serializable {
     private boolean automaticConfirmation;
     public Accommodation() {}
 
+    public Accommodation(Long id, List<Reservation> reservations, List<Price> prices) {
+        this.id = id;
+        this.prices = prices;
+        this.reservations = reservations;
+    }
+
+    public Accommodation(Long id, List<Reservation> reservations, List<Price> prices, int limitDay) {
+        this.id = id;
+        this.prices = prices;
+        this.reservations = reservations;
+        this.cancelDeadline=limitDay;
+    }
 
     public Long getId() {
         return id;
@@ -297,6 +309,17 @@ public class Accommodation implements Serializable {
                 ", reservations=" + reservations +
                 ", automaticConfirmation=" + automaticConfirmation +
                 '}';
+    }
+
+
+    public Accommodation(Long id, int cancelDeadline, List<Price> prices, double weekendPrice, double holidayPrice, double summerPrice, List<Reservation> reservations) {
+        this.id = id;
+        this.cancelDeadline = cancelDeadline;
+        this.prices = prices;
+        this.weekendPrice = weekendPrice;
+        this.holidayPrice = holidayPrice;
+        this.summerPrice = summerPrice;
+        this.reservations = reservations;
     }
 
     @Override

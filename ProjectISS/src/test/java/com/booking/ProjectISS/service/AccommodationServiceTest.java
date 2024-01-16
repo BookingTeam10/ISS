@@ -15,6 +15,9 @@ import com.booking.ProjectISS.service.accommodation.price.PriceService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mockito;
@@ -23,10 +26,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.testng.annotations.DataProvider;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
@@ -50,87 +53,106 @@ public class AccommodationServiceTest {
     @MockBean
     private PriceService priceService;
 
+    private static final Long VALID_ACCOMMODATION_ID = 1L;
+    private static final Long INVALID_ACCOMMODATION_ID = 0L;
 
     @Test
-    public void changeDatesTrue() {
-        Accommodation accommodation=getAccommodation();
-        when(accommodationRepository.findById(1L)).thenReturn(Optional.of(accommodation));
-        when(reservationRepository.findByAccommodation(1L)).thenReturn(accommodation.getReservations());
-        when(priceService.update(any(Price.class))).thenReturn(null);
-        String message = accommodationService.updateAccommodation(accommodation);
-        verify(accommodationRepository).findById(1L);
-        verify(reservationRepository).findByAccommodation(1L);
-        verify(priceService, times(accommodation.getPrices().size())).update(any(Price.class));
-        assertEquals(message,"Successful edit");
+    public void accommodationDoesnotExist(){
+
+        when(accommodationRepository.findById(INVALID_ACCOMMODATION_ID)).thenReturn(Optional.empty());
+
+        Accommodation accommodation=new Accommodation(INVALID_ACCOMMODATION_ID);
+
+        String message=accommodationService.updateAccommodation(accommodation);
+
+        verify(accommodationRepository).findById(INVALID_ACCOMMODATION_ID);
+        verifyNoInteractions(reservationRepository);
+        verifyNoInteractions(priceService);
+        assertEquals("Doesn't exist this accommodation",message);
+    }
+
+    @Test
+    public void changeReturnTrue(){     //dodati jos slucajeva i ostale atribute
+
+        //List<Price> prices = Arrays.asList()      //obavezno ostali atributi
+
+        List<Reservation> reservations = List.of();
+
+        //List<Price> prices = Arrays.asList();
+
+        List<Price> prices = List.of();
+
+        Collection<Reservation> reservationsCollections = reservations;
+
+        Accommodation accommodation=new Accommodation(VALID_ACCOMMODATION_ID,reservations,prices);
+
+        when(accommodationRepository.findById(VALID_ACCOMMODATION_ID)).thenReturn(Optional.of(accommodation));
+
+        when(reservationRepository.findByAccommodation(VALID_ACCOMMODATION_ID)).thenReturn(reservationsCollections);
+
+        for(Price price : prices) {
+            doNothing().when(priceService).update(price);
+        }
+
+        String message=accommodationService.updateAccommodation(accommodation);
+
+        verify(accommodationRepository).findById(VALID_ACCOMMODATION_ID);
+        verify(reservationRepository).findByAccommodation(VALID_ACCOMMODATION_ID);
+        for(Price price : prices) {
+            verify(priceService).update(price);
+        }
         verify(accommodationRepository).save(accommodation);
+        assertEquals("Successful edit",message);
     }
 
-    private Accommodation getAccommodation(){
-        List<String> photos=new ArrayList<String>();
-        List<TakenDate> takenDates=new ArrayList<TakenDate>();
-        List<Amenity> amenities=new ArrayList<Amenity>();
-        List<Price> prices=new ArrayList<Price>();
-        List<Reservation> reservations=new ArrayList<Reservation>();
-        Reservation reservation1 = new Reservation(1L,new Date(124, 0, 22),new Date(124, 0, 25));
-        Reservation reservation2 = new Reservation(2L,new Date(124, 0, 26),new Date(124, 0, 30));
-        reservations.add(reservation1);
-        reservations.add(reservation2);
-        Accommodation accommodation=new Accommodation(1L,true,true,"111",0,0,"Naziv1",photos, TypeAccommodation.Apartment,0,0,prices,takenDates,amenities,null,null,reservations,0,0,0,true, AccommodationStatus.CREATED);
-        return accommodation;
-    }
+    @Test
+    public void changeReturnFalseChange(){     //dodati jos slucajeva
 
+        List<Reservation> reservations = Arrays.asList(new Reservation(1L,new Date(125, 0, 12),new Date(125, 0, 15)),new Reservation(2L,new Date(125,1,12),new Date(125,1,15)));
 
-    @DataProvider(name = "change_date_false_edit_deadline")
-    private Object[][] dataProviderForFalseEditDeadlineResults() {
-        String message="You can only change the cancelled deadline, due to reservations";
-        return new Object[][] {
-                {2L,message},
-                {3L,message},
-                {4L,message}
-        };
-    }
+        List<Price> prices = Arrays.asList(new Price(1L,1000, new Date(125,1,1),new Date(126,1,1)),new Price(1L,1000, new Date(127,1,1),new Date(128,1,1)));
 
-    @DataProvider(name = "change_date_false_no_edit_deadline")
-    private Object[][] dataProviderForFalseNoEditDeadlineResults() {
-        String message="Changed only cancelled deadline, due to reservations";
-        return new Object[][] {
-                {5L,message}
-        };
-    }
+        Collection<Reservation> reservationsCollections = reservations;
 
-    @DataProvider(name = "change_date_true")
-    private Object[][] dataProviderForTrueResults() {
-        String message="Successful edit";
-        return new Object[][] {
-                {1L,message}
-        };
-    }
+        Accommodation accommodation=new Accommodation(VALID_ACCOMMODATION_ID,reservations,prices,1);
 
-    @org.testng.annotations.Test(dataProvider = "change_date_true")
-    public void changeDatesTrue(Long accommodationId,String expectedMessage) {
-        List<String> photos=new ArrayList<String>();
-        List<TakenDate> takenDates=new ArrayList<TakenDate>();
-        List<Amenity> amenities=new ArrayList<Amenity>();
-        List<Price> prices=new ArrayList<Price>();
-        List<Reservation> reservations=new ArrayList<Reservation>();
-        Reservation reservation1 = new Reservation(1L,new Date(124, 0, 22),new Date(124, 0, 25));
-        Reservation reservation2 = new Reservation(2L,new Date(124, 0, 26),new Date(124, 0, 30));
-        reservations.add(reservation1);
-        reservations.add(reservation2);
-        Accommodation accommodation=new Accommodation(accommodationId,true,true,"111",0,0,"Naziv1",photos, TypeAccommodation.Apartment,0,0,prices,takenDates,amenities,null,null,reservations,0,0,0,true, AccommodationStatus.CREATED);
+        Accommodation oldAccommodation=new Accommodation(VALID_ACCOMMODATION_ID,reservations,prices,2);
 
-        System.out.println(accommodation);
+        when(accommodationRepository.findById(VALID_ACCOMMODATION_ID)).thenReturn(Optional.of(oldAccommodation));
 
-        Mockito.when(accommodationRepository.findById(accommodationId)).thenReturn(Optional.of(accommodation));
-        Mockito.when(reservationRepository.findByAccommodation(accommodationId)).thenReturn(accommodation.getReservations());
-        Mockito.when(priceService.update(any(Price.class))).thenReturn(null);
+        when(reservationRepository.findByAccommodation(VALID_ACCOMMODATION_ID)).thenReturn(reservationsCollections);
 
-        String message = accommodationService.updateAccommodation(accommodation);
+        String message=accommodationService.updateAccommodation(accommodation);
 
-        verify(accommodationRepository).findById(accommodationId);
-        verify(reservationRepository).findByAccommodation(accommodationId);
-        verify(priceService, times(accommodation.getPrices().size())).update(any(Price.class));
-        assertEquals(message,expectedMessage);
+        verify(accommodationRepository).findById(VALID_ACCOMMODATION_ID);
+        verify(reservationRepository).findByAccommodation(VALID_ACCOMMODATION_ID);
+        verifyNoInteractions(priceService);
         verify(accommodationRepository).save(accommodation);
+        assertEquals("Changed only cancelled deadline, due to reservations",message);
     }
+
+    @Test
+    public void changeReturnFalseNoChange(){     //dodati jos slucajeva
+
+        List<Reservation> reservations = Arrays.asList(new Reservation(1L,new Date(125, 0, 12),new Date(125, 0, 15)),new Reservation(2L,new Date(125,1,12),new Date(125,1,15)));
+
+        List<Price> prices = Arrays.asList(new Price(1L,1000, new Date(125,1,1),new Date(126,1,1)),new Price(1L,1000, new Date(127,1,1),new Date(128,1,1)));
+
+        Collection<Reservation> reservationsCollections = reservations;
+
+        Accommodation accommodation=new Accommodation(VALID_ACCOMMODATION_ID,reservations,prices,1);
+
+        when(accommodationRepository.findById(VALID_ACCOMMODATION_ID)).thenReturn(Optional.of(accommodation));
+
+        when(reservationRepository.findByAccommodation(VALID_ACCOMMODATION_ID)).thenReturn(reservationsCollections);
+
+        String message=accommodationService.updateAccommodation(accommodation);
+
+        verify(accommodationRepository).findById(VALID_ACCOMMODATION_ID);
+        verify(reservationRepository).findByAccommodation(VALID_ACCOMMODATION_ID);
+        verifyNoInteractions(priceService);
+        assertEquals("You can only change the cancelled deadline, due to reservations",message);
+
+    }
+
 }

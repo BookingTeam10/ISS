@@ -27,7 +27,9 @@ public class MyAccommodationPage {
             WebElement nameElement=accommodation.findElement(By.cssSelector(".b-description"));
             String nameText = nameElement.getText().trim();
             if(nameText.equals(name)){
-                WebElement editButton = (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(accommodation.findElement(By.xpath(".//button[contains(@class,'btn-stilizovano')]"))));
+                //WebElement editButton = (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(accommodation.findElement(By.xpath(".//button[contains(@class,'btn-stilizovano')]"))));
+                WebElement editButton = new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//button[contains(@class,'btn-stilizovano')]")));
+                //editButton.click();
                 editButton.click();
                 break;
             }
