@@ -56,4 +56,8 @@ public interface IReviewService {
     Review findReviewByAccommodationId(Long idReservation);
 
     Review findReviewByAccommodationIdSingle(Long idReservation);
+
+    Review findById(Long id);
+
+    ReviewDTO createrRewiew(Review review, Long idReservation, Long idGuest);
 }

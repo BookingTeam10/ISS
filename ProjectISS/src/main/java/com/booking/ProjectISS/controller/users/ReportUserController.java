@@ -54,6 +54,8 @@ public class ReportUserController {
     //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<Collection<ReportUser>> getUserReports() {
         Collection<ReportUser> reportUser = userService.findAllReports();
+        System.out.println("REPORT USER SIZE");
+        System.out.println(reportUser.size());
         return new ResponseEntity<Collection<ReportUser>>(reportUser,HttpStatus.OK);
     }
 
