@@ -97,4 +97,8 @@ public class Guest extends User {
     public int hashCode() {
         return Objects.hash(getId());
     }
+
+    public Guest(Long id) {
+        super.setId(id);
+    }
 }

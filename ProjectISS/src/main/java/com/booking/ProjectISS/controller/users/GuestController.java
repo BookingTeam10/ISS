@@ -27,6 +27,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -266,6 +267,41 @@ public class GuestController {
     public ResponseEntity<Collection<ReservationDTO>> allGuestReservation(@PathVariable("idGuest") Long idGuest){
         Collection<ReservationDTO> reservations = reservationService.findByGuest(idGuest);
         return new ResponseEntity<Collection<ReservationDTO>>(reservations, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{idGuest}/not-accepted-requests")
+    // @PreAuthorize("hasAnyRole('Guest', 'Owner')")
+    public ResponseEntity<Collection<ReservationDTO>> notAcceptedReservationByGuest(@PathVariable("idGuest") Long idGuest){
+        System.out.println("UDJEEE");
+        Collection<ReservationDTO> reservations = reservationService.findAllNotAcceptedGuestDTO(idGuest);
+        System.out.println(reservations.size());
+        return new ResponseEntity<Collection<ReservationDTO>>(reservations, HttpStatus.OK);
+    }
+    @PostMapping(value="/reservationsMobile", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<ReservationDTO> createReservation(@RequestParam(required = false) double price,
+                                                            @RequestParam(required = false) String start,
+                                                            @RequestParam(required = false) String end,
+                                                            @RequestParam(required = false) Long idAccommodation,
+                                                            @RequestParam(required = false) Long idGuest,
+                                                            @RequestParam(required = false) boolean automatic
+    ) throws Exception {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date date1 = formatter.parse(start);
+        Date date2 = formatter.parse(end);
+        System.out.println(date1);
+        System.out.println(date2);
+        long differenceInMilliseconds = date2.getTime() - date1.getTime();
+        int differenceInDays = (int) (differenceInMilliseconds / (1000 * 60 * 60 * 24));
+        Reservation reservation = new Reservation(100L,price,ReservationStatus.WAITING,date1,date2,differenceInDays,new Accommodation(idAccommodation,automatic),new Guest(idGuest),null);
+        if (reservationService.hasOverlappingRequests(reservation)) {
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        }
+
+        ReservationDTO reservationDTO = reservationService.create(reservation);
+        System.out.println(reservationService.findAll());
+        System.out.println(reservationService.findAllDTO());
+        return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
     }
 
 }

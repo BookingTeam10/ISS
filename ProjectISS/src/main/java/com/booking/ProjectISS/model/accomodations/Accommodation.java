@@ -388,5 +388,10 @@ public class Accommodation implements Serializable {
         this.id = id;
 
     }
+    public Accommodation(Long id,boolean automaticConfirmation) {
+        this.id = id;
+        this.automaticConfirmation = automaticConfirmation;
+
+    }
 
 }

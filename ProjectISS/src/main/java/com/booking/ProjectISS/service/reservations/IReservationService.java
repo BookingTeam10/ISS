@@ -36,4 +36,5 @@ public interface IReservationService {
     Collection<ReservationDTO> getOwnersRequests(Long idOwner);
     Collection<ReservationDTO> findByGuest(Long id);
     int totalPrice(Collection<ReservationDTO> reservationDTOS);
+    Collection<ReservationDTO> findAllNotAcceptedGuestDTO(Long idGuest);
 }

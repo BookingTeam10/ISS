@@ -312,6 +312,18 @@ public class ReservationService implements IReservationService{
 
         return total;
     }
+    @Override
+    public Collection<ReservationDTO> findAllNotAcceptedGuestDTO(Long idGuest) {
+        Collection<ReservationDTO> reservations = reservationRepository.findByGuest(idGuest);
+        Collection<ReservationDTO> reservationDTOS = new ArrayList<>();
+
+        for(ReservationDTO r: reservations){
+            if (r.getStatus() != ReservationStatus.ACCEPTED)
+                reservationDTOS.add(r);
+        }
+
+        return reservationDTOS;
+    }
 
 
 }

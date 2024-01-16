@@ -54,7 +54,11 @@ VALUES (200, 'CANCELLED', '2022-12-12', '2022-12-15', 3, 1, 3),
        (200, 'WAITING', '2023-10-10', '2023-10-15', 5, 1, 3),
        (100, 'REJECTED', '2025-01-02', '2025-01-05', 3, 2, 3),
        (50, 'ACCEPTED', '2025-01-10', '2025-05-12', 1, 2, 3),
-       (150, 'ACCEPTED', '2025-01-02', '2025-01-05', 2, 3, 3);
+       (150, 'ACCEPTED', '2025-01-02', '2025-01-05', 2, 3, 3),
+       (50, 'WAITING', '2024-09-09', '2024-09-15', 5, 1, 3),
+       (150, 'WAITING', '2024-10-10', '2024-10-15', 5, 2, 3),
+       (370, 'WAITING', '2026-10-10', '2026-10-15', 5, 2, 3),
+       (200, 'WAITING', '2027-10-10', '2027-10-15', 5, 1, 3);
 
 INSERT INTO notifications (text, notification_status, guest_id, owner_id, sent_date)
 VALUES
@@ -81,7 +85,7 @@ VALUES
 
 INSERT INTO report (review_comment,status,owner_id, guest_id,user_report)
 VALUES
-    ('Bad experience!','REPORTED', 1,3,'OG');
+    ('Bad experience!','REPORTED', 1,3,'GO');
 
 --INSERT INTO guests_favourite_accommodations (guest_id,favourite_accommodations_accommodation_id)
 --VALUES (3,3);
