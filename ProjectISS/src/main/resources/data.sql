@@ -85,7 +85,7 @@ VALUES
 
 INSERT INTO report (review_comment,status,owner_id, guest_id,user_report)
 VALUES
-    ('Bad experience!','REPORTED', 1,3,'GO');
+    ('Bad experience!','REPORTED', 4,3,'OG');
 
 --INSERT INTO guests_favourite_accommodations (guest_id,favourite_accommodations_accommodation_id)
 --VALUES (3,3);

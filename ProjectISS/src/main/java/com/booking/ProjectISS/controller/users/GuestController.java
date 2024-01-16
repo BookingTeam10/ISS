@@ -304,4 +304,18 @@ public class GuestController {
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
     }
 
+    @PostMapping(value="/{id}/favouriteAccommodationsMobile/add/{idAccommodation}" ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GuestDTO> addFavouriteAccommodation(@PathVariable("id") Long id,@PathVariable("idAccommodation") Long idAccommodation) throws Exception {
+        Guest guest = guestService.findOne(id);
+        System.out.println(guest);
+        System.out.println("UDJE");
+        List<Accommodation> favouriteAccommodations = guest.getFavouriteAccommodations();
+        Accommodation accommodation = accommodationService.findOne(idAccommodation);
+        favouriteAccommodations.add(accommodation);
+        guest.setFavouriteAccommodations(favouriteAccommodations);
+        guestService.update(guest);
+
+        return new ResponseEntity<GuestDTO>(new GuestDTO(guest), HttpStatus.CREATED);
+    }
+
 }

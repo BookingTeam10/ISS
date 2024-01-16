@@ -310,12 +310,12 @@ public class ReviewService implements IReviewService {
     @Override
     public Review updateReview(Review review) {
         review.setStatus(ReviewStatus.REPORTED);
-        return reviewRepository.save(review);
+        Review review1=reviewRepository.save(review);
+        return review1;
     }
 
     @Override
     public Review findReviewByOwnerGuestAccommodation(Long idAccommodation, Long idGuest) {
-        System.out.println("USLO OVDE");
         Collection<Reservation> reservation=reservationRepository.findByAccommodationGuest(idAccommodation,idGuest);
         System.out.println(reservation);
         System.out.println(reservation.size());
@@ -407,5 +407,18 @@ public class ReviewService implements IReviewService {
             }
         }
         return null;
+    }
+
+    @Override
+    public Review findById(Long id) {
+        return reviewRepository.findById(id).get();
+    }
+
+    @Override
+    public ReviewDTO createrRewiew(Review review, Long idReservation, Long idGuest) {
+        Optional<Reservation> reservation=reservationRepository.findById(idReservation);
+        review.setReservation(reservation.get());
+        reviewRepository.save(review);
+        return new ReviewDTO(review);
     }
 }

@@ -33,6 +33,14 @@ public class Review  implements Serializable {
         this.status = status;
     }
 
+    public Review(long id, double rate, String comment, ReviewStatus status, Reservation reservation) {
+        this.id = id;
+        this.rate = rate;
+        this.comment = comment;
+        this.status = status;
+        this.reservation = reservation;
+    }
+
     public long getId() {
         return id;
     }
