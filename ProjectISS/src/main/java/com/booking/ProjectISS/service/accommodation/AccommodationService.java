@@ -84,8 +84,33 @@ public class AccommodationService implements IAccommodationService {
     }
 
     @Override
-    public AccommodationDTO update(Accommodation accommodation) throws Exception {
-        return null;
+    public AccommodationDTO update(Accommodation accommodationForUpdate) throws Exception {
+        Optional<Accommodation> optionalAccommodation = this.accommodationRepository.findById(accommodationForUpdate.getId());
+
+        optionalAccommodation.ifPresent(oldAccommodation -> {
+            oldAccommodation.setId(accommodationForUpdate.getId());
+            oldAccommodation.setAccepted(accommodationForUpdate.isAccepted());
+            oldAccommodation.setAutomaticActivation(accommodationForUpdate.isAutomaticActivation());
+            oldAccommodation.setDescription(accommodationForUpdate.getDescription());
+            oldAccommodation.setMinPeople(accommodationForUpdate.getMinPeople());
+            oldAccommodation.setMaxPeople(accommodationForUpdate.getMaxPeople());
+            oldAccommodation.setPhotos(accommodationForUpdate.getPhotos());
+            oldAccommodation.setTypeAccomodation(accommodationForUpdate.getTypeAccomodation());
+            oldAccommodation.setAccommodationStatus(accommodationForUpdate.getAccommodationStatus());
+            oldAccommodation.setRating(accommodationForUpdate.getRating());
+            oldAccommodation.setCancelDeadline(accommodationForUpdate.getCancelDeadline());
+            oldAccommodation.setTakenDates(accommodationForUpdate.getTakenDates());
+            oldAccommodation.setLocation(accommodationForUpdate.getLocation());
+            oldAccommodation.setOwner(accommodationForUpdate.getOwner());
+            oldAccommodation.setReservations(accommodationForUpdate.getReservations());
+            oldAccommodation.setPrices(accommodationForUpdate.getPrices());
+            oldAccommodation.setAmenities(accommodationForUpdate.getAmenities());
+            oldAccommodation.setAutomaticConfirmation(accommodationForUpdate.isAutomaticConfirmation());
+
+            this.accommodationRepository.save(oldAccommodation);
+        });
+
+        return new AccommodationDTO(accommodationForUpdate);
     }
 
     @Override
