@@ -49,8 +49,7 @@ public class AccommodationController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> updateAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long id)
-            throws Exception {
+    public ResponseEntity<Map<String, String>> updateAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long id) throws Exception {
         Map<String, String> response = new HashMap<>();
         String message = accommodationService.updateAccommodation(accommodation);
         response.put("message", message);

@@ -53,11 +53,19 @@ public class AccommodationServiceTest {
     @MockBean
     private PriceService priceService;
 
-    private static final Long VALID_ACCOMMODATION_ID = 1L;
-    private static final Long INVALID_ACCOMMODATION_ID = 0L;
+    //private static final Long VALID_ACCOMMODATION_ID = 1L;
+    //private static final Long INVALID_ACCOMMODATION_ID = 0L;
 
-    @Test
-    public void accommodationDoesnotExist(){
+    static Stream<Arguments> invalidIdAccommodation() {
+
+        return Stream.of(
+                Arguments.of(0L)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidIdAccommodation")
+    public void accommodationDoesnotExist(Long INVALID_ACCOMMODATION_ID){
 
         when(accommodationRepository.findById(INVALID_ACCOMMODATION_ID)).thenReturn(Optional.empty());
 
@@ -71,87 +79,107 @@ public class AccommodationServiceTest {
         assertEquals("Doesn't exist this accommodation",message);
     }
 
-    @Test
-    public void changeReturnTrue(){     //dodati jos slucajeva i ostale atribute
 
-        //List<Price> prices = Arrays.asList()      //obavezno ostali atributi
+    static Stream<Arguments> editAccommodationSuccessful() {
 
-        List<Reservation> reservations = List.of();
+        Long VALID_ACCOMMODATION_ID=1L;
 
-        //List<Price> prices = Arrays.asList();
-
-        List<Price> prices = List.of();
-
-        Collection<Reservation> reservationsCollections = reservations;
-
-        Accommodation accommodation=new Accommodation(VALID_ACCOMMODATION_ID,reservations,prices);
-
-        when(accommodationRepository.findById(VALID_ACCOMMODATION_ID)).thenReturn(Optional.of(accommodation));
-
-        when(reservationRepository.findByAccommodation(VALID_ACCOMMODATION_ID)).thenReturn(reservationsCollections);
-
-        for(Price price : prices) {
-            doNothing().when(priceService).update(price);
-        }
-
-        String message=accommodationService.updateAccommodation(accommodation);
-
-        verify(accommodationRepository).findById(VALID_ACCOMMODATION_ID);
-        verify(reservationRepository).findByAccommodation(VALID_ACCOMMODATION_ID);
-        for(Price price : prices) {
-            verify(priceService).update(price);
-        }
-        verify(accommodationRepository).save(accommodation);
-        assertEquals("Successful edit",message);
+        return Stream.of(
+                Arguments.of(VALID_ACCOMMODATION_ID,new Accommodation(VALID_ACCOMMODATION_ID),new Accommodation(VALID_ACCOMMODATION_ID,5, Arrays.asList(new Price(1L,1000, new Date(125,1,1),new Date(126,1,1)),new Price(2L,1000, new Date(127,1,1),new Date(128,1,1))),100,200,100),new ArrayList<Reservation>(),"Successful edit")
+        );
     }
 
-    @Test
-    public void changeReturnFalseChange(){     //dodati jos slucajeva
-
-        List<Reservation> reservations = Arrays.asList(new Reservation(1L,new Date(125, 0, 12),new Date(125, 0, 15)),new Reservation(2L,new Date(125,1,12),new Date(125,1,15)));
-
-        List<Price> prices = Arrays.asList(new Price(1L,1000, new Date(125,1,1),new Date(126,1,1)),new Price(1L,1000, new Date(127,1,1),new Date(128,1,1)));
-
-        Collection<Reservation> reservationsCollections = reservations;
-
-        Accommodation accommodation=new Accommodation(VALID_ACCOMMODATION_ID,reservations,prices,1);
-
-        Accommodation oldAccommodation=new Accommodation(VALID_ACCOMMODATION_ID,reservations,prices,2);
+    @ParameterizedTest
+    @MethodSource("editAccommodationSuccessful")
+    public void changeReturnTrue(Long VALID_ACCOMMODATION_ID,Accommodation oldAccommodation,Accommodation updatedAccommodation,Collection<Reservation>reservations,String exceptedMessage){
 
         when(accommodationRepository.findById(VALID_ACCOMMODATION_ID)).thenReturn(Optional.of(oldAccommodation));
 
-        when(reservationRepository.findByAccommodation(VALID_ACCOMMODATION_ID)).thenReturn(reservationsCollections);
+        when(reservationRepository.findByAccommodation(VALID_ACCOMMODATION_ID)).thenReturn(reservations);
 
-        String message=accommodationService.updateAccommodation(accommodation);
+        for(Price price : updatedAccommodation.getPrices()) {
+            when(priceService.update(price)).thenReturn(price);
+        }
+
+        String message=accommodationService.updateAccommodation(updatedAccommodation);
 
         verify(accommodationRepository).findById(VALID_ACCOMMODATION_ID);
         verify(reservationRepository).findByAccommodation(VALID_ACCOMMODATION_ID);
-        verifyNoInteractions(priceService);
-        verify(accommodationRepository).save(accommodation);
-        assertEquals("Changed only cancelled deadline, due to reservations",message);
+        for(Price price : updatedAccommodation.getPrices()) {
+            verify(priceService).update(price);
+        }
+        verify(accommodationRepository).save(oldAccommodation);
+        assertEquals(exceptedMessage,message);
     }
 
-    @Test
-    public void changeReturnFalseNoChange(){     //dodati jos slucajeva
+    static Stream<Arguments> editAccommodationNothing() {
 
-        List<Reservation> reservations = Arrays.asList(new Reservation(1L,new Date(125, 0, 12),new Date(125, 0, 15)),new Reservation(2L,new Date(125,1,12),new Date(125,1,15)));
+        Long VALID_ACCOMMODATION_ID=1L;
+
+        Collection<Reservation> reservations1 = Arrays.asList(new Reservation(1L,new Date(125, 0, 12),new Date(125, 0, 15)),new Reservation(2L,new Date(125,1,12),new Date(125,1,15)));
 
         List<Price> prices = Arrays.asList(new Price(1L,1000, new Date(125,1,1),new Date(126,1,1)),new Price(1L,1000, new Date(127,1,1),new Date(128,1,1)));
 
-        Collection<Reservation> reservationsCollections = reservations;
+        Accommodation oldAccommodation1=new Accommodation(VALID_ACCOMMODATION_ID,3);
 
-        Accommodation accommodation=new Accommodation(VALID_ACCOMMODATION_ID,reservations,prices,1);
+        Accommodation updatedAccommodation1=new Accommodation(VALID_ACCOMMODATION_ID,3,prices);
 
-        when(accommodationRepository.findById(VALID_ACCOMMODATION_ID)).thenReturn(Optional.of(accommodation));
 
-        when(reservationRepository.findByAccommodation(VALID_ACCOMMODATION_ID)).thenReturn(reservationsCollections);
+        return Stream.of(
+                Arguments.of(VALID_ACCOMMODATION_ID,oldAccommodation1,updatedAccommodation1,reservations1,"You can only change the cancelled deadline, due to reservations")
+        );
+    }
 
-        String message=accommodationService.updateAccommodation(accommodation);
+    @ParameterizedTest
+    @MethodSource("editAccommodationNothing")
+    public void changeReturnFalseNoChange(Long VALID_ACCOMMODATION_ID,Accommodation oldAccommodation,Accommodation updatedAccommodation,Collection<Reservation> reservations, String exceptedMessage){
+
+        when(accommodationRepository.findById(VALID_ACCOMMODATION_ID)).thenReturn(Optional.of(oldAccommodation));
+
+        when(reservationRepository.findByAccommodation(VALID_ACCOMMODATION_ID)).thenReturn(reservations);
+
+        String message=accommodationService.updateAccommodation(updatedAccommodation);
 
         verify(accommodationRepository).findById(VALID_ACCOMMODATION_ID);
         verify(reservationRepository).findByAccommodation(VALID_ACCOMMODATION_ID);
         verifyNoInteractions(priceService);
-        assertEquals("You can only change the cancelled deadline, due to reservations",message);
+        assertEquals(exceptedMessage,message);
+    }
+
+    static Stream<Arguments> editAccommodationCancelledDay() {
+
+        Long VALID_ACCOMMODATION_ID=1L;
+
+        Collection<Reservation> reservations1 = Arrays.asList(new Reservation(1L,new Date(125, 0, 12),new Date(125, 0, 15)),new Reservation(2L,new Date(125,1,12),new Date(125,1,15)));
+
+        List<Price> prices = Arrays.asList(new Price(1L,1000, new Date(125,1,1),new Date(126,1,1)),new Price(1L,1000, new Date(127,1,1),new Date(128,1,1)));
+
+        Accommodation oldAccommodation1=new Accommodation(VALID_ACCOMMODATION_ID,3);
+
+        Accommodation updatedAccommodation1=new Accommodation(VALID_ACCOMMODATION_ID,2,prices);
+
+
+        return Stream.of(
+                Arguments.of(VALID_ACCOMMODATION_ID,oldAccommodation1,updatedAccommodation1,reservations1,"Changed only cancelled deadline, due to reservations")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("editAccommodationCancelledDay")
+    public void changeReturnFalseChange(Long VALID_ACCOMMODATION_ID, Accommodation oldAccommodation,Accommodation updatedAccommodation, Collection<Reservation> reservations, String exceptedMessage){     //dodati jos slucajeva
+
+
+        when(accommodationRepository.findById(VALID_ACCOMMODATION_ID)).thenReturn(Optional.of(oldAccommodation));
+
+        when(reservationRepository.findByAccommodation(VALID_ACCOMMODATION_ID)).thenReturn(reservations);
+
+        String message=accommodationService.updateAccommodation(updatedAccommodation);
+
+        verify(accommodationRepository).findById(VALID_ACCOMMODATION_ID);
+        verify(reservationRepository).findByAccommodation(VALID_ACCOMMODATION_ID);
+        verifyNoInteractions(priceService);
+        verify(accommodationRepository).save(oldAccommodation);
+        assertEquals(exceptedMessage,message);
 
     }
 
