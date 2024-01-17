@@ -41,7 +41,7 @@ public class definitionAccommodationTest extends TestBase {
         OwnerPage ownerPage=new OwnerPage(driver);
         Assert.assertTrue(ownerPage.isPageOpened("Booking Owner"));
         ownerPage.myAccommodationButton();
-        //Thread.sleep(1000);
+        Thread.sleep(1000);
         MyAccommodationPage myAccommodationPage=new MyAccommodationPage(driver);
         myAccommodationPage.chooseAccommodation(accommodationTitle);
         EditAccommodationPage editAccommodationPage=new EditAccommodationPage(driver);
