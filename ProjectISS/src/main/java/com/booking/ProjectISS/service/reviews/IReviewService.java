@@ -9,8 +9,8 @@ import com.booking.ProjectISS.model.reviews.ReviewOwner;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public interface IReviewService {
     ReviewDTO findOneDTO(Long id);
@@ -60,4 +60,10 @@ public interface IReviewService {
     Review findById(Long id);
 
     ReviewDTO createrRewiew(Review review, Long idReservation, Long idGuest);
+
+    List<ReviewOwner> getReviewOwners();
+
+    ReviewOwner findReviewOwner(Long id);
+
+    ReviewOwner updateReviewOwnerByAdmin(ReviewOwner updatedReviewOwner);
 }
