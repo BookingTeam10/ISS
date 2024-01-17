@@ -73,7 +73,7 @@ VALUES
 
 INSERT INTO review_owner (rate, review_comment,comment_date, status, owner_id, guest_id,is_reported)
 VALUES
-    (5, 'Great experience!', '2021-12-01', 'ACTIVE', 1,3,'false');
+    (5, 'Great experience!', '2021-12-01', 'ACTIVE', 4,3,'false');
 
 
 INSERT INTO accommodation_price (accommodation_id, price, start_date, end_date)
@@ -95,3 +95,9 @@ VALUES
     ('Your reservation has been accepted.', 3, 1, 'OG'),
     ('Your reservation has been rejected.', 3, 4, 'OG'),
     ('New reservation request received.', 3, 1, 'GO');
+
+INSERT INTO notifications_user_visible (text, guest_id, owner_id, user_rate,sent_date,notification_status)
+VALUES
+    ('Your reservation has been accepted.', 3, 1, 'OG','2024-01-20','NOT_VISIBLE'),
+    ('Your reservation has been rejected.', 3, 4, 'OG','2024-01-23','NOT_VISIBLE'),
+    ('New reservation request received.', 3, 1, 'GO','2024-01-22','NOT_VISIBLE');

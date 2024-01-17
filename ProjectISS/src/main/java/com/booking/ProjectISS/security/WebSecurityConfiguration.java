@@ -37,6 +37,7 @@ public class WebSecurityConfiguration {
 				.requestMatchers("/api/activate").permitAll()
 				.requestMatchers("/api/accommodations").permitAll()
                 .requestMatchers("/api/register/").permitAll()
+				.requestMatchers("/api/notifications/").permitAll()
 
 //                .requestMatchers("/api/notifications/").authenticated()
 //                .requestMatchers("/api/reservations/").authenticated()
