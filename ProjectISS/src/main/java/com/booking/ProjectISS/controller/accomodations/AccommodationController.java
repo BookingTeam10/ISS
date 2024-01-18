@@ -4,6 +4,7 @@ import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.enums.AccommodationStatus;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.accomodations.Amenity;
+import com.booking.ProjectISS.model.accomodations.Price;
 import com.booking.ProjectISS.service.accommodation.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -51,6 +52,7 @@ public class AccommodationController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> updateAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long id) throws Exception {
         Map<String, String> response = new HashMap<>();
+        System.out.println("POGODI DA LI PUT");
         String message = accommodationService.updateAccommodation(accommodation);
         response.put("message", message);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -139,6 +141,24 @@ public class AccommodationController {
             return new ResponseEntity<Collection<AccommodationDTO>>(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(accommodationDTOS);
+    }
+
+    @PutMapping(value = "/mobile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Accommodation> updateAccommodation(
+            @RequestParam(required = false) Long idAccommodation,
+            @RequestParam(required = false)  double weekendPrice,
+            @RequestParam(required = false)  double holidayPrice,
+            @RequestParam(required = false) double summerPrice,
+            @RequestParam(required = false) boolean isNight,
+            @RequestParam(required = false) int cancelDeadline) throws Exception {
+        Accommodation accommodation = accommodationService.findOne(idAccommodation);
+        accommodation.setWeekendPrice(weekendPrice);
+        accommodation.setHolidayPrice(holidayPrice);
+        accommodation.setSummerPrice(summerPrice);
+        System.out.println(accommodation);
+        Accommodation newAccommodation = accommodationService.updateAccommodationObject(accommodation);
+        System.out.println(newAccommodation);
+        return new ResponseEntity<>(newAccommodation, HttpStatus.OK);
     }
 
 }

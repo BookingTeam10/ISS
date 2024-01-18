@@ -139,4 +139,12 @@ public class ReservationController {
         return new ResponseEntity<Collection<ReservationDTO>>(reservationDTOS, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/byOwner/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')
+    public ResponseEntity<Collection<ReservationDTO>> getReservationDTOByUserOwner(@PathVariable("id") Long id){
+        Collection<ReservationDTO> reservationDTOS=reservationService.findByOwner(id);
+        System.out.println("BY GOST");
+        return new ResponseEntity<Collection<ReservationDTO>>(reservationDTOS, HttpStatus.OK);
+    }
+
 }

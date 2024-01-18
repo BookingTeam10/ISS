@@ -152,6 +152,17 @@ public class AccommodationService implements IAccommodationService {
         System.out.println(accommodationDTOS);
         return accommodationDTOS;
     }
+    @Override
+    public Accommodation updateAccommodationObject(Accommodation accommodationForUpdate) {
+        Accommodation oldAccommodation = findOne(accommodationForUpdate.getId());
+        oldAccommodation.setCancelDeadline(accommodationForUpdate.getCancelDeadline());
+        oldAccommodation.setPrices(accommodationForUpdate.getPrices());
+        this.updatePrices(accommodationForUpdate.getPrices());
+        oldAccommodation.setHolidayPrice(accommodationForUpdate.getHolidayPrice());
+        oldAccommodation.setWeekendPrice(accommodationForUpdate.getWeekendPrice());
+        oldAccommodation.setSummerPrice(accommodationForUpdate.getSummerPrice());
+        return this.accommodationRepository.save(oldAccommodation);
+    }
 
     private boolean matchesDate(Accommodation a, Date start, Date end) {
         List<TakenDate> dates = a.getTakenDates();
