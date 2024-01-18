@@ -8,13 +8,16 @@ import com.booking.ProjectISS.dto.users.GuestDTO;
 import com.booking.ProjectISS.dto.users.OwnerDTO;
 import com.booking.ProjectISS.enums.ReviewStatus;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
+import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.model.reviews.Review;
 import com.booking.ProjectISS.model.reviews.ReviewOwner;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.ReportUser;
+import com.booking.ProjectISS.repository.reservations.IReservationRepository;
 import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
+import com.booking.ProjectISS.service.reservations.IReservationService;
 import com.booking.ProjectISS.service.reviews.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -27,10 +30,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @CrossOrigin
@@ -47,6 +47,9 @@ public class ReviewController {
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    private IReservationService reservationService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
    // @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
@@ -308,6 +311,19 @@ public class ReviewController {
         Review review= reviewService.findReviewByAccommodationIdSingle(idReservation);
         System.out.println(review);
         return new ResponseEntity<Review>(review,HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/mobile",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
+    public ResponseEntity<ReviewDTO> createReviewMobile(@RequestParam(required = false) double rate,
+                                                        @RequestParam(required = false) String text,
+                                                        @RequestParam(required = false) Long reservationId
+                                                    ) throws Exception {
+
+        Reservation reservation = reservationService.findOne(reservationId);
+        Review review = new Review(100L,rate,text,ReviewStatus.PENDING,reservation);
+        ReviewDTO reviewDTO = reviewService.create(review);
+        return new ResponseEntity<>(reviewDTO, HttpStatus.CREATED);
     }
 
 }

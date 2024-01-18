@@ -325,5 +325,10 @@ public class ReservationService implements IReservationService{
         return reservationDTOS;
     }
 
+    @Override
+    public Collection<ReservationDTO> findByOwner(Long id) {
+        return reservationRepository.findByOwner(id);
+    }
+
 
 }
