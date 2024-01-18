@@ -44,10 +44,13 @@ public class ReportUserController {
     @GetMapping(value = "/OG/{idOwner}/{idGuest}", produces = MediaType.APPLICATION_JSON_VALUE)
     //@PreAuthorize("hasRole('Owner')")
     public ResponseEntity<ReportUser> getReportGuest(@PathVariable("idOwner") Long idOwner,@PathVariable("idGuest") Long idGuest) {
-        System.out.println("USLO");
+        System.out.println("USLO1112");
         ReportUser reportUser= userService.findGuestReportGuest(idOwner,idGuest);
-        System.out.println(reportUser);
-        return new ResponseEntity<ReportUser>(reportUser,HttpStatus.OK);
+        if(reportUser!=null){
+            return new ResponseEntity<ReportUser>(reportUser,HttpStatus.OK);
+        }
+        ReportUser reportUser1=new ReportUser(500L);
+        return new ResponseEntity<ReportUser>(reportUser1,HttpStatus.OK);
     }
 
     @GetMapping( produces = MediaType.APPLICATION_JSON_VALUE)

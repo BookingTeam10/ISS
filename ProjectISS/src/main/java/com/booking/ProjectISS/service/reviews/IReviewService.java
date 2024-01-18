@@ -60,4 +60,6 @@ public interface IReviewService {
     Review findById(Long id);
 
     ReviewDTO createrRewiew(Review review, Long idReservation, Long idGuest);
+
+    Review setReportToReview(Long idReview);
 }

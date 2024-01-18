@@ -421,4 +421,11 @@ public class ReviewService implements IReviewService {
         reviewRepository.save(review);
         return new ReviewDTO(review);
     }
+    @Override
+    public Review setReportToReview(Long idReview) {
+        Optional<Review> review=reviewRepository.findById(idReview);
+        review.get().setStatus(ReviewStatus.REPORTED);
+        reviewRepository.save(review.get());
+        return review.get();
+    }
 }

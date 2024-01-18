@@ -155,10 +155,13 @@ public class AccommodationController {
         accommodation.setWeekendPrice(weekendPrice);
         accommodation.setHolidayPrice(holidayPrice);
         accommodation.setSummerPrice(summerPrice);
+        accommodation.setNight(isNight);
+        accommodation.setCancelDeadline(cancelDeadline);
         System.out.println(accommodation);
         Accommodation newAccommodation = accommodationService.updateAccommodationObject(accommodation);
         System.out.println(newAccommodation);
         return new ResponseEntity<>(newAccommodation, HttpStatus.OK);
     }
+
 
 }
