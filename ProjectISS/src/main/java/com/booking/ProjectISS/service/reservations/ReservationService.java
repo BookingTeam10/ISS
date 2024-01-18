@@ -77,7 +77,6 @@ public class ReservationService implements IReservationService{
             if (r.getStatus() == ReservationStatus.WAITING && r.getAccommodation().getId().equals(accepptedReservation.getAccommodation().getId())) {
                 if (doDatesOverlap(accepptedReservation.getStartDate(), accepptedReservation.getEndDate(), r.getStartDate(), r.getEndDate())) {
                     r.setStatus(ReservationStatus.REJECTED);
-                    this.update(r);
                 }
             }
         }
@@ -119,7 +118,6 @@ public class ReservationService implements IReservationService{
             reservation.setStatus(ReservationStatus.ACCEPTED);
             this.cancelAllWaiting(reservation);
         }
-        System.out.println(reservation);
         return new ReservationDTO(reservationRepository.save(reservation));
     }
     @Override
@@ -143,10 +141,10 @@ public class ReservationService implements IReservationService{
 
     @Override
     public boolean hasOverlappingRequests(Reservation newReservation) {
-        for (Reservation existingReservation : reservationRepository.findAll()) {
+        Collection<Reservation> reservations=reservationRepository.findAllByAccommodationId(newReservation.getAccommodation().getId(),ReservationStatus.CANCELLED,ReservationStatus.REJECTED);
+        for (Reservation existingReservation : reservations) {
             if(!Objects.equals(existingReservation.getAccommodation().getId(), newReservation.getAccommodation().getId()))continue;
-            if (doDatesOverlap(newReservation.getStartDate(), newReservation.getEndDate(),
-                    existingReservation.getStartDate(), existingReservation.getEndDate())) {
+            if (doDatesOverlap(newReservation.getStartDate(), newReservation.getEndDate(), existingReservation.getStartDate(), existingReservation.getEndDate())) {
                 return true;
             }
         }

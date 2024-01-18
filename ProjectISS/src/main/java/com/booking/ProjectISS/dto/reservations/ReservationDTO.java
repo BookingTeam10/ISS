@@ -16,9 +16,9 @@ public class ReservationDTO {
     private long id;
     private double totalPrice;
     private ReservationStatus status;
-    @JsonDeserialize(using = CustomDateDeserializer.class)
+//    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date startDate;
-    @JsonDeserialize(using = CustomDateDeserializer.class)
+//    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date endDate;
     private int numberOfNights;
     private Accommodation accommodation;
