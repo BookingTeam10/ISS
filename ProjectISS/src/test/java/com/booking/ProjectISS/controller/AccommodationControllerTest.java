@@ -1,5 +1,6 @@
 package com.booking.ProjectISS.controller;
 
+import com.booking.ProjectISS.dto.users.LoginDTO;
 import com.booking.ProjectISS.enums.AccommodationStatus;
 import com.booking.ProjectISS.enums.TypeAccommodation;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
@@ -7,6 +8,9 @@ import com.booking.ProjectISS.model.accomodations.Amenity;
 import com.booking.ProjectISS.model.accomodations.Price;
 import com.booking.ProjectISS.model.accomodations.TakenDate;
 import com.booking.ProjectISS.model.reservations.Reservation;
+import com.booking.ProjectISS.model.users.Token;
+import org.jfree.util.Log;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,10 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.*;
@@ -33,6 +34,22 @@ public class AccommodationControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    private String jwt;
+
+    @BeforeEach
+    public void login(){
+        HttpHeaders headers=new HttpHeaders();
+        LoginDTO loginDTO=new LoginDTO("popovic.sv4.2021@uns.ac.rs","abc");
+        HttpEntity<LoginDTO> requestEntity = new HttpEntity<LoginDTO>(loginDTO);
+        Token responseEntity = restTemplate.exchange(
+                "/api/users/login",
+                HttpMethod.POST,
+                requestEntity,
+                Token.class).getBody();
+
+        this.jwt=responseEntity.getJwt();
+    }
 
 
     static Stream<Arguments> accommodationsExceptedMessage() {
@@ -52,7 +69,12 @@ public class AccommodationControllerTest {
     @MethodSource("accommodationsExceptedMessage")
     @DisplayName("Should update accommodation if accommodation exist or accommodation does not have reservation for that interval - /api/accommodations/{idAccommodation}")
     public void updateAccommodationREST(Accommodation accommodation,String expectedMessage) {
-        HttpEntity<Accommodation> requestEntity = new HttpEntity<Accommodation>(accommodation);
+
+        HttpHeaders headers=new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization","Bearer"+jwt);
+        HttpEntity<Accommodation> requestEntity = new HttpEntity<Accommodation>(accommodation,headers);
+
         ResponseEntity<Map<String, String>> responseEntity = restTemplate.exchange(
                 "/api/accommodations/{id}",
                 HttpMethod.PUT,

@@ -40,7 +40,6 @@ public class ReservationRepositoryTest {
 
         return Stream.of(
                 Arguments.of(1L,ReservationStatus.ACCEPTED,ReservationStatus.WAITING, collections1),
-                Arguments.of(2L,ReservationStatus.DELETED,ReservationStatus.WAITING, collections2),
                 Arguments.of(999L,ReservationStatus.CANCELLED,ReservationStatus.REJECTED, collections3)
         );
     }

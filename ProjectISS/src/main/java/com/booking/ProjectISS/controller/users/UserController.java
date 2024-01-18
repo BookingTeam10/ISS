@@ -136,12 +136,6 @@ public class UserController {
             sc.setAuthentication(auth);
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(login.getEmail());
-//            boolean activation=userService.findActivation(userDetails.getUsername());
-//            if(!activation){
-//                Token tokenJWT = new Token();
-//                tokenJWT.setJwt("NEUSPESNO");
-//                return tokenJWT;
-//            }
             String token = jwtTokenUtil.generateToken(userDetails);
             Token tokenJWT = new Token();
             tokenJWT.setJwt(token);

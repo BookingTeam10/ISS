@@ -22,7 +22,8 @@ public class MyAccommodationPage {
         PageFactory.initElements(driver, this);
     }
 
-    public void chooseAccommodation(String name){
+    public void chooseAccommodation(String name) throws InterruptedException {
+        Thread.sleep(1000);
         for(WebElement accommodation:accommodations){
             WebElement nameElement=accommodation.findElement(By.cssSelector(".b-description"));
             String nameText = nameElement.getText().trim();
