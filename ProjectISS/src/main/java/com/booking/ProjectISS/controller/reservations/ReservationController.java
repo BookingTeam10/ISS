@@ -59,7 +59,6 @@ public class ReservationController {
         if (reservationService.hasOverlappingRequests(reservation)) {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
-
         ReservationDTO reservationDTO = reservationService.create(reservation);
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
     }

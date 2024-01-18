@@ -76,7 +76,7 @@ public class Accommodation implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Reservation> reservations;
     @Column(name = "auto_conf")
-    private boolean automaticConfirmation;
+    private boolean automaticConfirmation=false;
     public Accommodation() {}
 
     public Accommodation(Long id, List<Reservation> reservations, List<Price> prices) {
