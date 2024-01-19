@@ -77,6 +77,7 @@ public class ReservationService implements IReservationService{
             if (r.getStatus() == ReservationStatus.WAITING && r.getAccommodation().getId().equals(accepptedReservation.getAccommodation().getId())) {
                 if (doDatesOverlap(accepptedReservation.getStartDate(), accepptedReservation.getEndDate(), r.getStartDate(), r.getEndDate())) {
                     r.setStatus(ReservationStatus.REJECTED);
+                    this.update(r);
                 }
             }
         }
@@ -275,18 +276,34 @@ public class ReservationService implements IReservationService{
 
             ownerReservationsName = reservationRepository.findByAccommodationName(nameAccommodation);;
         }else{
-            //posto radimo presek ako ne bude definisano vracace uvek praznu listu zato moramo ovako da stavimo
             ownerReservationsName = ownerReservations;
         }
         System.out.println(ownerReservationsName);
 
-        Collection<ReservationDTO> presek = ownerReservations.stream()
-                .filter(reservation -> ownerReservationsType.contains(reservation) &&
-                        ownerReservationsName.contains(reservation))
-                .collect(Collectors.toList());
 
-        System.out.println(presek);
-        return presek;
+        List<Long> list1Ids = new ArrayList<>();
+        List<Long> list2Ids = new ArrayList<>();
+        Collection<ReservationDTO> reservationDTOS = new ArrayList<>();
+        for(ReservationDTO r:ownerReservationsType){
+            list1Ids.add(r.getId());
+        }
+        for(ReservationDTO r:ownerReservationsName){
+            list2Ids.add(r.getId());
+        }
+
+        Set<Long> presek = new HashSet<>(list1Ids);
+        presek.retainAll(list2Ids);
+
+        List<Long> combinedList = new ArrayList<>(presek);
+        System.out.println(combinedList);
+        for(ReservationDTO reservationDTO:findAllDTO()){
+            if(combinedList.contains(reservationDTO.getId())){
+                reservationDTOS.add(reservationDTO);
+            }
+        }
+        System.out.println(reservationDTOS);
+
+        return reservationDTOS;
     }
 
     @Override
@@ -328,5 +345,64 @@ public class ReservationService implements IReservationService{
         return reservationRepository.findByOwner(id);
     }
 
+    @Override
+    public Collection<ReservationDTO> searchedRequestsGuest(String type, Date start, Date end, String nameAccommodation, Long idGuest) {
+        Collection<ReservationDTO> guestReservations = getGuestReservationsDTO(idGuest);
+        Collection<ReservationDTO> guestReservationsType;
+        Collection<ReservationDTO> guestReservationsName;
+        if(type!=null){
+            ReservationStatus reservationStatus = ReservationStatus.valueOf(type);
+            guestReservationsType = reservationRepository.findByStatus(reservationStatus);
+        }else{
+            //posto radimo presek ako ne bude definisano vracace uvek praznu listu zato moramo ovako da stavimo
+            guestReservationsType = guestReservations;
+        }
+        System.out.println(guestReservationsType);
+        if(nameAccommodation!=null){
+
+            guestReservationsName = reservationRepository.findByAccommodationName(nameAccommodation);;
+        }else{
+            guestReservationsName = guestReservations;
+        }
+        System.out.println(guestReservationsName);
+
+
+        List<Long> list1Ids = new ArrayList<>();
+        List<Long> list2Ids = new ArrayList<>();
+        Collection<ReservationDTO> reservationDTOS = new ArrayList<>();
+        for(ReservationDTO r:guestReservationsType){
+            list1Ids.add(r.getId());
+        }
+        for(ReservationDTO r:guestReservationsName){
+            list2Ids.add(r.getId());
+        }
+
+        Set<Long> presek = new HashSet<>(list1Ids);
+        presek.retainAll(list2Ids);
+
+        List<Long> combinedList = new ArrayList<>(presek);
+        System.out.println(combinedList);
+        for(ReservationDTO reservationDTO:findAllDTO()){
+            if(combinedList.contains(reservationDTO.getId())){
+                reservationDTOS.add(reservationDTO);
+            }
+        }
+        System.out.println(reservationDTOS);
+
+        return reservationDTOS;
+    }
+
+    public List<ReservationDTO> getGuestReservationsDTO(long guestId) {
+
+        List<Reservation> reservations = reservationRepository.findAll().stream()
+                .filter(reservation -> reservation.getGuest().getId().equals(guestId))
+                .toList();
+        List<ReservationDTO> reservationDTOS = new ArrayList<>();
+        for(Reservation reservation:reservations){
+            reservationDTOS.add(new ReservationDTO(reservation));
+        }
+
+        return reservationDTOS;
+    }
 
 }
