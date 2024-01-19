@@ -1,6 +1,5 @@
 package com.booking.ProjectISS.service.reviews;
 
-import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.dto.reviews.ReviewDTO;
 import com.booking.ProjectISS.dto.reviews.ReviewDTOComment;
 import com.booking.ProjectISS.dto.reviews.ReviewOwnerDTO;
@@ -14,7 +13,6 @@ import com.booking.ProjectISS.model.reviews.ReviewOwner;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.repository.accomodations.IAccommodationRepository;
-import com.booking.ProjectISS.repository.notifications.INotificationRepository;
 import com.booking.ProjectISS.repository.notifications.INotificationVisibleRepository;
 import com.booking.ProjectISS.repository.reservations.IReservationRepository;
 import com.booking.ProjectISS.repository.reviews.IReviewOwnerRepository;
@@ -23,19 +21,11 @@ import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -194,7 +184,7 @@ public class ReviewService implements IReviewService {
         Optional<Guest> g=guestRepository.findById(idGuest);
         review.setOwner(o.get());
         review.setGuest(g.get());
-        review.setStatus(ReviewStatus.ACTIVE);
+        review.setStatus(ReviewStatus.WAITING);
         ReviewOwner savedReview = reviewOwnerRepository.save(review);
         NotificationVisible notificationVisible=new NotificationVisible(100L,review.getComment(),review.getGuest(),review.getOwner(),"GO");
         if(o.get().isRateMeNotification()){
@@ -421,6 +411,39 @@ public class ReviewService implements IReviewService {
         reviewRepository.save(review);
         return new ReviewDTO(review);
     }
+
+    @Override
+    public List<ReviewOwner> getReviewOwners() {
+        return reviewOwnerRepository.findAll();
+    }
+
+    @Override
+    public ReviewOwner findReviewOwner(Long id) {
+        return reviewOwnerRepository.findById(id).get();
+    }
+
+    @Override
+    public ReviewOwner updateReviewOwnerByAdmin(ReviewOwner updatedReviewOwner){
+        if(updatedReviewOwner.getStatus() == ReviewStatus.DELETED){
+            this.reviewOwnerRepository.deleteById(updatedReviewOwner.getId());
+            return updatedReviewOwner;
+        }
+
+        Optional<ReviewOwner> optionalReviewOwner = this.reviewOwnerRepository.findById(updatedReviewOwner.getId());
+        optionalReviewOwner.ifPresent(oldReviewOwner -> {
+            oldReviewOwner.setId(updatedReviewOwner.getId());
+            oldReviewOwner.setRate(updatedReviewOwner.getRate());
+            oldReviewOwner.setComment(updatedReviewOwner.getComment());
+            oldReviewOwner.setOwner(updatedReviewOwner.getOwner());
+            oldReviewOwner.setGuest(updatedReviewOwner.getGuest());
+            oldReviewOwner.setIs_reported(updatedReviewOwner.isIs_reported());
+            oldReviewOwner.setStatus(updatedReviewOwner.getStatus());
+            oldReviewOwner.setCommentDate(updatedReviewOwner.getCommentDate());
+
+            this.reviewOwnerRepository.save(oldReviewOwner);
+        });
+
+        return updatedReviewOwner;
     @Override
     public Review setReportToReview(Long idReview) {
         Optional<Review> review=reviewRepository.findById(idReview);

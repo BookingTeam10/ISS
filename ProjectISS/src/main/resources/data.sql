@@ -11,14 +11,17 @@ VALUES
     ('popovic.sv4.2021@uns.ac.rs','false','Luka','Popovic','false', '0655197633', 'Adresa1','$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null),
     ('popovic.sv5.2021@uns.ac.rs','false','Matija','Popovic','false', '0655197633', 'Adresa12','$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null),
     ('aleksa@gmail.com', 'false', 'Aleksa', 'Janjic', 'false', '854574324', 'Bulevar', '$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null),
-    ('abc@gmail.com', 'true', 'Aleksa', 'Janjic', 'false', '854574324', 'Bulevar', '$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null);
+    ('abc@gmail.com', 'true', 'Aleksa', 'Janjic', 'false', '854574324', 'Bulevar', '$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null),
+    ('test@gmail.com', 'true', 'Aleksa', 'Janjic', 'false', '854574324', 'Bulevar', '$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null);
+
 
 INSERT INTO owners (id,total_price,owner_rating,created_notification,rate_notification,cancelled_notification,accommodation_notification)
 VALUES (1,0,0,'true','true','true','true'),
        (4,0,0,'false','false','false','false');
 
 INSERT INTO guests (id, number_canceled_notification,turn_notification)
-VALUES (3, 0, 'true');
+VALUES (3, 0, 'true'),
+       (5, 0, 'true');
 
 INSERT INTO administrators (id)
 VALUES (2);
@@ -72,7 +75,8 @@ VALUES
 
 INSERT INTO review_owner (rate, review_comment,comment_date, status, owner_id, guest_id,is_reported)
 VALUES
-    (5, 'Great experience!', '2021-12-01', 'ACTIVE', 4,3,'false');
+    (5, 'Great experience!', '2021-12-01', 'REPORTED', 1,5,'false');
+
 
 
 INSERT INTO accommodation_price (accommodation_id, price, start_date, end_date)
@@ -84,7 +88,8 @@ VALUES
 
 INSERT INTO report (review_comment,status,owner_id, guest_id,user_report)
 VALUES
-    ('Bad experience!','REPORTED', 1,3,'OG');
+    ('Bad experience!','ACTIVE', 4,3,'OG');
+
 
 -- INSERT INTO guests_favourite_accommodations (guest_id,favourite_accommodations_accommodation_id)
 -- VALUES (3,3);

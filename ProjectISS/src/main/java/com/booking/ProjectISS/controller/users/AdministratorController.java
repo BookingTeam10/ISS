@@ -64,7 +64,7 @@ public class AdministratorController {
     }
 
     @GetMapping(value = "/username/{username}",produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Administrator')")
+//    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<Administrator> getAdministratorUsername(@PathVariable("username") String username){
         Administrator administrator = administratorService.findUsername(username);
         if(administrator == null){
@@ -87,7 +87,7 @@ public class AdministratorController {
         return new ResponseEntity<AdministratorDTO>(administratorDTO, HttpStatus.CREATED);
     }
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Administrator')")
+//    @PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<AdministratorDTO> updateAdmin(@RequestBody Administrator administrator, @PathVariable Long id)
             throws Exception {
         Administrator administratorForUpdate = administratorService.findOne(id);
