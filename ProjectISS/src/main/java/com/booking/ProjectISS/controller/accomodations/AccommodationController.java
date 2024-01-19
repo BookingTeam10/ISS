@@ -50,9 +50,9 @@ public class AccommodationController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('Owner')")
     public ResponseEntity<Map<String, String>> updateAccommodation(@RequestBody Accommodation accommodation, @PathVariable Long id) throws Exception {
         Map<String, String> response = new HashMap<>();
-        System.out.println("POGODI DA LI PUT");
         String message = accommodationService.updateAccommodation(accommodation);
         response.put("message", message);
         return new ResponseEntity<>(response, HttpStatus.OK);

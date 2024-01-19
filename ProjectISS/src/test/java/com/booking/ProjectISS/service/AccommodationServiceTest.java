@@ -53,9 +53,6 @@ public class AccommodationServiceTest {
     @MockBean
     private PriceService priceService;
 
-    //private static final Long VALID_ACCOMMODATION_ID = 1L;
-    //private static final Long INVALID_ACCOMMODATION_ID = 0L;
-
     static Stream<Arguments> invalidIdAccommodation() {
 
         return Stream.of(

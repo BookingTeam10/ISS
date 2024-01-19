@@ -5,6 +5,16 @@ VALUES
     ('aleksa@gmail.com', 'false', 'Aleksa', 'Janjic', 'false', '854574324', 'Bulevar', '$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null),
     ('abc@gmail.com', 'true', 'Aleksa', 'Janjic', 'false', '854574324', 'Bulevar', '$2a$12$uI4adYfDz9yGq1ExBaiZmODKYxEFOKBKLvYanhV1ys0JsY3STJ92i','true',null,null);
 
+INSERT INTO owners (id,total_price,owner_rating,created_notification,rate_notification,cancelled_notification,accommodation_notification)
+VALUES (1,0,0,'true','true','true','true'),
+       (4,0,0,'false','false','false','false');
+
+INSERT INTO guests (id, number_canceled_notification,turn_notification)
+VALUES (3, 0, 'true');
+
+INSERT INTO administrators (id)
+VALUES (2);
+
 
 INSERT INTO accommodations(description,accepted,automatic_activation,cancel_deadline, min_people,max_people,rating,location_id,type_acc,owner_id, acc_name,weekend_price,holiday_price,summer_price,night_person, acc_status, auto_conf)
 
