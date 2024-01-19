@@ -326,4 +326,13 @@ public class ReviewController {
         return new ResponseEntity<>(reviewDTO, HttpStatus.CREATED);
     }
 
+    @GetMapping(value = "/reportCommentAccommodationByOwner/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<Review> getReportComment(@PathVariable("id") Long idReview) {
+        System.out.println("POGODI121");
+        Review review= reviewService.setReportToReview(idReview);
+        System.out.println(review);
+        return new ResponseEntity<Review>(review,HttpStatus.OK);
+    }
+
 }
