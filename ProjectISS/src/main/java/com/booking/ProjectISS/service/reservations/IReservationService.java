@@ -39,4 +39,5 @@ public interface IReservationService {
     Collection<ReservationDTO> findAllNotAcceptedGuestDTO(Long idGuest);
 
     Collection<ReservationDTO> findByOwner(Long id);
+    Collection<ReservationDTO> searchedRequestsGuest(String type, Date start, Date end, String nameAccommodation,Long idGuest);
 }

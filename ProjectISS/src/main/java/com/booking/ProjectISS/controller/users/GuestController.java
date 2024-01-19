@@ -318,4 +318,17 @@ public class GuestController {
         return new ResponseEntity<GuestDTO>(new GuestDTO(guest), HttpStatus.CREATED);
     }
 
+    @GetMapping(value = "/requestsSearchGuest", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Guest')")
+    public ResponseEntity<Collection<ReservationDTO>> searchedRequests(@RequestParam(required = false) String type,
+                                                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
+                                                                       @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")  Date end,
+                                                                       @RequestParam(required = false) String nameAccommodation,
+                                                                       @RequestParam(required = false) Long idGuest
+    ) {
+        System.out.println(idGuest);
+        Collection<ReservationDTO> reservationDTOS = reservationService.searchedRequestsGuest(type,start,end,nameAccommodation,idGuest);
+        return new ResponseEntity<Collection<ReservationDTO>>(reservationDTOS, HttpStatus.OK);
+    }
+
 }
