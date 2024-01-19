@@ -35,6 +35,10 @@ public class ReportUser implements Serializable {
     public ReportUser() {
     }
 
+    public ReportUser(Long id) {
+        this.id=id;
+    }
+
     public ReportUser(Long id, String comment, ReviewStatus status, Owner owner, Guest guest, String userReportUser) {
         this.id = id;
         this.comment = comment;

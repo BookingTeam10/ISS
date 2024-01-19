@@ -59,7 +59,6 @@ public class ReservationController {
         if (reservationService.hasOverlappingRequests(reservation)) {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
-
         ReservationDTO reservationDTO = reservationService.create(reservation);
         return new ResponseEntity<>(reservationDTO, HttpStatus.CREATED);
     }
@@ -136,6 +135,14 @@ public class ReservationController {
     //@PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')
     public ResponseEntity<Collection<ReservationDTO>> getReservationDTOByUserGuest(@PathVariable("id") Long id){
         Collection<ReservationDTO> reservationDTOS=reservationService.findByGuest(id);
+        System.out.println("BY GOST");
+        return new ResponseEntity<Collection<ReservationDTO>>(reservationDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/byOwner/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')
+    public ResponseEntity<Collection<ReservationDTO>> getReservationDTOByUserOwner(@PathVariable("id") Long id){
+        Collection<ReservationDTO> reservationDTOS=reservationService.findByOwner(id);
         System.out.println("BY GOST");
         return new ResponseEntity<Collection<ReservationDTO>>(reservationDTOS, HttpStatus.OK);
     }

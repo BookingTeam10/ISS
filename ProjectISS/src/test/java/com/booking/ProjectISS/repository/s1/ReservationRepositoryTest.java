@@ -1,4 +1,4 @@
-package com.booking.ProjectISS.repository;
+package com.booking.ProjectISS.repository.s1;
 
 import com.booking.ProjectISS.model.reservations.Reservation;
 import com.booking.ProjectISS.repository.reservations.IReservationRepository;
@@ -66,7 +66,7 @@ public class ReservationRepositoryTest {
 
     @Test
     public void findReservationByAccommodationIdEmptyTest() {
-        Collection<Reservation> reservations = reservationRepository.findByAccommodation(INVALID_ACCOMMODATION_ID);
+       Collection<Reservation> reservations = reservationRepository.findByAccommodation(INVALID_ACCOMMODATION_ID);
         assertThat(reservations).isEmpty();
     }
 

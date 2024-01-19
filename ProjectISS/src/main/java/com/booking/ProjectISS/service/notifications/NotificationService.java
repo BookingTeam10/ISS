@@ -5,11 +5,13 @@ import com.booking.ProjectISS.dto.notifications.NotificationDTO;
 import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.notifications.Notification;
+import com.booking.ProjectISS.model.notifications.NotificationUserVisible;
 import com.booking.ProjectISS.model.notifications.NotificationVisible;
 import com.booking.ProjectISS.model.reviews.ReviewOwner;
 import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.repository.notifications.INotificationRepository;
+import com.booking.ProjectISS.repository.notifications.INotificationUserVisibleRepository;
 import com.booking.ProjectISS.repository.notifications.INotificationVisibleRepository;
 import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
@@ -35,6 +37,8 @@ public class NotificationService implements INotificationService {
 
     @Autowired
     private IGuestRepository guestRepository;
+    @Autowired
+    private INotificationUserVisibleRepository notificationUserVisibleRepository;
 
     @Override
     public NotificationDTO findOneDTO(Long id) {
@@ -83,7 +87,6 @@ public class NotificationService implements INotificationService {
 
         return null;
     }
-
     @Override
     public Collection<NotificationVisible> findAllByOwner(Long idOwner) {
         Collection<NotificationVisible> not=new ArrayList<>();
@@ -116,5 +119,39 @@ public class NotificationService implements INotificationService {
             }
         }
         return not;
+    }
+
+    //ovo je dodato zbog mobilnih
+    @Override
+    public Collection<NotificationUserVisible> findAllByOwnerMobile(Long idOwner) {
+        Collection<NotificationUserVisible> notifications=new ArrayList<>();
+        Collection<NotificationUserVisible> notificationUserVisibles=notificationUserVisibleRepository.findAllByOwner(idOwner);
+        for(NotificationUserVisible nv:notificationUserVisibles){
+            if(nv.getUserRate().equals("GO")){
+                notifications.add(nv);
+            }
+        }
+        return notifications;
+    }
+
+    @Override
+    public NotificationUserVisible createNot(NotificationUserVisible notification, Long idOwner, Long idGuest) {
+        return null;
+    }
+
+    @Override
+    public Collection<NotificationUserVisible> findAllByGuestMobile(Long idGuest) {
+        Collection<NotificationUserVisible> notifications=new ArrayList<>();
+        Collection<NotificationUserVisible> notificationUserVisibles=notificationUserVisibleRepository.findAllByGuest(idGuest);
+        for(NotificationUserVisible nv:notificationUserVisibles){
+            if(nv.getUserRate().equals("OG")){
+                notifications.add(nv);
+            }
+        }
+        return notifications;
+    }
+    @Override
+    public NotificationUserVisible createNotification(NotificationUserVisible notificationUserVisible) throws Exception {
+        return notificationUserVisibleRepository.save(notificationUserVisible);
     }
 }

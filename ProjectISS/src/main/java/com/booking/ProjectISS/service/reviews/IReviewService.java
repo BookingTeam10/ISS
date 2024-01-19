@@ -66,4 +66,7 @@ public interface IReviewService {
     ReviewOwner findReviewOwner(Long id);
 
     ReviewOwner updateReviewOwnerByAdmin(ReviewOwner updatedReviewOwner);
+
+    Review setReportToReview(Long idReview);
+
 }

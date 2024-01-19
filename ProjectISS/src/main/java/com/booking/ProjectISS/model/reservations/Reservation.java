@@ -61,6 +61,23 @@ public class Reservation implements Serializable {
         this.endDate = endDate;
         this.numberOfNights = numberOfNights;
     }
+
+    public Reservation(long id, ReservationStatus status, Date startDate, Date endDate, Accommodation accommodation) {
+        this.id = id;
+        this.status = status;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.accommodation = accommodation;
+    }
+    public Reservation(long id, Date startDate, Date endDate, Accommodation accommodation) {
+        this.id = id;
+        this.status = status;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.accommodation = accommodation;
+    }
+
+
     public long getId() {
         return id;
     }

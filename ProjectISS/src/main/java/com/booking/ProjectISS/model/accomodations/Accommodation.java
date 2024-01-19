@@ -76,7 +76,7 @@ public class Accommodation implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Reservation> reservations;
     @Column(name = "auto_conf")
-    private boolean automaticConfirmation;
+    private boolean automaticConfirmation=false;
     public Accommodation() {}
 
     public Accommodation(Long id, List<Reservation> reservations, List<Price> prices) {
@@ -91,6 +91,8 @@ public class Accommodation implements Serializable {
         this.reservations = reservations;
         this.cancelDeadline=limitDay;
     }
+
+
 
     public Long getId() {
         return id;
@@ -321,6 +323,33 @@ public class Accommodation implements Serializable {
         this.summerPrice = summerPrice;
         this.reservations = reservations;
     }
+    public Accommodation(Long id, int cancelDeadline, List<Price> prices, double weekendPrice, double holidayPrice, double summerPrice) {
+        this.id = id;
+        this.cancelDeadline = cancelDeadline;
+        this.prices = prices;
+        this.weekendPrice = weekendPrice;
+        this.holidayPrice = holidayPrice;
+        this.summerPrice = summerPrice;
+    }
+
+
+    public Accommodation(Long id, int cancelDeadline, List<Price> prices, List<Reservation> reservations) {
+        this.id = id;
+        this.cancelDeadline = cancelDeadline;
+        this.prices = prices;
+        this.reservations = reservations;
+    }
+
+    public Accommodation(Long id, int cancelDeadline, List<Price> prices) {
+        this.id = id;
+        this.cancelDeadline = cancelDeadline;
+        this.prices = prices;
+    }
+
+    public Accommodation(Long id, int cancelDeadline) {
+        this.id = id;
+        this.cancelDeadline = cancelDeadline;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -393,5 +422,6 @@ public class Accommodation implements Serializable {
         this.automaticConfirmation = automaticConfirmation;
 
     }
+
 
 }

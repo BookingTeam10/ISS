@@ -16,9 +16,9 @@ public class ReservationDTO {
     private long id;
     private double totalPrice;
     private ReservationStatus status;
-    @JsonDeserialize(using = CustomDateDeserializer.class)
+//    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date startDate;
-    @JsonDeserialize(using = CustomDateDeserializer.class)
+//    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date endDate;
     private int numberOfNights;
     private Accommodation accommodation;
@@ -53,6 +53,10 @@ public class ReservationDTO {
         this.guest = reservation.getGuest();
 
         this.reviews = reservation.getReviews();
+    }
+
+    public ReservationDTO(Long id){
+        this.id = id;
     }
 
     public long getId() {
