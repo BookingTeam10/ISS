@@ -87,6 +87,17 @@ public class ReviewController {
         return new ResponseEntity<>(updatedReview, HttpStatus.OK);
     }
 
+    @PutMapping(value = "/approve/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReviewDTO> approveReview(@PathVariable("id") Long id) throws Exception {
+        Review updateReview = reviewService.findOne(id);
+        if(updateReview == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        updateReview.setStatus(ReviewStatus.ACTIVE);
+        return new ResponseEntity<>(reviewService.update(updateReview), HttpStatus.OK);
+    }
+
     @DeleteMapping(value = "/{id}")
     //@PreAuthorize("hasRole('Administrator')")
     public ResponseEntity<ReviewDTO> deleteReview(@PathVariable("id") Long id) {
@@ -321,14 +332,32 @@ public class ReviewController {
     }
 
     @PutMapping(value = "/reviewOwners/{id}" ,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReviewOwner> updateReviewOwner(@PathVariable("id") Long id, @RequestBody ReviewOwner updatedReviewOwner){
+    public ResponseEntity<ReviewOwner> updateReviewOwner(@PathVariable("id") Long id, @RequestBody ReviewOwner updatedReviewOwner) {
         ReviewOwner reviewOwner = reviewService.findReviewOwner(id);
-        if(reviewOwner == null){
+        if (reviewOwner == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         ReviewOwner newReviewOwner = reviewService.updateReviewOwnerByAdmin(updatedReviewOwner);
         return new ResponseEntity<ReviewOwner>(newReviewOwner, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/reviewOwners/approve/{id}" ,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReviewOwner> approveReviewOwner(@PathVariable("id") Long id,
+                                                          @RequestParam(value = "approve", defaultValue = "false") boolean approve) {
+        ReviewOwner reviewOwner = reviewService.findReviewOwner(id);
+        if (reviewOwner == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if(approve){
+            reviewOwner.setStatus(ReviewStatus.ACTIVE);
+        }else{
+            reviewOwner.setStatus(ReviewStatus.DELETED);
+        }
+
+        ReviewOwner newReviewOwner = reviewService.updateReviewOwnerByAdmin(reviewOwner);
+        return new ResponseEntity<ReviewOwner>(newReviewOwner, HttpStatus.OK);
+    }
     @PostMapping(value = "/mobile",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //@PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
     public ResponseEntity<ReviewDTO> createReviewMobile(@RequestParam(required = false) double rate,

@@ -154,4 +154,11 @@ public class NotificationService implements INotificationService {
     public NotificationUserVisible createNotification(NotificationUserVisible notificationUserVisible) throws Exception {
         return notificationUserVisibleRepository.save(notificationUserVisible);
     }
+
+    @Override
+    public void deleteVisible(Long id) {
+        notificationUserVisibleRepository.deleteById(id);
+    }
+
+
 }
