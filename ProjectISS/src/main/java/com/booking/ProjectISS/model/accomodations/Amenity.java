@@ -22,11 +22,10 @@ public class Amenity implements Serializable {
     public Amenity(String name) {
         this.name = name;
     }
+
     @Override
     public String toString() {
-        return "Amenity{" +
-                "name='" + name + '\'' +
-                '}';
+        return "name='" + name + "'";
     }
 
     @Override

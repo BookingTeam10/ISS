@@ -186,6 +186,11 @@ public class AccommodationService implements IAccommodationService {
         oldAccommodation.setHolidayPrice(accommodationForUpdate.getHolidayPrice());
         oldAccommodation.setWeekendPrice(accommodationForUpdate.getWeekendPrice());
         oldAccommodation.setSummerPrice(accommodationForUpdate.getSummerPrice());
+        oldAccommodation.setName(accommodationForUpdate.getName());
+        oldAccommodation.setMinPeople(accommodationForUpdate.getMinPeople());
+        oldAccommodation.setMaxPeople(accommodationForUpdate.getMaxPeople());
+        oldAccommodation.setLocation(accommodationForUpdate.getLocation());
+        oldAccommodation.setAmenities(accommodationForUpdate.getAmenities());
         return this.accommodationRepository.save(oldAccommodation);
     }
 

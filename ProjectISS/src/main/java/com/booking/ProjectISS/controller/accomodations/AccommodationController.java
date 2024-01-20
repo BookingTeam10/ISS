@@ -4,6 +4,7 @@ import com.booking.ProjectISS.dto.accomodations.AccommodationDTO;
 import com.booking.ProjectISS.enums.AccommodationStatus;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
 import com.booking.ProjectISS.model.accomodations.Amenity;
+import com.booking.ProjectISS.model.accomodations.Location;
 import com.booking.ProjectISS.model.accomodations.Price;
 import com.booking.ProjectISS.service.accommodation.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,13 +151,34 @@ public class AccommodationController {
             @RequestParam(required = false)  double holidayPrice,
             @RequestParam(required = false) double summerPrice,
             @RequestParam(required = false) boolean isNight,
-            @RequestParam(required = false) int cancelDeadline) throws Exception {
+            @RequestParam(required = false) int cancelDeadline,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) int minPeople,
+            @RequestParam(required = false) int maxPeople,
+            @RequestParam(required = false) int number,
+            @RequestParam(required = false) String street,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) List<Amenity> amenities
+    )throws Exception {
         Accommodation accommodation = accommodationService.findOne(idAccommodation);
         accommodation.setWeekendPrice(weekendPrice);
         accommodation.setHolidayPrice(holidayPrice);
         accommodation.setSummerPrice(summerPrice);
         accommodation.setNight(isNight);
         accommodation.setCancelDeadline(cancelDeadline);
+        accommodation.setName(name);
+        accommodation.setMinPeople(minPeople);
+        accommodation.setMaxPeople(maxPeople);
+        Location oldLoc = accommodation.getLocation();
+        oldLoc.setStreet(street);
+        oldLoc.setCity(city);
+        oldLoc.setCountry(country);
+        oldLoc.setNumber(number);
+        accommodation.setLocation(oldLoc);
+        accommodation.setAccommodationStatus(AccommodationStatus.EDITED);
+        accommodation.setAmenities(amenities);
+
         System.out.println(accommodation);
         Accommodation newAccommodation = accommodationService.updateAccommodationObject(accommodation);
         System.out.println(newAccommodation);

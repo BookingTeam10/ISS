@@ -28,4 +28,6 @@ public interface INotificationService {
 
     Collection<NotificationUserVisible> findAllByGuestMobile(Long idGuest);
     public NotificationUserVisible createNotification(NotificationUserVisible notificationUserVisible) throws Exception;
+
+    void deleteVisible(Long id);
 }

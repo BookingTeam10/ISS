@@ -69,6 +69,13 @@ public class NotificationController {
         notificationService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @DeleteMapping(value = "/visible/{id}")
+    // @PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
+    public ResponseEntity<NotificationDTO> deleteVisibleNotification(@PathVariable("id") Long id) {
+        notificationService.deleteVisible(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
     @GetMapping(value = "notifications/{idOwner}",produces = MediaType.APPLICATION_JSON_VALUE)
     //@PreAuthorize("hasAnyRole( 'Owner', 'Guest')")
     public ResponseEntity<Collection<NotificationVisible>> getNotificationOwner(@PathVariable("idOwner") Long idOwner){
@@ -128,5 +135,7 @@ public class NotificationController {
         NotificationUserVisible createdNotification = notificationService.createNotification(new NotificationUserVisible(100L,text, NotificationStatus.NOT_VISIBLE,new Guest(idGuest),new Owner(idOwner),"today",userRate));
         return new ResponseEntity<NotificationUserVisible>(createdNotification,HttpStatus.CREATED);
     }
+
+
 
 }

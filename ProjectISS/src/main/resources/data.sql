@@ -31,7 +31,7 @@ INSERT INTO accommodations(description,accepted,automatic_activation,cancel_dead
 
 VALUES ('Apartman','true','true', 2,3,6,10,1,'Apartment',1,'Naziv1',0,0,0,'true','CREATED', 'true'),
        ('Apartman','true','true', 10,2,4,10,1,'Room',1,'Naziv2',0,0,0,'true','EDITED', 'false'),
-       ('Apartman','true','true', 3,2,4,10,2,'Apartment',1,'Naziv3',0,0,0,'true','CREATED', 'false');
+       ('Apartman','true','true', 5000,2,4,10,2,'Apartment',1,'Naziv3',0,0,0,'true','CREATED', 'false');
 
 INSERT INTO accommodation_photos (accommodation_accommodation_id, photo)
 VALUES (1,'assets/images/apartment1.png'),
