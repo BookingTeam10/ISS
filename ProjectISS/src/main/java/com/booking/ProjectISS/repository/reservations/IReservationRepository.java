@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 
 public interface IReservationRepository  extends JpaRepository<Reservation, Long> {
@@ -34,5 +35,8 @@ public interface IReservationRepository  extends JpaRepository<Reservation, Long
 
     @Query("select r from Reservation r where r.accommodation.owner.id = ?1")
     Collection<ReservationDTO> findByOwner(Long ownerId);
+
+    @Query("SELECT r FROM Reservation r WHERE r.startDate > ?1 AND r.endDate < ?2")
+    Collection<ReservationDTO> findByDate(Date start, Date end);
 
 }

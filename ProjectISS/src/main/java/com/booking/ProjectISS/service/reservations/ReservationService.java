@@ -264,25 +264,32 @@ public class ReservationService implements IReservationService{
         Collection<ReservationDTO> ownerReservations = getOwnersRequests(idOwner);
         Collection<ReservationDTO> ownerReservationsType;
         Collection<ReservationDTO> ownerReservationsName;
-        if(type!=null){
+        Collection<ReservationDTO> ownerReservationsDate;
+
+        if(!type.equals("")){
             ReservationStatus reservationStatus = ReservationStatus.valueOf(type);
             ownerReservationsType = reservationRepository.findByStatus(reservationStatus);
         }else{
-            //posto radimo presek ako ne bude definisano vracace uvek praznu listu zato moramo ovako da stavimo
             ownerReservationsType = ownerReservations;
         }
-        System.out.println(ownerReservationsType);
-        if(nameAccommodation!=null){
+        if(!nameAccommodation.equals("")){
 
             ownerReservationsName = reservationRepository.findByAccommodationName(nameAccommodation);;
         }else{
             ownerReservationsName = ownerReservations;
         }
-        System.out.println(ownerReservationsName);
+        if(start!=null && end!=null){
+            System.out.println("UDJE OVDEEEE");
+            ownerReservationsDate = reservationRepository.findByDate(start,end);
+            System.out.println(ownerReservationsDate);
+        }else{
+            ownerReservationsDate = ownerReservations;
+        }
 
 
         List<Long> list1Ids = new ArrayList<>();
         List<Long> list2Ids = new ArrayList<>();
+        List<Long> list3Ids = new ArrayList<>();
         Collection<ReservationDTO> reservationDTOS = new ArrayList<>();
         for(ReservationDTO r:ownerReservationsType){
             list1Ids.add(r.getId());
@@ -290,9 +297,13 @@ public class ReservationService implements IReservationService{
         for(ReservationDTO r:ownerReservationsName){
             list2Ids.add(r.getId());
         }
+        for(ReservationDTO r:ownerReservationsDate){
+            list3Ids.add(r.getId());
+        }
 
         Set<Long> presek = new HashSet<>(list1Ids);
         presek.retainAll(list2Ids);
+        presek.retainAll(list3Ids);
 
         List<Long> combinedList = new ArrayList<>(presek);
         System.out.println(combinedList);

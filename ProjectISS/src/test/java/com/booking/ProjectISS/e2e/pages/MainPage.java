@@ -1,5 +1,6 @@
 package com.booking.ProjectISS.e2e.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -8,6 +9,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class MainPage {
 
@@ -41,6 +43,14 @@ public class MainPage {
     private WebElement startDate;
     @FindBy(css = "input[placeholder='End date']")
     private WebElement endDate;
+    @FindBy(xpath = "//section[@class='example-section']/mat-checkbox")
+    List<WebElement> amenities;
+
+    @FindBy(xpath = "//section[@class='example-section']//label")
+    List<WebElement> amenitiesText;
+
+    @FindBy(css=".mat-mdc-card.mdc-card")
+    List<WebElement> accommodations;
     private static String PAGE_URL="http://localhost:4200/accommodations";
     private WebDriver driver;
 
@@ -58,7 +68,7 @@ public class MainPage {
     public void login() {
         (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(loginButton)).click();
     }
-    public void inputNumberGuests(String numberGuestsText) throws InterruptedException {
+    public void inputNumberGuests(String numberGuestsText) {
         (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(numberGuestsBox)).click();
         numberGuestsBox.clear();
         numberGuestsBox.sendKeys(numberGuestsText);
@@ -92,14 +102,55 @@ public class MainPage {
         endDate.sendKeys(endDateText);
     }
 
-    public void clickCheckboxs() throws InterruptedException {
-        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(wifi)).click();
-//        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(parking)).click();
-//        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(air)).click();
-//        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(kitchen)).click();
-    }
-
     public void clickSubmitButton() throws InterruptedException {
         (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(buttonSubmit)).click();
+        Thread.sleep(100);
+    }
+
+    public void clickMultiplyCheckbox(List<String> allAmenities) {
+        for(WebElement amenity:amenities){
+            WebElement amenityElement=amenity.findElement(By.cssSelector(".mdc-label"));
+            String amenityText = amenityElement.getText().trim();
+            for(String singleAmenity:allAmenities){
+                if(amenityText.equals(singleAmenity)){
+                    WebElement check=amenity.findElement(By.cssSelector(".mdc-label"));
+                    check.click();
+                }
+            }
+        }
+    }
+
+    public boolean searchFilter(String city,String numberPerson,String type,List<String> amenities,String minPrice,String maxPrice) { //dodati validaciju ako je nesto "" da se skipuje to
+        for(WebElement accommodation:accommodations){
+            WebElement cityElement=accommodation.findElement(By.id("city"));
+            WebElement minPeopleElement=accommodation.findElement(By.id("minPeople"));
+            WebElement maxPeopleElement=accommodation.findElement(By.id("maxPeople"));
+            WebElement priceElement=accommodation.findElement(By.id("price"));
+            WebElement amenitiesElement=accommodation.findElement(By.id("amenities"));
+            if(!cityElement.getText().trim().contains(city)){
+                return false;
+            }
+            if(!numberPerson.equals("")){
+                if(Integer.parseInt(minPeopleElement.getText().split(":")[1].trim())>Integer.parseInt(numberPerson) || Integer.parseInt(maxPeopleElement.getText().split(":")[1].trim())<Integer.parseInt(numberPerson)){
+                    return false;
+                }
+            }
+            if(!minPrice.equals("")){
+                if(Integer.parseInt(priceElement.getText().split(":")[1].trim())<Integer.parseInt(minPrice)){
+                    return false;
+                }
+            }
+            if(!maxPrice.equals("")){
+                if(Integer.parseInt(priceElement.getText().split(":")[1].trim())>Integer.parseInt(maxPrice)){
+                    return false;
+                }
+            }
+            for(String a:amenities){
+                if(!amenitiesElement.getText().contains(a)){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

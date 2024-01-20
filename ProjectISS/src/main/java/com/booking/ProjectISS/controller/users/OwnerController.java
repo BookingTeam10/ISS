@@ -247,8 +247,13 @@ public class OwnerController {
                                                                        @RequestParam(required = false) String nameAccommodation,
                                                                        @RequestParam(required = false) Long idOwner
     ) {
+        Collection<ReservationDTO> reservationDTOS = new ArrayList<>();
+        if(type.equals("") && start == null && end==null && nameAccommodation.equals("")){
+             reservationDTOS = reservationService.getOwnersRequests(idOwner);
+        }else {
+             reservationDTOS = reservationService.searchedRequests(type,start,end,nameAccommodation,idOwner);
+        }
 
-        Collection<ReservationDTO> reservationDTOS = reservationService.searchedRequests(type,start,end,nameAccommodation,idOwner);
         return new ResponseEntity<Collection<ReservationDTO>>(reservationDTOS, HttpStatus.OK);
     }
 

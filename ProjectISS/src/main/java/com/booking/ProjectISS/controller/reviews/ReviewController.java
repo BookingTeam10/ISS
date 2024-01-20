@@ -358,6 +358,7 @@ public class ReviewController {
         ReviewOwner newReviewOwner = reviewService.updateReviewOwnerByAdmin(reviewOwner);
         return new ResponseEntity<ReviewOwner>(newReviewOwner, HttpStatus.OK);
     }
+
     @PostMapping(value = "/mobile",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //@PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
     public ResponseEntity<ReviewDTO> createReviewMobile(@RequestParam(required = false) double rate,
