@@ -423,8 +423,8 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public ReviewOwner updateReviewOwnerByAdmin(ReviewOwner updatedReviewOwner){
-        if(updatedReviewOwner.getStatus() == ReviewStatus.DELETED){
+    public ReviewOwner updateReviewOwnerByAdmin(ReviewOwner updatedReviewOwner) {
+        if (updatedReviewOwner.getStatus() == ReviewStatus.DELETED) {
             this.reviewOwnerRepository.deleteById(updatedReviewOwner.getId());
             return updatedReviewOwner;
         }
@@ -444,6 +444,7 @@ public class ReviewService implements IReviewService {
         });
 
         return updatedReviewOwner;
+    }
     @Override
     public Review setReportToReview(Long idReview) {
         Optional<Review> review=reviewRepository.findById(idReview);

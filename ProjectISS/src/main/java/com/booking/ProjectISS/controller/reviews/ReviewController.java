@@ -321,14 +321,15 @@ public class ReviewController {
     }
 
     @PutMapping(value = "/reviewOwners/{id}" ,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReviewOwner> updateReviewOwner(@PathVariable("id") Long id, @RequestBody ReviewOwner updatedReviewOwner){
+    public ResponseEntity<ReviewOwner> updateReviewOwner(@PathVariable("id") Long id, @RequestBody ReviewOwner updatedReviewOwner) {
         ReviewOwner reviewOwner = reviewService.findReviewOwner(id);
-        if(reviewOwner == null){
+        if (reviewOwner == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         ReviewOwner newReviewOwner = reviewService.updateReviewOwnerByAdmin(updatedReviewOwner);
         return new ResponseEntity<ReviewOwner>(newReviewOwner, HttpStatus.OK);
+    }
     @PostMapping(value = "/mobile",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     //@PreAuthorize("hasAnyRole( 'Administrator','Owner', 'Guest')")
     public ResponseEntity<ReviewDTO> createReviewMobile(@RequestParam(required = false) double rate,
