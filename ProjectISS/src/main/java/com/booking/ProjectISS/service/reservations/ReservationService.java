@@ -77,7 +77,6 @@ public class ReservationService implements IReservationService{
             if (r.getStatus() == ReservationStatus.WAITING && r.getAccommodation().getId().equals(accepptedReservation.getAccommodation().getId())) {
                 if (doDatesOverlap(accepptedReservation.getStartDate(), accepptedReservation.getEndDate(), r.getStartDate(), r.getEndDate())) {
                     r.setStatus(ReservationStatus.REJECTED);
-                    this.update(r);
                 }
             }
         }
@@ -265,25 +264,25 @@ public class ReservationService implements IReservationService{
         Collection<ReservationDTO> ownerReservationsType;
         Collection<ReservationDTO> ownerReservationsName;
         Collection<ReservationDTO> ownerReservationsDate;
-
         if(!type.equals("")){
             ReservationStatus reservationStatus = ReservationStatus.valueOf(type);
             ownerReservationsType = reservationRepository.findByStatus(reservationStatus);
         }else{
             ownerReservationsType = ownerReservations;
         }
+        System.out.println(ownerReservationsType);
         if(!nameAccommodation.equals("")){
 
             ownerReservationsName = reservationRepository.findByAccommodationName(nameAccommodation);;
         }else{
             ownerReservationsName = ownerReservations;
         }
-        if(start!=null && end!=null){
-            System.out.println("UDJE OVDEEEE");
+
+        if((start!=null && end!=null)){
             ownerReservationsDate = reservationRepository.findByDate(start,end);
             System.out.println(ownerReservationsDate);
         }else{
-            ownerReservationsDate = ownerReservations;
+            ownerReservationsDate = getOwnersRequests(idOwner);
         }
 
 

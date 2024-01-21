@@ -23,10 +23,10 @@ public class definitionAccommodationTest extends TestBase {
     @DataProvider(name = "returnTrue")
     private Object[][] returnTrue() {
         List<DatesPrice> datesPriceList=new ArrayList<DatesPrice>();
-        datesPriceList.add(new DatesPrice("01-01-2024","01-01-2025",1000));
+        datesPriceList.add(new DatesPrice("10-10-2024","01-01-2025",1000));
         datesPriceList.add(new DatesPrice("12-12-2026","12-12-2027",500));
         return new Object[][] {
-                { "Naziv1", 500,1000,1500,0,datesPriceList,"Successful edit"}
+                { "Naziv1", 500,1000,1500,2,datesPriceList,"Successful edit"}
         };
     }
 
@@ -44,7 +44,6 @@ public class definitionAccommodationTest extends TestBase {
         MyAccommodationPage myAccommodationPage=new MyAccommodationPage(driver);
         myAccommodationPage.chooseAccommodation(accommodationTitle);
         EditAccommodationPage editAccommodationPage=new EditAccommodationPage(driver);
-        //Assert.assertTrue(editAccommodationPage.isPageOpenedValid(accommodationTitle));
         editAccommodationPage.changePrices();
         DefinitionAccommodationPage definitionAccommodationPage=new DefinitionAccommodationPage(driver);
         definitionAccommodationPage.setInputButtons(weekendPrice,holidayPrice,summerPrice,limitDays);
@@ -65,7 +64,7 @@ public class definitionAccommodationTest extends TestBase {
         return new Object[][] {
                 { "Naziv2", 500,1000,1500,5,datesPriceList,"Changed only cancelled deadline, due to reservations"}
         };
-    }
+    }//Changed only cancelled deadline, due to reservations
 
     @Test(dataProvider = "returnFalseCanChangeDayLimit")
     public void canChangeOnlyLimitDay(String accommodationTitle,double weekendPrice,double holidayPrice,double summerPrice,int limitDays,List<DatesPrice> datesPriceList,String expectedMessage) throws InterruptedException {
@@ -78,7 +77,6 @@ public class definitionAccommodationTest extends TestBase {
         OwnerPage ownerPage=new OwnerPage(driver);
         Assert.assertTrue(ownerPage.isPageOpened("Booking Owner"));
         ownerPage.myAccommodationButton();
-        //Thread.sleep(1000);
         MyAccommodationPage myAccommodationPage=new MyAccommodationPage(driver);
         myAccommodationPage.chooseAccommodation(accommodationTitle);
         EditAccommodationPage editAccommodationPage=new EditAccommodationPage(driver);
@@ -100,39 +98,36 @@ public class definitionAccommodationTest extends TestBase {
         List<DatesPrice> datesPriceList=new ArrayList<DatesPrice>();
         datesPriceList.add(new DatesPrice("01-03-2025","01-05-2025",1000));
         return new Object[][] {
-                { "Naziv3", 500,1000,1500,2,datesPriceList,"You can only change the cancelled deadline, due to reservations"}
+                { "Naziv3", 500,1000,1500,5,datesPriceList,"You can only change the cancelled deadline, due to reservations"}
         };
+    }//
+
+    @Test(dataProvider = "returnFalseCanNotChangeDayLimit")
+    public void canChangeNothing(String accommodationTitle,double weekendPrice,double holidayPrice,double summerPrice,int limitDays,List<DatesPrice> datesPriceList,String expectedMessage) throws InterruptedException {
+        MainPage mainPage=new MainPage(driver);
+        Assert.assertTrue(mainPage.isPageOpened("Booking"));
+        mainPage.login();
+        LoginPage loginPage=new LoginPage(driver);
+        Assert.assertTrue(loginPage.isPageOpened("Login"));
+        loginPage.inputLogin(EMAIL,PASSWORD);
+        OwnerPage ownerPage=new OwnerPage(driver);
+        Assert.assertTrue(ownerPage.isPageOpened("Booking Owner"));
+        ownerPage.myAccommodationButton();
+        MyAccommodationPage myAccommodationPage=new MyAccommodationPage(driver);
+        myAccommodationPage.chooseAccommodation(accommodationTitle);
+        EditAccommodationPage editAccommodationPage=new EditAccommodationPage(driver);
+        editAccommodationPage.changePrices();
+        DefinitionAccommodationPage definitionAccommodationPage=new DefinitionAccommodationPage(driver);
+        definitionAccommodationPage.setInputButtons(weekendPrice,holidayPrice,summerPrice,limitDays);
+        definitionAccommodationPage.removeOldDates();
+        definitionAccommodationPage.addDates(datesPriceList);
+        definitionAccommodationPage.save();
+        String textAlert=editAccommodationPage.closeAlert();
+        Assert.assertEquals(textAlert,expectedMessage);
+        editAccommodationPage.changePrices();
+        boolean validation=definitionAccommodationPage.isChangedNothing(weekendPrice,holidayPrice,summerPrice,limitDays,datesPriceList);
+        Assert.assertTrue(validation);
     }
 
-//    @Test(dataProvider = "returnFalseCanNotChangeDayLimit")
-//    public void canChangeNothing(String accommodationTitle,double weekendPrice,double holidayPrice,double summerPrice,int limitDays,List<DatesPrice> datesPriceList,String expectedMessage) throws InterruptedException {
-//        MainPage mainPage=new MainPage(driver);
-//        Assert.assertTrue(mainPage.isPageOpened("Booking"));
-//        mainPage.login();
-//        LoginPage loginPage=new LoginPage(driver);
-//        Assert.assertTrue(loginPage.isPageOpened("Login"));
-//        loginPage.inputLogin(EMAIL,PASSWORD);
-//        OwnerPage ownerPage=new OwnerPage(driver);
-//        Assert.assertTrue(ownerPage.isPageOpened("Booking Owner"));
-//        ownerPage.myAccommodationButton();
-//        //Thread.sleep(1000);
-//        MyAccommodationPage myAccommodationPage=new MyAccommodationPage(driver);
-//        myAccommodationPage.chooseAccommodation(accommodationTitle);
-//        EditAccommodationPage editAccommodationPage=new EditAccommodationPage(driver);
-//        editAccommodationPage.changePrices();
-//        DefinitionAccommodationPage definitionAccommodationPage=new DefinitionAccommodationPage(driver);
-//        definitionAccommodationPage.setInputButtons(weekendPrice,holidayPrice,summerPrice,limitDays);
-//        definitionAccommodationPage.removeOldDates();
-//        definitionAccommodationPage.addDates(datesPriceList);
-//        definitionAccommodationPage.save();
-//        String textAlert=editAccommodationPage.closeAlert();
-//        Assert.assertEquals(textAlert,expectedMessage);
-//        editAccommodationPage.changePrices();
-//        boolean validation=definitionAccommodationPage.isChangedNothing(weekendPrice,holidayPrice,summerPrice,limitDays,datesPriceList);
-//        Assert.assertTrue(validation);
-//    }
-
-
-    //preklapanje datuma
 
 }

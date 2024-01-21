@@ -82,7 +82,10 @@ public class AccommodationServiceTest {
         Long VALID_ACCOMMODATION_ID=1L;
 
         return Stream.of(
-                Arguments.of(VALID_ACCOMMODATION_ID,new Accommodation(VALID_ACCOMMODATION_ID),new Accommodation(VALID_ACCOMMODATION_ID,5, Arrays.asList(new Price(1L,1000, new Date(125,1,1),new Date(126,1,1)),new Price(2L,1000, new Date(127,1,1),new Date(128,1,1))),100,200,100),new ArrayList<Reservation>(),"Successful edit")
+                Arguments.of(VALID_ACCOMMODATION_ID,new Accommodation(VALID_ACCOMMODATION_ID),new Accommodation(VALID_ACCOMMODATION_ID,5, Arrays.asList(new Price(1L,1000, new Date(125,1,1),new Date(126,1,1)),new Price(2L,1000, new Date(127,1,1),new Date(128,1,1))),100,200,100),new ArrayList<Reservation>(),"Successful edit"),
+                Arguments.of(VALID_ACCOMMODATION_ID,new Accommodation(VALID_ACCOMMODATION_ID),new Accommodation(VALID_ACCOMMODATION_ID,5, Arrays.asList(new Price(1L,1000, new Date(125,1,1),new Date(126,1,1)),new Price(2L,1000, new Date(127,1,1),new Date(128,1,1))),100,200,100), List.of(new Reservation(1L, new Date(125, 0, 2), new Date(125, 0, 10))),"Successful edit"),
+                Arguments.of(VALID_ACCOMMODATION_ID,new Accommodation(VALID_ACCOMMODATION_ID),new Accommodation(VALID_ACCOMMODATION_ID,5, Arrays.asList(new Price(1L,1000, new Date(125,1,1),new Date(126,1,1)),new Price(2L,1000, new Date(127,1,1),new Date(128,1,1))),100,200,100), List.of(new Reservation(1L, new Date(129, 0, 2), new Date(129, 0, 10))),"Successful edit"),
+                Arguments.of(VALID_ACCOMMODATION_ID,new Accommodation(VALID_ACCOMMODATION_ID),new Accommodation(VALID_ACCOMMODATION_ID,5, Arrays.asList(new Price(1L,1000, new Date(125,1,1),new Date(126,1,1)),new Price(2L,1000, new Date(127,1,1),new Date(128,1,1))),100,200,100), List.of(new Reservation(1L, new Date(126, 4, 2), new Date(126, 4, 20))),"Successful edit")
         );
     }
 
@@ -115,6 +118,9 @@ public class AccommodationServiceTest {
 
         Collection<Reservation> reservations1 = Arrays.asList(new Reservation(1L,new Date(125, 0, 12),new Date(125, 0, 15)),new Reservation(2L,new Date(125,1,12),new Date(125,1,15)));
 
+        Collection<Reservation> reservations2 = List.of(new Reservation(1L, new Date(127, 3, 12), new Date(129, 0, 15)));
+        Collection<Reservation> reservations3 = List.of(new Reservation(1L, new Date(125, 10, 12), new Date(125, 10, 15)));
+
         List<Price> prices = Arrays.asList(new Price(1L,1000, new Date(125,1,1),new Date(126,1,1)),new Price(1L,1000, new Date(127,1,1),new Date(128,1,1)));
 
         Accommodation oldAccommodation1=new Accommodation(VALID_ACCOMMODATION_ID,3);
@@ -123,8 +129,10 @@ public class AccommodationServiceTest {
 
 
         return Stream.of(
-                Arguments.of(VALID_ACCOMMODATION_ID,oldAccommodation1,updatedAccommodation1,reservations1,"You can only change the cancelled deadline, due to reservations")
-        );
+                Arguments.of(VALID_ACCOMMODATION_ID,oldAccommodation1,updatedAccommodation1,reservations1,"You can only change the cancelled deadline, due to reservations"),
+                Arguments.of(VALID_ACCOMMODATION_ID,oldAccommodation1,updatedAccommodation1,reservations2,"You can only change the cancelled deadline, due to reservations"),
+                Arguments.of(VALID_ACCOMMODATION_ID,oldAccommodation1,updatedAccommodation1,reservations3,"You can only change the cancelled deadline, due to reservations")
+                );
     }
 
     @ParameterizedTest

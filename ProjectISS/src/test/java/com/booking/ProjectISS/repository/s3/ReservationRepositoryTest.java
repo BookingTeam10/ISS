@@ -25,16 +25,12 @@ import static org.hamcrest.Matchers.equalTo;
 @ActiveProfiles("test3")
 public class ReservationRepositoryTest {
 
-    private static final Long VALID_ACCOMMODATION_ID = 1L;
-
-    private static final Long INVALID_ACCOMMODATION_ID = 999L;
-
     @Autowired
     private IReservationRepository reservationRepository;
 
 
     static Stream<Arguments> findReservationByAccIdAndStatus() {
-        Collection<Reservation> collections1 = List.of(new Reservation(1));
+        Collection<Reservation> collections1 = List.of(new Reservation(1),new Reservation(2));
         Collection<Reservation> collections2 = Arrays.asList(new Reservation(3), new Reservation(4));
         Collection<Reservation> collections3 = new ArrayList<>();
 
@@ -55,15 +51,32 @@ public class ReservationRepositoryTest {
     }
 
 
-    @Test
-    public void findReservationByAccommodationIdAndNotStatusSizeTest() {
-        Collection<Reservation> reservations = reservationRepository.findAllByAccommodationId(VALID_ACCOMMODATION_ID, ReservationStatus.CANCELLED,ReservationStatus.REJECTED);
+    static Stream<Arguments> noEmpty() {
+
+        return Stream.of(
+                Arguments.of(1L,ReservationStatus.CANCELLED,ReservationStatus.REJECTED)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("noEmpty")
+    public void findReservationByAccommodationIdAndNotStatusSizeTest(Long accommodationId,ReservationStatus status1,ReservationStatus status2) {
+        Collection<Reservation> reservations = reservationRepository.findAllByAccommodationId(accommodationId, status1,status2);
         Assertions.assertThat(reservations).isNotEmpty();
     }
 
-    @Test
-    public void findReservationByAccommodationIdAndNotStatusEmptyTest() {   //2 slucaja, za invalid i za valid al nema je
-        Collection<Reservation> reservations = reservationRepository.findAllByAccommodationId(INVALID_ACCOMMODATION_ID,ReservationStatus.REJECTED,ReservationStatus.ACCEPTED);
+    static Stream<Arguments> empty() {
+
+        return Stream.of(
+                Arguments.of(1L,ReservationStatus.ACCEPTED,ReservationStatus.CANCELLED),
+                Arguments.of(999L,ReservationStatus.WAITING,ReservationStatus.ACCEPTED)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("empty")
+    public void findReservationByAccommodationIdAndNotStatusEmptyTest(Long accommodationId,ReservationStatus status1,ReservationStatus status2) {
+        Collection<Reservation> reservations = reservationRepository.findAllByAccommodationId(accommodationId,status1,status2);
         Assertions.assertThat(reservations).isEmpty();
     }
 }

@@ -24,7 +24,7 @@ VALUES ('Apartman','true','true', 2,3,6,10,null,'Apartment',null,'Naziv1',0,0,0,
 
 INSERT INTO reservations (total_price, reservation_status, start_date, end_date, number_of_nights, accommodation_id, guest_id)
 VALUES (200, 'CANCELLED', '2022-12-12', '2022-12-15', 3, 1, null),
-       (200, 'WAITING', '2023-10-10', '2023-10-15', 5, 1, null),
+       (200, 'CANCELLED', '2023-10-10', '2023-10-15', 5, 1, null),
        (100, 'ACCEPTED', '2025-01-01', '2025-01-10', 7, 1, null),
        (50, 'ACCEPTED', '2025-01-11', '2025-01-15', 4, 2, null),
        (150, 'ACCEPTED', '2024-01-25', '2024-01-28', 2, 1, null);
