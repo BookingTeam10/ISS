@@ -52,8 +52,8 @@ public class ReservationControllerTest {
     }
 
     static Stream<Arguments> reservationsCreated() {    //dodati u accommodationu ono automatski prihvaceno
-        Reservation reservation1=new Reservation(1L,new Date(126,0,1),new Date(126,0,2),new Accommodation(1L));
-        Reservation reservation2=new Reservation(1L,new Date(126,0,1),new Date(126,0,2),new Accommodation(3L));
+        Reservation reservation1=new Reservation(1L,new Date(126,0,1),new Date(126,0,2),new Accommodation(1L,true));
+        Reservation reservation2=new Reservation(1L,new Date(126,0,1),new Date(126,0,2),new Accommodation(3L,false));
         return Stream.of(
                 Arguments.of(reservation1),
                 Arguments.of(reservation2)

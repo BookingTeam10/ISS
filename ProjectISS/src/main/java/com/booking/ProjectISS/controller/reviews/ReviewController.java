@@ -15,6 +15,7 @@ import com.booking.ProjectISS.model.users.Guest;
 import com.booking.ProjectISS.model.users.Owner;
 import com.booking.ProjectISS.model.users.ReportUser;
 import com.booking.ProjectISS.repository.reservations.IReservationRepository;
+import com.booking.ProjectISS.repository.reviews.IReviewRepository;
 import com.booking.ProjectISS.repository.users.guests.IGuestRepository;
 import com.booking.ProjectISS.repository.users.owner.IOwnerRepository;
 import com.booking.ProjectISS.service.reservations.IReservationService;
@@ -38,6 +39,9 @@ import java.util.*;
 public class ReviewController {
     @Autowired
     private IReviewService reviewService;
+
+    @Autowired
+    private IReviewRepository reviewRepository;
 
     @Autowired
     private IOwnerRepository ownerRepository;
@@ -233,6 +237,8 @@ public class ReviewController {
         Review review= reviewService.findOne(id);
         System.out.println("USLO12345");
         System.out.println(review);
+        review.setStatus(ReviewStatus.REPORTED);
+        reviewRepository.save(review);
         return new ResponseEntity<Review>(review,HttpStatus.OK);
     }
 

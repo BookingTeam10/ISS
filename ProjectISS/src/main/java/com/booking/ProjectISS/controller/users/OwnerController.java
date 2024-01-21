@@ -31,6 +31,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
@@ -307,5 +310,33 @@ public class OwnerController {
     public ResponseEntity<Collection<Accommodation>> getAccommodationByOwner(@PathVariable Long idOwner){
         Collection<Accommodation> accommodations=accommodationService.findAllByOwner(idOwner);
         return new ResponseEntity<Collection<Accommodation>>(accommodations, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/requestsSearchMobile", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasRole('Owner')")
+    public ResponseEntity<Collection<ReservationDTO>> searchedRequestsMobile(@RequestParam(required = false) String type,
+                                                                       @RequestParam(required = false) String start,
+                                                                       @RequestParam(required = false)  String end,
+                                                                       @RequestParam(required = false) String nameAccommodation,
+                                                                       @RequestParam(required = false) Long idOwner
+    ) throws ParseException {
+        Date startDate = null;
+        Date endDate = null;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); // Format datuma
+
+        if (!start.equals("")){
+            startDate = formatter.parse(start);
+        }
+        if(!end.equals("")){
+            endDate = formatter.parse(end);
+        }
+        Collection<ReservationDTO> reservationDTOS = new ArrayList<>();
+        if(type.equals("") && start == null && end==null && nameAccommodation.equals("")){
+            reservationDTOS = reservationService.getOwnersRequests(idOwner);
+        }else {
+            reservationDTOS = reservationService.searchedRequests(type,startDate,endDate,nameAccommodation,idOwner);
+        }
+
+        return new ResponseEntity<Collection<ReservationDTO>>(reservationDTOS, HttpStatus.OK);
     }
 }

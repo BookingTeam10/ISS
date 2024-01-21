@@ -254,6 +254,8 @@ public class ReviewService implements IReviewService {
     public Collection<ReviewOwner> findNoReported(Long id) {
         Collection<ReviewOwner> ro=new ArrayList<ReviewOwner>();
         Collection<ReviewOwner> reviewNoReported=reviewOwnerRepository.findNoRep(id);
+        System.out.println("NO REPORTED");
+        System.out.println(reviewNoReported);
         for(ReviewOwner r:reviewNoReported){
             if(!r.getStatus().equals(ReviewStatus.REPORTED)){   //dodati mzd i ono iz tabele true/false
                 ro.add(r);
@@ -279,14 +281,20 @@ public class ReviewService implements IReviewService {
             Review rw=reviewRepository.findByReservation(r.getId());
             System.out.println(rw);
             if(rw==null){
-                break;
+                continue;
             }
-            if(!rw.getStatus().equals(ReviewStatus.REPORTED)){
-                reviews.add(rw);
+            else{
+                if(!rw.getStatus().equals(ReviewStatus.REPORTED)){
+                    reviews.add(rw);
+                }
             }
+//            if(!rw.getStatus().equals(ReviewStatus.REPORTED)){
+//                reviews.add(rw);
+//            }
         }
         System.out.println(reviews);
         System.out.println(reviews.size());
+
         return reviews;
     }
 
