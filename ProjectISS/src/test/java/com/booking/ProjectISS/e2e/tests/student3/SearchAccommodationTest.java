@@ -20,12 +20,18 @@ import java.util.List;
 public class SearchAccommodationTest extends TestBase {
 
     @DataProvider(name = "filter")
-    private Object[][] searchFilter() {
+    private Object[][] searchFilter() {     //ako nesto ne zelite da unesete stavite ""
         return new Object[][] {
                 { "Novi Sad", "Apartment","2000","4000","03/03/2025","04/04/2025", Arrays.asList("WIFI","Parking"),"3"},
+                { "Belgrade", "Apartment","2000","4000","03/03/2025","04/04/2025", List.of(),"3"},
+                { "", "","","","","", Arrays.asList("WIFI"),""},
+                { "Novi Sad", "","","3000","","", Arrays.asList("WIFI"),"4"},
+                { "Novi Sad", "Apartment","","","03/03/2025","04/04/2025", Arrays.asList("WIFI"),""},
+                { "Novi Sad", "","1000","","","", Arrays.asList("WIFI"),""},
+                { "", "","","","","", Arrays.asList("WIFI"),"5"},
                 { "Belgrade", "","","","","", List.of(),""},
                 { "", "","","","","", List.of(),""},
-                { "", "","","","","", Arrays.asList("WIFI"),""}
+                { "", "","","","","", Arrays.asList("WIFI"),""},
         };
     }
 

@@ -40,11 +40,13 @@ public class ReservationServiceTest {
 
     private static final Long VALID_ACCOMMODATION_ID = 1L;
 
+    private static final Long VALID_ACCOMMODATION_ID_NO_ACC = 2L;
+
     private static final Long INVALID_ACCOMMODATION_ID = 0L;
 
-    static Stream<Arguments> overlapping() {    //4 slucaja
+    static Stream<Arguments> overlapping() {
 
-        Collection<Reservation> reservations= List.of(new Reservation(1L, new Date(126, 0, 1), new Date(126, 10, 2), new Accommodation(VALID_ACCOMMODATION_ID)));
+        Collection<Reservation> reservations= List.of(new Reservation(1L, new Date(126, 0, 1), new Date(126, 10, 2), new Accommodation(VALID_ACCOMMODATION_ID)),new Reservation(3L, new Date(130, 0, 1), new Date(130, 10, 2), new Accommodation(VALID_ACCOMMODATION_ID_NO_ACC)));
         Reservation reservation=new Reservation(2L,new Date(127,0,1),new Date(127,0,2),new Accommodation(VALID_ACCOMMODATION_ID));
         Reservation reservation1=new Reservation(2L,new Date(129,0,15),new Date(129,0,2),new Accommodation(VALID_ACCOMMODATION_ID));
         Reservation reservation2=new Reservation(2L,new Date(125,0,1),new Date(125,10,1),new Accommodation(VALID_ACCOMMODATION_ID));
@@ -102,9 +104,15 @@ public class ReservationServiceTest {
         List<Reservation>reservations2 = Arrays.asList(new Reservation(1L,ReservationStatus.WAITING,new Date(127,0,1),new Date(127,0,2),new Accommodation(VALID_ACCOMMODATION_ID)),new Reservation(2L,ReservationStatus.ACCEPTED,new Date(127,0,1),new Date(127,0,2),new Accommodation(VALID_ACCOMMODATION_ID)),new Reservation(3L,ReservationStatus.WAITING,new Date(127,0,1),new Date(127,0,2),new Accommodation(INVALID_ACCOMMODATION_ID)),new Reservation(4L,ReservationStatus.WAITING,new Date(127,0,1),new Date(127,0,2),new Accommodation(VALID_ACCOMMODATION_ID)),new Reservation(5L,ReservationStatus.WAITING,new Date(127,0,1),new Date(127,0,2),new Accommodation(VALID_ACCOMMODATION_ID)),new Reservation(6L,ReservationStatus.WAITING,new Date(127,0,1),new Date(127,0,2),new Accommodation(VALID_ACCOMMODATION_ID)),new Reservation(7L,ReservationStatus.WAITING,new Date(127,0,1),new Date(127,0,2),new Accommodation(VALID_ACCOMMODATION_ID)));
 
 
+        Reservation reservation3=new Reservation(100L,new Date(127,0,1),new Date(127,0,2),new Accommodation(VALID_ACCOMMODATION_ID,true));
+
+        List<Reservation>reservations3 = Arrays.asList(new Reservation(1L,ReservationStatus.WAITING,new Date(127,0,1),new Date(127,0,2),new Accommodation(VALID_ACCOMMODATION_ID)),new Reservation(2L,ReservationStatus.ACCEPTED,new Date(127,5,1),new Date(127,6,2),new Accommodation(VALID_ACCOMMODATION_ID)),new Reservation(3L,ReservationStatus.WAITING,new Date(127,0,1),new Date(127,3,2),new Accommodation(INVALID_ACCOMMODATION_ID)),new Reservation(4L,ReservationStatus.WAITING,new Date(127,11,1),new Date(127,11,2),new Accommodation(VALID_ACCOMMODATION_ID)),new Reservation(5L,ReservationStatus.WAITING,new Date(127,0,1),new Date(127,0,2),new Accommodation(VALID_ACCOMMODATION_ID)));
+
+
         return Stream.of(
                 Arguments.of(reservation1,reservations1),
-                Arguments.of(reservation2,reservations2)
+                Arguments.of(reservation2,reservations2),
+                Arguments.of(reservation3,reservations3)
         );
     }
 
