@@ -53,53 +53,49 @@ VALUES (1,'WIFI'),
        (1, 'Parking');
 
 INSERT INTO reservations (total_price, reservation_status, start_date, end_date, number_of_nights, accommodation_id, guest_id)
-VALUES (100, 'REJECTED', '2025-01-02', '2025-01-05', 3, 2, 3),
-       (50, 'ACCEPTED', '2025-01-10', '2025-05-12', 1, 2, 3),
-       (150, 'ACCEPTED', '2025-01-02', '2025-01-05', 2, 3, 3),
-       (50, 'ACCEPTED', '2025-01-10', '2025-05-12', 1, 3, 3),
-       (200, 'ACCEPTED', '2025-10-10', '2025-10-15', 5, 1, 3),
+VALUES (200, 'ACCEPTED', '2025-10-10', '2025-10-15', 5, 1, 3),
        (150, 'ACCEPTED', '2025-01-10', '2025-01-15', 2, 1, 3);
 
-INSERT INTO notifications (text, notification_status, guest_id, owner_id, sent_date)
-VALUES
-    ('Your reservation has been accepted.', 'VISIBLE', 3, 1, '2023-01-01'),
-    ('Your reservation has been rejected.', 'VISIBLE', 3, 1, '2023-01-02'),
-    ('New reservation request received.', 'NOT_VISIBLE', 3, 1, '2023-01-03');
-
-INSERT INTO review (rate, review_comment, status, reservation_id)
-VALUES
-    (3, 'Great experience!', 'WAITING', 3),
-    (3, 'Bad experience!', 'REPORTED', 4);
-
-INSERT INTO review_owner (rate, review_comment,comment_date, status, owner_id, guest_id,is_reported)
-VALUES
-    (5, 'Great experience!', '2021-12-01', 'REPORTED', 1,5,'false');
-
-
-
-INSERT INTO accommodation_price (accommodation_id, price, start_date, end_date)
-VALUES
-    (1, 3000, '2001-01-01', '2030-07-01'),
-    (2, 2000, '2001-01-01', '2030-08-01'),
-    (3, 4000, '2001-01-01', '2030-09-01');
-
-
-INSERT INTO report (review_comment,status,owner_id, guest_id,user_report)
-VALUES
-    ('Bad experience!','ACTIVE', 4,3,'OG');
-
-
--- INSERT INTO guests_favourite_accommodations (guest_id,favourite_accommodations_accommodation_id)
--- VALUES (3,3);
-
-INSERT INTO notifications_visible (text, guest_id, owner_id, user_rate)
-VALUES
-    ('Your reservation has been accepted.', 3, 1, 'OG'),
-    ('Your reservation has been rejected.', 3, 4, 'OG'),
-    ('New reservation request received.', 3, 1, 'GO');
-
-INSERT INTO notifications_user_visible (text, guest_id, owner_id, user_rate,sent_date,notification_status)
-VALUES
-    ('Your reservation has been accepted.', 3, 1, 'OG','2024-01-20','NOT_VISIBLE'),
-    ('Your reservation has been rejected.', 3, 4, 'OG','2024-01-23','NOT_VISIBLE'),
-    ('New reservation request received.', 3, 1, 'GO','2024-01-22','NOT_VISIBLE');
+-- INSERT INTO notifications (text, notification_status, guest_id, owner_id, sent_date)
+-- VALUES
+--     ('Your reservation has been accepted.', 'VISIBLE', 3, 1, '2023-01-01'),
+--     ('Your reservation has been rejected.', 'VISIBLE', 3, 1, '2023-01-02'),
+--     ('New reservation request received.', 'NOT_VISIBLE', 3, 1, '2023-01-03');
+--
+-- INSERT INTO review (rate, review_comment, status, reservation_id)
+-- VALUES
+--     (3, 'Great experience!', 'WAITING', 3),
+--     (3, 'Bad experience!', 'REPORTED', 4);
+--
+-- INSERT INTO review_owner (rate, review_comment,comment_date, status, owner_id, guest_id,is_reported)
+-- VALUES
+--     (5, 'Great experience!', '2021-12-01', 'REPORTED', 1,5,'false');
+--
+--
+--
+-- INSERT INTO accommodation_price (accommodation_id, price, start_date, end_date)
+-- VALUES
+--     (1, 3000, '2001-01-01', '2030-07-01'),
+--     (2, 2000, '2001-01-01', '2030-08-01'),
+--     (3, 4000, '2001-01-01', '2030-09-01');
+--
+--
+-- INSERT INTO report (review_comment,status,owner_id, guest_id,user_report)
+-- VALUES
+--     ('Bad experience!','ACTIVE', 4,3,'OG');
+--
+--
+-- -- INSERT INTO guests_favourite_accommodations (guest_id,favourite_accommodations_accommodation_id)
+-- -- VALUES (3,3);
+--
+-- INSERT INTO notifications_visible (text, guest_id, owner_id, user_rate)
+-- VALUES
+--     ('Your reservation has been accepted.', 3, 1, 'OG'),
+--     ('Your reservation has been rejected.', 3, 4, 'OG'),
+--     ('New reservation request received.', 3, 1, 'GO');
+--
+-- INSERT INTO notifications_user_visible (text, guest_id, owner_id, user_rate,sent_date,notification_status)
+-- VALUES
+--     ('Your reservation has been accepted.', 3, 1, 'OG','2024-01-20','NOT_VISIBLE'),
+--     ('Your reservation has been rejected.', 3, 4, 'OG','2024-01-23','NOT_VISIBLE'),
+--     ('New reservation request received.', 3, 1, 'GO','2024-01-22','NOT_VISIBLE');
