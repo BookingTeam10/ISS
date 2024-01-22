@@ -9,24 +9,16 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-public class OwnerPage {
+public class GuestPage {
 
     @FindBy(css = "h1.title")
     private WebElement heading;
-
-    @FindBy(xpath = "//span[contains(text(), 'My accommodations')]")
-    private WebElement myAccommodationButton;
-
     @FindBy(xpath = "//span[contains(text(), 'Reservations')]")
     private WebElement reservationsButton;
 
-
-    //@FindBy(id = "myAccommodation")
-    //private WebElement myAccommodationButton;
-
     private WebDriver driver;
 
-    public OwnerPage(WebDriver driver) {
+    public GuestPage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
@@ -35,10 +27,6 @@ public class OwnerPage {
         boolean isOpened = (new WebDriverWait(driver, Duration.ofSeconds(10)))
                 .until(ExpectedConditions.textToBePresentInElement(heading, title));
         return isOpened;
-    }
-
-    public void myAccommodationButton() {
-        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(myAccommodationButton)).click();
     }
 
     public void ReservationsButton() {
