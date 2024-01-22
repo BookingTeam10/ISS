@@ -23,7 +23,7 @@ public class MyAccommodationPage {
     }
 
     public void chooseAccommodation(String name) throws InterruptedException {
-        Thread.sleep(1000);
+        Thread.sleep(100);
         for(WebElement accommodation:accommodations){
             WebElement nameElement=accommodation.findElement(By.cssSelector(".b-description"));
             String nameText = nameElement.getText().trim();

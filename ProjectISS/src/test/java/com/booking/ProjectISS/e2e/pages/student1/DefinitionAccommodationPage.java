@@ -117,9 +117,11 @@ public class DefinitionAccommodationPage {
     }
 
     public boolean isChanged(double weekendPriceDouble, double holidayPriceDouble, double summerPriceDouble, int cancelledDay, List<DatesPrice> datesPriceList) {
-        double setWeekendPriceInput=Double.parseDouble(weekendPriceInput.getAttribute("value"));
-        if(setWeekendPriceInput!=weekendPriceDouble){
-            return false;
+        if(!weekendPriceInput.getAttribute("value").equals("")){
+            double setWeekendPriceInput=Double.parseDouble(weekendPriceInput.getAttribute("value"));
+            if(setWeekendPriceInput!=weekendPriceDouble){
+                return false;
+            }
         }
         double setHolidayPriceInput=Double.parseDouble(holidayPriceInput.getAttribute("value"));
         if(setHolidayPriceInput!=holidayPriceDouble){
