@@ -26,6 +26,7 @@ public class SearchAccommodationTest extends TestBase {
                 { "Belgrade", "Apartment","2000","4000","03/03/2025","04/04/2025", List.of(),"3"},
                 { "", "","","","","", Arrays.asList("WIFI"),""},
                 { "Novi Sad", "","","3000","","", Arrays.asList("WIFI"),"4"},
+                { "Belgrade", "Apartment","","","","", List.of(),"7"},  //ovo je slucaj kada ne posotji po zadatim kriterijumima
                 { "Novi Sad", "Apartment","","","03/03/2025","04/04/2025", Arrays.asList("WIFI"),""},
                 { "Novi Sad", "","1000","","","", Arrays.asList("WIFI"),""},
                 { "", "","","","","", Arrays.asList("WIFI"),"5"},

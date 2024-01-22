@@ -73,12 +73,12 @@ VALUES (200, 'ACCEPTED', '2025-10-10', '2025-10-15', 5, 1, 3),
 --
 --
 --
--- INSERT INTO accommodation_price (accommodation_id, price, start_date, end_date)
--- VALUES
---     (1, 3000, '2001-01-01', '2030-07-01'),
---     (2, 2000, '2001-01-01', '2030-08-01'),
---     (3, 4000, '2001-01-01', '2030-09-01');
---
+INSERT INTO accommodation_price (accommodation_id, price, start_date, end_date)
+VALUES
+    (1, 3000, '2001-01-01', '2030-07-01'),
+    (2, 2000, '2001-01-01', '2030-08-01'),
+    (3, 4000, '2001-01-01', '2030-09-01');
+
 --
 -- INSERT INTO report (review_comment,status,owner_id, guest_id,user_report)
 -- VALUES
