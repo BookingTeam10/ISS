@@ -31,6 +31,7 @@ public class ReservationRepositoryTest {
 
     private static final Long VALID_ACCOMMODATION_ID = 1L;
 
+    private static final Long VALID_ACCOMMODATION_ID_NO_RESERVATION = 3L;
     private static final Long INVALID_ACCOMMODATION_ID = 999L;
 
     @Autowired
@@ -64,9 +65,18 @@ public class ReservationRepositoryTest {
         assertThat(reservations).isNotEmpty();
     }
 
-    @Test
-    public void findReservationByAccommodationIdEmptyTest() {
-       Collection<Reservation> reservations = reservationRepository.findByAccommodation(INVALID_ACCOMMODATION_ID);
+    static Stream<Arguments> emptyCollection() {
+
+        return Stream.of(
+                Arguments.of(INVALID_ACCOMMODATION_ID),
+                Arguments.of(VALID_ACCOMMODATION_ID_NO_RESERVATION)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("emptyCollection")
+    public void findReservationByAccommodationIdEmptyTest(Long idAccommodation) {
+       Collection<Reservation> reservations = reservationRepository.findByAccommodation(idAccommodation);
         assertThat(reservations).isEmpty();
     }
 
