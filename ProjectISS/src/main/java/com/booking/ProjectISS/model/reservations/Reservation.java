@@ -1,5 +1,6 @@
 package com.booking.ProjectISS.model.reservations;
 
+import com.booking.ProjectISS.dto.reservations.ReservationDTO;
 import com.booking.ProjectISS.enums.ReservationStatus;
 import com.booking.ProjectISS.model.CustomDateDeserializer;
 import com.booking.ProjectISS.model.accomodations.Accommodation;
@@ -76,6 +77,19 @@ public class Reservation implements Serializable {
         this.endDate = endDate;
         this.accommodation = accommodation;
     }
+
+    public Reservation(ReservationDTO reservationDTO) {
+        this.id = reservationDTO.getId();
+        this.totalPrice = reservationDTO.getTotalPrice();
+        this.status = reservationDTO.getStatus();
+        this.startDate = reservationDTO.getStartDate();
+        this.endDate = reservationDTO.getEndDate();
+        this.numberOfNights = reservationDTO.getNumberOfNights();
+        this.accommodation = reservationDTO.getAccommodation();
+        this.guest = reservationDTO.getGuest();
+        this.reviews = reservationDTO.getReviews();
+    }
+
 
 
     public long getId() {

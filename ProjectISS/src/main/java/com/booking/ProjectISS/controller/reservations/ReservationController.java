@@ -54,7 +54,7 @@ public class ReservationController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('Guest')")
+//    @PreAuthorize("hasRole('Guest')")
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody Reservation reservation) throws Exception {
         if (reservationService.hasOverlappingRequests(reservation)) {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
@@ -83,9 +83,7 @@ public class ReservationController {
     public ResponseEntity<ReservationDTO> acceptReservation(@PathVariable Long id) throws Exception {
 
         Reservation reservation = reservationService.findOne(id);
-        reservation.setStatus(ReservationStatus.ACCEPTED);
-        ReservationDTO reservationDTO = reservationService.update(reservation);
-        reservationService.cancelAllWaiting(reservation);
+        ReservationDTO reservationDTO = reservationService.acceptReservation(reservation);
         return new ResponseEntity<>(reservationDTO, HttpStatus.OK);
     }
     @PutMapping(value = "/cancel/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -95,16 +93,19 @@ public class ReservationController {
             throws Exception {
 
         Reservation reservation = reservationService.findOne(id);
+        ReservationDTO reservationDTO = null;
         if(canceledByHost){
             reservation.setStatus(ReservationStatus.REJECTED);
+            reservationDTO = reservationService.rejectReservation(reservation);
         }else {
             reservation.setStatus(ReservationStatus.CANCELLED);
             Guest guest = reservation.getGuest();
             int numberCanceled = guest.getNumberCanceledReservation();
             guest.setNumberCanceledReservation(numberCanceled+1);
             guestService.update(guest);
+            reservationDTO = reservationService.update(reservation);
         }
-        return new ResponseEntity<>(reservationService.update(reservation), HttpStatus.OK);
+        return new ResponseEntity<>(reservationDTO, HttpStatus.OK);
     }
 
 

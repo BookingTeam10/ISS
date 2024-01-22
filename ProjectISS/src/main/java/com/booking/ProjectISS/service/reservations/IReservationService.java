@@ -40,4 +40,8 @@ public interface IReservationService {
 
     Collection<ReservationDTO> findByOwner(Long id);
     Collection<ReservationDTO> searchedRequestsGuest(String type, Date start, Date end, String nameAccommodation,Long idGuest);
+
+    ReservationDTO acceptReservation(Reservation reservation) throws Exception;
+
+    ReservationDTO rejectReservation(Reservation reservation) throws Exception;
 }

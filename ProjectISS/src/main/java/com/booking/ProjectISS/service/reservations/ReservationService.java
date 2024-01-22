@@ -77,6 +77,7 @@ public class ReservationService implements IReservationService{
             if (r.getStatus() == ReservationStatus.WAITING && r.getAccommodation().getId().equals(accepptedReservation.getAccommodation().getId())) {
                 if (doDatesOverlap(accepptedReservation.getStartDate(), accepptedReservation.getEndDate(), r.getStartDate(), r.getEndDate())) {
                     r.setStatus(ReservationStatus.REJECTED);
+                    this.reservationRepository.save(r);
                 }
             }
         }
@@ -117,6 +118,8 @@ public class ReservationService implements IReservationService{
         if(reservation.getAccommodation().isAutomaticConfirmation()){
             reservation.setStatus(ReservationStatus.ACCEPTED);
             this.cancelAllWaiting(reservation);
+        }else{
+            reservation.setStatus(ReservationStatus.WAITING);
         }
         return new ReservationDTO(reservationRepository.save(reservation));
     }
@@ -144,6 +147,7 @@ public class ReservationService implements IReservationService{
         Collection<Reservation> reservations=reservationRepository.findAllByAccommodationId(newReservation.getAccommodation().getId(),ReservationStatus.CANCELLED,ReservationStatus.REJECTED);
         for (Reservation existingReservation : reservations) {
             if(!Objects.equals(existingReservation.getAccommodation().getId(), newReservation.getAccommodation().getId()))continue;
+            if(existingReservation.getStatus() == ReservationStatus.WAITING) {continue;}
             if (doDatesOverlap(newReservation.getStartDate(), newReservation.getEndDate(), existingReservation.getStartDate(), existingReservation.getEndDate())) {
                 return true;
             }
@@ -402,6 +406,19 @@ public class ReservationService implements IReservationService{
         return reservationDTOS;
     }
 
+    @Override
+    public ReservationDTO acceptReservation(Reservation reservation) throws Exception {
+        reservation.setStatus(ReservationStatus.ACCEPTED);
+        ReservationDTO reservationDTO = this.update(reservation);
+        this.cancelAllWaiting(reservation);
+        return reservationDTO;
+    }
+
+    @Override
+    public ReservationDTO rejectReservation(Reservation reservation) throws Exception {
+        reservation.setStatus(ReservationStatus.REJECTED);
+        return this.update(reservation);
+    }
     public List<ReservationDTO> getGuestReservationsDTO(long guestId) {
 
         List<Reservation> reservations = reservationRepository.findAll().stream()
